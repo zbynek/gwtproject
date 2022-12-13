@@ -130,7 +130,7 @@ public class MenuItem extends UIObject implements HasHTML, HasEnabled, HasSafeHt
 
     getElement().setAttribute("id", DOM.createUniqueId());
     // Add a11y role "menuitem"
-    Roles.getMenuitemRole().set(getElement());
+    getElement().setAttribute("role", "menuitem");
   }
 
   /**

@@ -17,7 +17,6 @@ package org.gwtproject.user.client.ui;
 
 import org.gwtproject.dom.client.Document;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.i18n.shared.DirectionEstimator;
 
 /**
  * A widget that contains arbitrary text, <i>not</i> interpreted as HTML.
@@ -25,12 +24,6 @@ import org.gwtproject.i18n.shared.DirectionEstimator;
  * <p>This widget uses a &lt;span&gt; element, causing it to be displayed with inline layout.
  *
  * <p>
- *
- * <h3>Built-in Bidi Text Support</h3>
- *
- * This widget is capable of automatically adjusting its direction according to its content. This
- * feature is controlled by {@link #setDirectionEstimator} or passing a DirectionEstimator parameter
- * to the constructor, and is off by default.
  *
  * <h3>CSS Style Rules</h3>
  *
@@ -77,30 +70,6 @@ public class InlineLabel extends Label {
     setText(text);
   }
 
-  /**
-   * Creates a label with the specified text and direction.
-   *
-   * @param text the new label's text
-   * @param dir the text's direction. Note: {@code Direction.DEFAULT} means direction should be
-   *     inherited from the widget's parent element.
-   */
-  public InlineLabel(String text, Direction dir) {
-    this();
-    setText(text, dir);
-  }
-
-  /**
-   * Creates a label with the specified text and a default direction estimator.
-   *
-   * @param text the new label's text
-   * @param directionEstimator A DirectionEstimator object used for automatic direction adjustment.
-   *     For convenience, {@link Label#DEFAULT_DIRECTION_ESTIMATOR} can be used.
-   */
-  public InlineLabel(String text, DirectionEstimator directionEstimator) {
-    this();
-    setDirectionEstimator(directionEstimator);
-    setText(text);
-  }
 
   /**
    * This constructor may be used by subclasses to explicitly use an existing element. This element

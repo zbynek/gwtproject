@@ -17,7 +17,6 @@ package org.gwtproject.user.client.ui;
 
 import org.gwtproject.dom.client.Document;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.i18n.shared.DirectionEstimator;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
 
@@ -31,12 +30,6 @@ import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
  * used properly.
  *
  * <p>
- *
- * <h3>Built-in Bidi Text Support</h3>
- *
- * This widget is capable of automatically adjusting its direction according to its content. This
- * feature is controlled by {@link #setDirectionEstimator} or passing a DirectionEstimator parameter
- * to the constructor, and is off by default.
  *
  * <h3>CSS Style Rules</h3>
  *
@@ -83,30 +76,6 @@ public class InlineHTML extends HTML {
   }
 
   /**
-   * Creates an HTML widget with the specified contents and with the specified direction.
-   *
-   * @param html the new widget's SafeHtml contents
-   * @param dir the content's direction. Note: {@code Direction.DEFAULT} means direction should be
-   *     inherited from the widget's parent element.
-   */
-  public InlineHTML(SafeHtml html, Direction dir) {
-    this(html.asString(), dir);
-  }
-
-  /**
-   * Creates an HTML widget with the specified HTML contents and with a default direction estimator.
-   *
-   * @param html the new widget's SafeHtml contents
-   * @param directionEstimator A DirectionEstimator object used for automatic direction adjustment.
-   *     For convenience, {@link Label#DEFAULT_DIRECTION_ESTIMATOR} can be used.
-   */
-  public InlineHTML(SafeHtml html, DirectionEstimator directionEstimator) {
-    this();
-    setDirectionEstimator(directionEstimator);
-    setHTML(html);
-  }
-
-  /**
    * Creates an HTML widget with the specified HTML contents.
    *
    * @param html the new widget's HTML contents
@@ -114,18 +83,6 @@ public class InlineHTML extends HTML {
   public InlineHTML(@IsSafeHtml String html) {
     this();
     setHTML(html);
-  }
-
-  /**
-   * Creates an HTML widget with the specified HTML contents and with the specified direction.
-   *
-   * @param html the new widget's HTML contents
-   * @param dir the content's direction. Note: {@code Direction.DEFAULT} means direction should be
-   *     inherited from the widget's parent element.
-   */
-  public InlineHTML(@IsSafeHtml String html, Direction dir) {
-    this();
-    setHTML(html, dir);
   }
 
   /**

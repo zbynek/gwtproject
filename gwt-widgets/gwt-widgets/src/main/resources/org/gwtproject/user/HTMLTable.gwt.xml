@@ -18,5 +18,4 @@
 <!--                                                                        -->
 <module>
   <inherits name="org.gwtproject.core.Core"/>
-  <inherits name="com.google.gwt.user.UserAgent"/>
 </module>

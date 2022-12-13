@@ -15,6 +15,7 @@
  */
 package org.gwtproject.user.client.ui;
 
+import elemental2.dom.DomGlobal;
 import org.gwtproject.dom.client.Document;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.EventTarget;
@@ -30,8 +31,6 @@ import org.gwtproject.event.dom.client.MouseOverEvent;
 import org.gwtproject.event.dom.client.MouseOverHandler;
 import org.gwtproject.event.dom.client.MouseUpEvent;
 import org.gwtproject.event.dom.client.MouseUpHandler;
-import org.gwtproject.event.logical.shared.ResizeEvent;
-import org.gwtproject.event.logical.shared.ResizeHandler;
 import org.gwtproject.event.shared.HandlerRegistration;
 import org.gwtproject.safehtml.client.HasSafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtml;
@@ -40,7 +39,6 @@ import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
 import org.gwtproject.user.client.Event.NativePreviewEvent;
-import org.gwtproject.user.window.client.Window;
 
 /**
  * A form of popup that has a caption area at the top and can be dragged by the user. Unlike a
@@ -80,13 +78,6 @@ import org.gwtproject.user.window.client.Window;
  * <h3>Example</h3>
  *
  * {@example com.google.gwt.examples.DialogBoxExample}
- *
- * <h3>Use in UiBinder Templates</h3>
- *
- * <p>DialogBox elements in {@link org.gwtproject.uibinder.client.UiBinder UiBinder} templates can
- * have one widget child and one &lt;g:caption> child. (Note the lower case "c", meant to signal
- * that the caption is not a runtime object, and so cannot have a <code>ui:field</code> attribute.)
- * The body of the caption can be html.
  *
  * <p>For example:
  *
@@ -245,7 +236,7 @@ public class DialogBox extends DecoratedPopupPanel implements HasHTML, HasSafeHt
     // Set the style name
     setStyleName(DEFAULT_STYLENAME);
 
-    windowWidth = Window.getClientWidth();
+    windowWidth = DomGlobal.document.documentElement.clientWidth;
     clientLeft = Document.get().getBodyOffsetLeft();
     clientTop = Document.get().getBodyOffsetTop();
 
@@ -389,12 +380,7 @@ public class DialogBox extends DecoratedPopupPanel implements HasHTML, HasSafeHt
   public void show() {
     if (resizeHandlerRegistration == null) {
       resizeHandlerRegistration =
-          Window.addResizeHandler(
-              new ResizeHandler() {
-                public void onResize(ResizeEvent event) {
-                  windowWidth = event.getWidth();
-                }
-              });
+          DOM.addWindowResizeHandler(event -> windowWidth = event.getWidth());
     }
     super.show();
   }

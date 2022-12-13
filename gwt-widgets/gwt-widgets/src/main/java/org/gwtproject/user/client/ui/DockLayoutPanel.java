@@ -18,7 +18,6 @@ package org.gwtproject.user.client.ui;
 import org.gwtproject.dom.client.Document;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.style.shared.Unit;
-import org.gwtproject.i18n.shared.cldr.LocaleInfo;
 import org.gwtproject.layout.client.Layout;
 import org.gwtproject.layout.client.Layout.Layer;
 
@@ -460,9 +459,9 @@ public class DockLayoutPanel extends ComplexPanel
    */
   protected Direction getResolvedDirection(Direction direction) {
     if (direction == Direction.LINE_START) {
-      return LocaleInfo.getCurrentLocale().isRTL() ? Direction.EAST : Direction.WEST;
+      return Direction.WEST;
     } else if (direction == Direction.LINE_END) {
-      return LocaleInfo.getCurrentLocale().isRTL() ? Direction.WEST : Direction.EAST;
+      return Direction.EAST;
     }
     return direction;
   }

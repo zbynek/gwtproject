@@ -17,7 +17,7 @@ package org.gwtproject.user.client.ui;
 
 import org.gwtproject.dom.client.Document;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.i18n.shared.DirectionEstimator;
+import org.gwtproject.safehtml.client.HasSafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
 
@@ -32,12 +32,6 @@ import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
  *
  * <p>
  *
- * <h3>Built-in Bidi Text Support</h3>
- *
- * This widget is capable of automatically adjusting its direction according to its content. This
- * feature is controlled by {@link #setDirectionEstimator} or passing a DirectionEstimator parameter
- * to the constructor, and is off by default.
- *
  * <h3>CSS Style Rules</h3>
  *
  * <ul class='css'>
@@ -50,7 +44,7 @@ import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
  *
  * {@example com.google.gwt.examples.HTMLExample}
  */
-public class HTML extends Label implements HasDirectionalHtml, HasDirectionalSafeHtml {
+public class HTML extends Label implements HasHTML, HasSafeHtml {
 
   /**
    * Creates an HTML widget that wraps an existing &lt;div&gt; or &lt;span&gt; element.
@@ -89,30 +83,6 @@ public class HTML extends Label implements HasDirectionalHtml, HasDirectionalSaf
   }
 
   /**
-   * Creates an HTML widget with the specified contents and with the specified direction.
-   *
-   * @param html the new widget's SafeHtml contents
-   * @param dir the content's direction. Note: {@code Direction.DEFAULT} means direction should be
-   *     inherited from the widget's parent element.
-   */
-  public HTML(SafeHtml html, Direction dir) {
-    this(html.asString(), dir);
-  }
-
-  /**
-   * Creates an HTML widget with the specified HTML contents and specifies a direction estimator.
-   *
-   * @param html the new widget's SafeHtml contents
-   * @param directionEstimator A DirectionEstimator object used for automatic direction adjustment.
-   *     For convenience, {@link Label#DEFAULT_DIRECTION_ESTIMATOR} can be used.
-   */
-  public HTML(SafeHtml html, DirectionEstimator directionEstimator) {
-    this();
-    setDirectionEstimator(directionEstimator);
-    setHTML(html);
-  }
-
-  /**
    * Creates an HTML widget with the specified HTML contents.
    *
    * @param html the new widget's HTML contents
@@ -120,18 +90,6 @@ public class HTML extends Label implements HasDirectionalHtml, HasDirectionalSaf
   public HTML(@IsSafeHtml String html) {
     this();
     setHTML(html);
-  }
-
-  /**
-   * Creates an HTML widget with the specified HTML contents and with the specified direction.
-   *
-   * @param html the new widget's HTML contents
-   * @param dir the content's direction. Note: {@code Direction.DEFAULT} means direction should be
-   *     inherited from the widget's parent element.
-   */
-  public HTML(@IsSafeHtml String html, Direction dir) {
-    this();
-    setHTML(html, dir);
   }
 
   /**
@@ -174,20 +132,6 @@ public class HTML extends Label implements HasDirectionalHtml, HasDirectionalSaf
   }
 
   /**
-   * Sets the label's content to the given HTML, applying the given direction. See {@link
-   * #setText(String, Direction) setText(String, Direction)} for details on potential effects on
-   * alignment.
-   *
-   * @param html the new widget's HTML content
-   * @param dir the content's direction. Note: {@code Direction.DEFAULT} means direction should be
-   *     inherited from the widget's parent element.
-   */
-  public void setHTML(@IsSafeHtml String html, Direction dir) {
-    directionalTextHelper.setHtml(html, dir);
-    updateHorizontalAlignment();
-  }
-
-  /**
    * Sets this object's contents via known-safe HTML.
    *
    * @see org.gwtproject.safehtml.client.HasSafeHtml#setHTML(SafeHtml)
@@ -197,9 +141,6 @@ public class HTML extends Label implements HasDirectionalHtml, HasDirectionalSaf
     setHTML(html.asString());
   }
 
-  public void setHTML(SafeHtml html, Direction dir) {
-    setHTML(html.asString(), dir);
-  }
 
   protected String getTextOrHtml(boolean isHtml) {
     return directionalTextHelper.getTextOrHtml(isHtml);

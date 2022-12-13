@@ -16,12 +16,6 @@
 package org.gwtproject.user.client.ui;
 
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.i18n.client.BidiUtils;
-import org.gwtproject.i18n.client.HasDirection.Direction;
-import org.gwtproject.i18n.shared.BidiFormatter;
-import org.gwtproject.i18n.shared.DirectionEstimator;
-import org.gwtproject.i18n.shared.HasDirectionEstimator;
-import org.gwtproject.i18n.shared.WordCountDirectionEstimator;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
 import org.gwtproject.safehtml.shared.annotations.SuppressIsSafeHtmlCastCheck;
@@ -31,20 +25,10 @@ import org.gwtproject.safehtml.shared.annotations.SuppressIsSafeHtmlCastCheck;
  * element. Note: this class assumes that callers perform all their text/html and direction
  * manipulations through it alone.
  */
-public class DirectionalTextHelper implements HasDirectionEstimator {
-
-  /** A default direction estimator instance. */
-  public static final DirectionEstimator DEFAULT_DIRECTION_ESTIMATOR =
-      WordCountDirectionEstimator.get();
-
-  /** The DirectionEstimator object. */
-  private DirectionEstimator directionEstimator;
+public class DirectionalTextHelper {
 
   /** The target element. */
   private final Element element;
-
-  /** The initial direction of the element. */
-  private Direction initialElementDir;
 
   /**
    * Whether direction was explicitly set on the last {@code setTextOrHtml} call. If so, {@link
@@ -71,12 +55,6 @@ public class DirectionalTextHelper implements HasDirectionEstimator {
    */
   private boolean isSpanWrapped;
 
-  /**
-   * The direction of the element's content. Note: this may not match the direction attribute of the
-   * element itself. See {@link #setText(String, Direction, boolean) setText(String, Direction,
-   * boolean)} for details.
-   */
-  private Direction textDir;
 
   /**
    * @param element The widget's element holding text.
@@ -86,19 +64,10 @@ public class DirectionalTextHelper implements HasDirectionEstimator {
     this.element = element;
     this.isElementInline = isElementInline;
     isSpanWrapped = false;
-    this.initialElementDir = BidiUtils.getDirectionOnElement(element);
-    textDir = initialElementDir;
     // setDirectionEstimator shouldn't refresh appearance of initial empty text.
     isDirectionExplicitlySet = true;
   }
 
-  public DirectionEstimator getDirectionEstimator() {
-    return directionEstimator;
-  }
-
-  public Direction getTextDirection() {
-    return textDir;
-  }
 
   /**
    * Get the inner text of the element, taking the inner span wrap into consideration, if needed.
@@ -131,40 +100,12 @@ public class DirectionalTextHelper implements HasDirectionEstimator {
   }
 
   /**
-   * Provides implementation for HasDirection's method setDirection (normally deprecated), dealing
-   * with backwards compatibility issues.
-   *
-   * @deprecated
-   */
-  @Deprecated
-  @SuppressIsSafeHtmlCastCheck
-  public void setDirection(Direction direction) {
-    BidiUtils.setDirectionOnElement(element, direction);
-    initialElementDir = direction;
-
-    /*
-     * For backwards compatibility, assure there's no span wrap, and update the
-     * content direction.
-     */
-    setInnerTextOrHtml(getHtml(), true); // TODO: mXSS?
-    isSpanWrapped = false;
-    textDir = initialElementDir;
-    isDirectionExplicitlySet = true;
-  }
-
-  /** See note at {@link #setDirectionEstimator(DirectionEstimator)}. */
-  public void setDirectionEstimator(boolean enabled) {
-    setDirectionEstimator(enabled ? DEFAULT_DIRECTION_ESTIMATOR : null);
-  }
-
-  /**
    * Note: if the element already has non-empty content, this will update its direction according to
    * the new estimator's result. This may cause flicker, and thus should be avoided;
    * DirectionEstimator should be set before the element has any content.
    */
   @SuppressIsSafeHtmlCastCheck
-  public void setDirectionEstimator(DirectionEstimator directionEstimator) {
-    this.directionEstimator = directionEstimator;
+  public void setDirectionEstimator() {
     /*
      * Refresh appearance unless direction was explicitly set on last
      * setTextOrHtml call.
@@ -177,7 +118,7 @@ public class DirectionalTextHelper implements HasDirectionEstimator {
   /**
    * Sets the element's content to the given value (plain text). If direction estimation is off, the
    * direction is verified to match the element's initial direction. Otherwise, the direction is
-   * affected as described at {@link #setText(String, Direction) setText(String, Direction)}.
+   * affected as described at setText(String, Direction)}.
    *
    * @param content the element's new content
    */
@@ -189,7 +130,7 @@ public class DirectionalTextHelper implements HasDirectionEstimator {
   /**
    * Sets the element's content to the given value (html). If direction estimation is off, the
    * direction is verified to match the element's initial direction. Otherwise, the direction is
-   * affected as described at {@link #setHtml(String, Direction) setHtml(String, Direction)}.
+   * affected as described setHtml(String, Direction)}.
    *
    * @param content the element's new content
    */
@@ -200,7 +141,7 @@ public class DirectionalTextHelper implements HasDirectionEstimator {
   /**
    * Sets the element's content to the given value (html). If direction estimation is off, the
    * direction is verified to match the element's initial direction. Otherwise, the direction is
-   * affected as described at {@link #setHtml(String, Direction) setHtml(String, Direction)}.
+   * affected as described at setHtml(String, Direction)}.
    *
    * @param content the element's new content
    */
@@ -209,122 +150,14 @@ public class DirectionalTextHelper implements HasDirectionEstimator {
   }
 
   /**
-   * Sets the element's content to the given value (either plain text or HTML). Prefer using {@link
-   * #setText(String) setText} or {@link #setHtml(String) setHtml} instead of this method.
+   * Sets the element's content to the given value (either plain text or HTML), applying the given
+   * direction.
    *
    * @param content the element's new content
    * @param isHtml whether the content is HTML
    */
   public void setTextOrHtml(@IsSafeHtml String content, boolean isHtml) {
-    if (directionEstimator == null) {
-      isSpanWrapped = false;
-      setInnerTextOrHtml(content, isHtml);
-
-      /*
-       * Preserves the initial direction of the element. This is different from
-       * passing the direction parameter explicitly as DEFAULT, which forces the
-       * element to inherit the direction from its parent.
-       */
-      if (textDir != initialElementDir) {
-        textDir = initialElementDir;
-        BidiUtils.setDirectionOnElement(element, initialElementDir);
-      }
-    } else {
-      setTextOrHtml(content, directionEstimator.estimateDirection(content, isHtml), isHtml);
-    }
-    isDirectionExplicitlySet = false;
-  }
-
-  /**
-   * Sets the element's content to the given value (plain text), applying the given direction.
-   *
-   * <p>Implementation details:
-   *
-   * <ul>
-   *   <li>If the element is a block element, sets its dir attribute according to the given
-   *       direction.
-   *   <li>Otherwise (i.e. the element is inline), the direction is set using a nested &lt;span
-   *       dir=...&gt; element which holds the content of the element. This nested span may be
-   *       followed by a zero-width Unicode direction character (LRM or RLM). This manipulation is
-   *       necessary to prevent garbling in case the direction of the element is opposite to the
-   *       direction of its context. See {@link BidiFormatter} for more details.
-   * </ul>
-   *
-   * @param content the element's new content
-   * @param dir the content's direction
-   */
-  @SuppressIsSafeHtmlCastCheck
-  public void setText(String content, Direction dir) {
-    setTextOrHtml(content, dir, false /* isHtml */);
-  }
-
-  /**
-   * Sets the element's content to the given value (html), applying the given direction.
-   *
-   * <p>Implementation details:
-   *
-   * <ul>
-   *   <li>If the element is a block element, sets its dir attribute according to the given
-   *       direction.
-   *   <li>Otherwise (i.e. the element is inline), the direction is set using a nested &lt;span
-   *       dir=...&gt; element which holds the content of the element. This nested span may be
-   *       followed by a zero-width Unicode direction character (LRM or RLM). This manipulation is
-   *       necessary to prevent garbling in case the direction of the element is opposite to the
-   *       direction of its context. See {@link BidiFormatter} for more details.
-   * </ul>
-   *
-   * @param content the element's new content
-   * @param dir the content's direction
-   */
-  public void setHtml(SafeHtml content, Direction dir) {
-    setHtml(content.asString(), dir);
-  }
-
-  /**
-   * Sets the element's content to the given value (html), applying the given direction.
-   *
-   * <p>Implementation details:
-   *
-   * <ul>
-   *   <li>If the element is a block element, sets its dir attribute according to the given
-   *       direction.
-   *   <li>Otherwise (i.e. the element is inline), the direction is set using a nested &lt;span
-   *       dir=...&gt; element which holds the content of the element. This nested span may be
-   *       followed by a zero-width Unicode direction character (LRM or RLM). This manipulation is
-   *       necessary to prevent garbling in case the direction of the element is opposite to the
-   *       direction of its context. See {@link BidiFormatter} for more details.
-   * </ul>
-   *
-   * @param content the element's new content
-   * @param dir the content's direction
-   */
-  public void setHtml(@IsSafeHtml String content, Direction dir) {
-    setTextOrHtml(content, dir, true /* isHtml */);
-  }
-
-  /**
-   * Sets the element's content to the given value (either plain text or HTML), applying the given
-   * direction. Prefer using {@link #setText(String, Direction) setText} or {@link #setHtml(String,
-   * Direction) setHtml} instead of this method.
-   *
-   * @param content the element's new content
-   * @param dir the content's direction
-   * @param isHtml whether the content is HTML
-   */
-  public void setTextOrHtml(@IsSafeHtml String content, Direction dir, boolean isHtml) {
-    textDir = dir;
-    // Set the text and the direction.
-    if (isElementInline) {
-      isSpanWrapped = true;
-      element.setInnerHTML(
-          BidiFormatter.getInstanceForCurrentLocale(true /* alwaysSpan */)
-              .spanWrapWithKnownDir(dir, content, isHtml));
-    } else {
-      isSpanWrapped = false;
-      BidiUtils.setDirectionOnElement(element, dir);
-      setInnerTextOrHtml(content, isHtml);
-    }
-    isDirectionExplicitlySet = true;
+    setInnerTextOrHtml(content, isHtml);
   }
 
   private void setInnerTextOrHtml(@IsSafeHtml String content, boolean isHtml) {

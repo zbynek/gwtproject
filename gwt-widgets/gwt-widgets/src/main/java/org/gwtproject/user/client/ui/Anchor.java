@@ -21,10 +21,7 @@ import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.style.shared.WhiteSpace;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
-import org.gwtproject.i18n.client.BidiUtils;
-import org.gwtproject.i18n.client.HasDirection;
-import org.gwtproject.i18n.shared.DirectionEstimator;
-import org.gwtproject.i18n.shared.HasDirectionEstimator;
+import org.gwtproject.safehtml.client.HasSafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeUri;
 import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
@@ -37,12 +34,6 @@ import org.gwtproject.safehtml.shared.annotations.SuppressIsSafeHtmlCastCheck;
  * <p>If you want use this anchor only for changing history states, use {@link Hyperlink} instead.
  *
  * <p>
- *
- * <h3>Built-in Bidi Text Support</h3>
- *
- * This widget is capable of automatically adjusting its direction according to its content. This
- * feature is controlled by {@link #setDirectionEstimator} or passing a DirectionEstimator parameter
- * to the constructor, and is off by default.
  *
  * <h3>CSS Style Rules</h3>
  *
@@ -57,12 +48,7 @@ public class Anchor extends FocusWidget
         HasName,
         HasHTML,
         HasWordWrap,
-        HasDirection,
-        HasDirectionEstimator,
-        HasDirectionalSafeHtml {
-
-  public static final DirectionEstimator DEFAULT_DIRECTION_ESTIMATOR =
-      DirectionalTextHelper.DEFAULT_DIRECTION_ESTIMATOR;
+        HasSafeHtml {
 
   /**
    * The default HREF is a no-op javascript statement. We need an href to ensure that the browser
@@ -156,33 +142,6 @@ public class Anchor extends FocusWidget
   /**
    * Creates an anchor for scripting.
    *
-   * <p>The anchor's href is set to <code>javascript : ;</code>, based on the expectation that
-   * listeners will be added to the anchor.
-   *
-   * @param html the anchor's html
-   * @param dir the html's direction
-   */
-  public Anchor(SafeHtml html, Direction dir) {
-    this(html.asString(), true, dir, DEFAULT_HREF);
-  }
-
-  /**
-   * Creates an anchor for scripting.
-   *
-   * <p>The anchor's href is set to <code>javascript : ;</code>, based on the expectation that
-   * listeners will be added to the anchor.
-   *
-   * @param html the anchor's html
-   * @param directionEstimator A DirectionEstimator object used for automatic direction adjustment.
-   *     For convenience, {@link #DEFAULT_DIRECTION_ESTIMATOR} can be used.
-   */
-  public Anchor(SafeHtml html, DirectionEstimator directionEstimator) {
-    this(html.asString(), true, directionEstimator, DEFAULT_HREF);
-  }
-
-  /**
-   * Creates an anchor for scripting.
-   *
    * <p>The anchor's href is set to <code>javascript:;</code>, based on the expectation that
    * listeners will be added to the anchor.
    *
@@ -190,33 +149,6 @@ public class Anchor extends FocusWidget
    */
   public Anchor(String text) {
     this(text, DEFAULT_HREF);
-  }
-
-  /**
-   * Creates an anchor for scripting.
-   *
-   * <p>The anchor's href is set to <code>javascript : ;</code>, based on the expectation that
-   * listeners will be added to the anchor.
-   *
-   * @param text the anchor's text
-   * @param dir the text's direction
-   */
-  public Anchor(String text, Direction dir) {
-    this(text, dir, DEFAULT_HREF);
-  }
-
-  /**
-   * Creates an anchor for scripting.
-   *
-   * <p>The anchor's href is set to <code>javascript : ;</code>, based on the expectation that
-   * listeners will be added to the anchor.
-   *
-   * @param text the anchor's text
-   * @param directionEstimator A DirectionEstimator object used for automatic direction adjustment.
-   *     For convenience, {@link #DEFAULT_DIRECTION_ESTIMATOR} can be used.
-   */
-  public Anchor(String text, DirectionEstimator directionEstimator) {
-    this(text, directionEstimator, DEFAULT_HREF);
   }
 
   /**
@@ -253,52 +185,6 @@ public class Anchor extends FocusWidget
   }
 
   /**
-   * Creates an anchor with its html and href (target URL) specified.
-   *
-   * @param html the anchor's html
-   * @param dir the html's direction
-   * @param href the url to which it will link
-   */
-  public Anchor(SafeHtml html, Direction dir, @IsSafeUri String href) {
-    this(html.asString(), true, dir, href);
-  }
-
-  /**
-   * Creates an anchor with its html and href (target URL) specified.
-   *
-   * @param html the anchor's html
-   * @param dir the html's direction
-   * @param href the url to which it will link
-   */
-  public Anchor(SafeHtml html, Direction dir, SafeUri href) {
-    this(html.asString(), true, dir, href.asString());
-  }
-
-  /**
-   * Creates an anchor with its html and href (target URL) specified.
-   *
-   * @param html the anchor's html
-   * @param directionEstimator A DirectionEstimator object used for automatic direction adjustment.
-   *     For convenience, {@link #DEFAULT_DIRECTION_ESTIMATOR} can be used.
-   * @param href the url to which it will link
-   */
-  public Anchor(SafeHtml html, DirectionEstimator directionEstimator, @IsSafeUri String href) {
-    this(html.asString(), true, directionEstimator, href);
-  }
-
-  /**
-   * Creates an anchor with its html and href (target URL) specified.
-   *
-   * @param html the anchor's html
-   * @param directionEstimator A DirectionEstimator object used for automatic direction adjustment.
-   *     For convenience, {@link #DEFAULT_DIRECTION_ESTIMATOR} can be used.
-   * @param href the url to which it will link
-   */
-  public Anchor(SafeHtml html, DirectionEstimator directionEstimator, SafeUri href) {
-    this(html.asString(), true, directionEstimator, href.asString());
-  }
-
-  /**
    * Creates an anchor with its text and href (target URL) specified.
    *
    * @param text the anchor's text
@@ -307,31 +193,6 @@ public class Anchor extends FocusWidget
   @SuppressIsSafeHtmlCastCheck
   public Anchor(String text, @IsSafeUri String href) {
     this(text, false, href);
-  }
-
-  /**
-   * Creates an anchor with its text and href (target URL) specified.
-   *
-   * @param text the anchor's text
-   * @param dir the text's direction
-   * @param href the url to which it will link
-   */
-  @SuppressIsSafeHtmlCastCheck
-  public Anchor(String text, Direction dir, @IsSafeUri String href) {
-    this(text, false, dir, href);
-  }
-
-  /**
-   * Creates an anchor with its text and href (target URL) specified.
-   *
-   * @param text the anchor's text
-   * @param directionEstimator A DirectionEstimator object used for automatic direction adjustment.
-   *     For convenience, {@link #DEFAULT_DIRECTION_ESTIMATOR} can be used.
-   * @param href the url to which it will link
-   */
-  @SuppressIsSafeHtmlCastCheck
-  public Anchor(String text, DirectionEstimator directionEstimator, @IsSafeUri String href) {
-    this(text, false, directionEstimator, href);
   }
 
   /**
@@ -412,50 +273,6 @@ public class Anchor extends FocusWidget
     directionalTextHelper = new DirectionalTextHelper(getAnchorElement(), /* is inline */ true);
   }
 
-  /**
-   * Creates an anchor with its text, direction and href (target URL) specified.
-   *
-   * @param text the anchor's text
-   * @param asHTML <code>true</code> to treat the specified text as html
-   * @param dir the text's direction
-   * @param href the url to which it will link
-   */
-  private Anchor(@IsSafeHtml String text, boolean asHTML, Direction dir, @IsSafeUri String href) {
-    this();
-    directionalTextHelper.setTextOrHtml(text, dir, asHTML);
-    setHref(href);
-  }
-
-  /**
-   * Creates an anchor with its text, direction and href (target URL) specified.
-   *
-   * @param text the anchor's text
-   * @param asHTML <code>true</code> to treat the specified text as html
-   * @param directionEstimator A DirectionEstimator object used for automatic direction adjustment.
-   *     For convenience, {@link #DEFAULT_DIRECTION_ESTIMATOR} can be used.
-   * @param href the url to which it will link
-   */
-  private Anchor(
-      @IsSafeHtml String text,
-      boolean asHTML,
-      DirectionEstimator directionEstimator,
-      @IsSafeUri String href) {
-    this();
-    directionalTextHelper.setDirectionEstimator(directionEstimator);
-    directionalTextHelper.setTextOrHtml(text, asHTML);
-    setHref(href);
-  }
-
-  @Override
-  public Direction getDirection() {
-    return BidiUtils.getDirectionOnElement(getElement());
-  }
-
-  @Override
-  public DirectionEstimator getDirectionEstimator() {
-    return directionalTextHelper.getDirectionEstimator();
-  }
-
   @Override
   public HorizontalAlignmentConstant getHorizontalAlignment() {
     return horzAlign;
@@ -500,10 +317,6 @@ public class Anchor extends FocusWidget
     return directionalTextHelper.getText();
   }
 
-  @Override
-  public Direction getTextDirection() {
-    return directionalTextHelper.getTextDirection();
-  }
 
   @Override
   public boolean getWordWrap() {
@@ -513,39 +326,6 @@ public class Anchor extends FocusWidget
   @Override
   public void setAccessKey(char key) {
     getAnchorElement().setAccessKey(Character.toString(key));
-  }
-
-  /**
-   * @deprecated Use {@link #setDirectionEstimator} and / or pass explicit direction to {@link
-   *     #setText}, {@link #setHTML} instead
-   */
-  @Override
-  @Deprecated
-  public void setDirection(Direction direction) {
-    directionalTextHelper.setDirection(direction);
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * <p>See note at {@link #setDirectionEstimator(DirectionEstimator)}.
-   */
-  @Override
-  public void setDirectionEstimator(boolean enabled) {
-    directionalTextHelper.setDirectionEstimator(enabled);
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * <p>Note: DirectionEstimator should be set before the widget has any content; it's highly
-   * recommended to set it using a constructor. Reason: if the widget already has non-empty content,
-   * this will update its direction according to the new estimator's result. This may cause flicker,
-   * and thus should be avoided.
-   */
-  @Override
-  public void setDirectionEstimator(DirectionEstimator directionEstimator) {
-    directionalTextHelper.setDirectionEstimator(directionEstimator);
   }
 
   @Override
@@ -592,11 +372,6 @@ public class Anchor extends FocusWidget
   }
 
   @Override
-  public void setHTML(SafeHtml html, Direction dir) {
-    directionalTextHelper.setHtml(html, dir);
-  }
-
-  @Override
   public void setName(String name) {
     getAnchorElement().setName(name);
   }
@@ -619,11 +394,6 @@ public class Anchor extends FocusWidget
   @Override
   public void setText(String text) {
     directionalTextHelper.setText(text);
-  }
-
-  @Override
-  public void setText(String text, Direction dir) {
-    directionalTextHelper.setText(text, dir);
   }
 
   @Override

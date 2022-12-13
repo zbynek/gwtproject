@@ -63,9 +63,7 @@ public class Widget extends UIObject implements EventListener, HasAttachHandlers
 
   /**
    * For <a href= "http://code.google.com/p/google-web-toolkit/wiki/UnderstandingMemoryLeaks"
-   * >browsers which do not leak</a>, adds a native event handler to the widget. Note that, unlike
-   * the {@link #addDomHandler(EventHandler, DomEvent.Type)} implementation, there is no need to
-   * attach the widget to the DOM in order to cause the event handlers to be attached.
+   * >browsers which do not leak</a>, adds a native event handler to the widget.
    *
    * @param <H> the type of handler to add
    * @param type the event key
@@ -315,16 +313,6 @@ public class Widget extends UIObject implements EventListener, HasAttachHandlers
    * @see #onDetach()
    */
   protected void doDetachChildren() {}
-
-  /**
-   * Gets the number of handlers listening to the event type.
-   *
-   * @param type the event type
-   * @return the number of registered handlers
-   */
-  protected int getHandlerCount(org.gwtproject.event.shared.Event.Type<?> type) {
-    return handlerManager == null ? 0 : handlerManager.getHandlerCount(type);
-  }
 
   /**
    * Has this widget ever been attached?

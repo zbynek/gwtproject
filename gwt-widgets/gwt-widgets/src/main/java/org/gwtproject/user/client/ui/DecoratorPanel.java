@@ -16,7 +16,6 @@
 package org.gwtproject.user.client.ui;
 
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.i18n.shared.cldr.LocaleInfo;
 import org.gwtproject.user.client.DOM;
 
 /**
@@ -94,15 +93,9 @@ public class DecoratorPanel extends SimplePanel {
   static Element createTR(String styleName) {
     Element trElem = DOM.createTR();
     setStyleName(trElem, styleName);
-    if (LocaleInfo.getCurrentLocale().isRTL()) {
-      DOM.appendChild(trElem, createTD(styleName + "Right"));
-      DOM.appendChild(trElem, createTD(styleName + "Center"));
-      DOM.appendChild(trElem, createTD(styleName + "Left"));
-    } else {
-      DOM.appendChild(trElem, createTD(styleName + "Left"));
-      DOM.appendChild(trElem, createTD(styleName + "Center"));
-      DOM.appendChild(trElem, createTD(styleName + "Right"));
-    }
+    DOM.appendChild(trElem, createTD(styleName + "Left"));
+    DOM.appendChild(trElem, createTD(styleName + "Center"));
+    DOM.appendChild(trElem, createTD(styleName + "Right"));
     return trElem;
   }
 

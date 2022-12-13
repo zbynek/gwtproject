@@ -1,7 +1,5 @@
 <module>
 
-    <inherits name="org.gwtproject.uibinder.UiBinder" />
-
     <inherits name="org.gwtproject.user.DOM" />
     <inherits name="org.gwtproject.canvas.Canvas" />
     <inherits name="org.gwtproject.media.Media" />
@@ -25,8 +23,6 @@
     <!-- ValueListBox uses ProvidesKey, SimpleKeyProvider -->
     <inherits name="org.gwtproject.view.View" />
     <inherits name="org.gwtproject.debug.DebugBase" />
-    <inherits name="org.gwtproject.editor.Editor" />
-    <inherits name="org.gwtproject.WidgetsEditorSupport" />
 
     <inherits name="org.gwtproject.safehtml.SafeHtml" />
     <inherits name="org.gwtproject.safecss.SafeCss" />
@@ -34,18 +30,14 @@
     <inherits name="org.gwtproject.event.logical.LogicalEvent" />
     <inherits name="org.gwtproject.event.legacy.EventLegacy" />
     <inherits name="org.gwtproject.layout.Layout" />
-    <inherits name="org.gwtproject.user.window.Window" />
-    <inherits name="org.gwtproject.user.history.History" />
     <inherits name="org.gwtproject.timer.Timer" />
     <inherits name="org.gwtproject.animation.Animation" />
     <inherits name="org.gwtproject.aria.Aria" />
     <inherits name="org.gwtproject.dom.builder.BuilderDOM"/>
     <inherits name="org.gwtproject.user.cellview.CellView" />
 
-    <inherits name="org.gwtproject.i18n.I18N" />
     <inherits name="org.gwtproject.text.Text" />
     <inherits name="org.gwtproject.resources.Resources" />
-    <inherits name="org.gwtproject.validation.Validation" />
 
     <source path="client/ui"/>
 </module>

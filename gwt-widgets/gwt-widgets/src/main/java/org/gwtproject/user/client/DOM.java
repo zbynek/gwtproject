@@ -15,6 +15,7 @@
  */
 package org.gwtproject.user.client;
 
+import elemental2.dom.DomGlobal;
 import jsinterop.base.Js;
 import org.gwtproject.core.client.JavaScriptObject;
 import org.gwtproject.dom.client.Document;
@@ -23,11 +24,13 @@ import org.gwtproject.dom.client.ImageElement;
 import org.gwtproject.dom.client.OptionElement;
 import org.gwtproject.dom.client.SelectElement;
 import org.gwtproject.dom.client.Style;
+import org.gwtproject.event.logical.shared.ResizeEvent;
+import org.gwtproject.event.logical.shared.ResizeHandler;
+import org.gwtproject.event.shared.HandlerRegistration;
 import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
 import org.gwtproject.user.client.impl.DOMImpl;
 import org.gwtproject.user.client.impl.DOMImplStandardBase;
 import org.gwtproject.user.client.ui.PotentialElement;
-import org.gwtproject.user.window.client.Window;
 
 /**
  * This class provides a set of static methods that allow you to manipulate the browser's Document
@@ -488,7 +491,6 @@ public class DOM {
    *
    * @param evt the event to be tested
    * @return the Unicode character or key code.
-   * @see KeyboardListener
    * @deprecated Use {@link Event#getKeyCode()} instead.
    */
   @Deprecated
@@ -770,19 +772,6 @@ public class DOM {
   }
 
   /**
-   * Gets any named property from an element, as a string.
-   *
-   * @param elem the element whose property is to be retrieved
-   * @param prop the name of the property
-   * @return the property's value
-   * @deprecated Use {@link Element#getProperty(String)} instead.
-   */
-  @Deprecated
-  public static String getElementProperty(Element elem, String prop) {
-    return elem.getPropertyString(prop);
-  }
-
-  /**
    * Gets any named property from an element, as a boolean.
    *
    * @param elem the element whose property is to be retrieved
@@ -1015,18 +1004,6 @@ public class DOM {
       return maybePotential;
     }
   }
-  /**
-   * Determine whether one element is equal to, or the child of, another.
-   *
-   * @param parent the potential parent element
-   * @param child the potential child element
-   * @return <code>true</code> if the relationship holds
-   * @deprecated Use {@link Element#isOrHasChild(Element)} instead.
-   */
-  @Deprecated
-  public static boolean isOrHasChild(Element parent, Element child) {
-    return parent.isOrHasChild(child);
-  }
 
   /**
    * Releases mouse/touch/gesture capture on the given element. Calling this method has no effect if
@@ -1040,18 +1017,6 @@ public class DOM {
       sCaptureElem = null;
     }
     impl.releaseCapture(elem);
-  }
-
-  /**
-   * Removes a child element from the given parent element.
-   *
-   * @param parent the parent element
-   * @param child the child element to be removed
-   * @deprecated Use {@link Element#removeChild(Element)} instead.
-   */
-  @Deprecated
-  public static void removeChild(Element parent, Element child) {
-    parent.removeChild(child);
   }
 
   /**
@@ -1305,18 +1270,6 @@ public class DOM {
     return elem.getString();
   }
 
-  /** @deprecated As of GWT 1.5, replaced by {@link Window#getClientHeight()} */
-  @Deprecated
-  public static int windowGetClientHeight() {
-    return Window.getClientHeight();
-  }
-
-  /** @deprecated As of GWT 1.5, replaced by {@link Window#getClientWidth()} */
-  @Deprecated
-  public static int windowGetClientWidth() {
-    return Window.getClientWidth();
-  }
-
   /**
    * This method is called directly by native code when any event is fired.
    *
@@ -1386,5 +1339,18 @@ public class DOM {
 
     // Pass the event to the listener.
     listener.onBrowserEvent(evt);
+  }
+
+  public static HandlerRegistration addWindowResizeHandler(ResizeHandler handler) {
+    elemental2.dom.EventListener listener = (evt) -> handler.onResize(new WindowResizeEvent());
+    DomGlobal.window.addEventListener("resize", listener);
+    return () -> DomGlobal.window.removeEventListener("resize", listener);
+  }
+
+  private static class WindowResizeEvent extends ResizeEvent {
+    public WindowResizeEvent() {
+      super(DomGlobal.document.documentElement.clientWidth,
+              DomGlobal.document.documentElement.clientHeight);
+    }
   }
 }

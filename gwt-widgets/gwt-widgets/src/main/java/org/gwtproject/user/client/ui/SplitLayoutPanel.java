@@ -15,6 +15,7 @@
  */
 package org.gwtproject.user.client.ui;
 
+import elemental2.dom.DomGlobal;
 import org.gwtproject.core.client.Duration;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.core.client.Scheduler.ScheduledCommand;
@@ -24,7 +25,6 @@ import org.gwtproject.dom.style.shared.Position;
 import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
-import org.gwtproject.user.window.client.Window;
 
 /**
  * A panel that adds user-positioned splitters between each of its child widgets.
@@ -118,8 +118,8 @@ public class SplitLayoutPanel extends DockLayoutPanel {
            * Resize glassElem to take up the entire scrollable window area,
            * which is the greater of the scroll size and the client size.
            */
-          int width = Math.max(Window.getClientWidth(), Document.get().getScrollWidth());
-          int height = Math.max(Window.getClientHeight(), Document.get().getScrollHeight());
+          int width = Math.max(DomGlobal.document.documentElement.clientWidth, Document.get().getScrollWidth());
+          int height = Math.max(DomGlobal.document.documentElement.clientHeight, Document.get().getScrollHeight());
           glassElem.getStyle().setHeight(height, Unit.PX);
           glassElem.getStyle().setWidth(width, Unit.PX);
           Document.get().getBody().appendChild(glassElem);

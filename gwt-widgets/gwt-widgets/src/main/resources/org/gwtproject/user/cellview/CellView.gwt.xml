@@ -16,27 +16,8 @@
 <module>
   <inherits name="org.gwtproject.aria.Aria"/>
   <inherits name="org.gwtproject.cell.Cell"/>
-  <inherits name="org.gwtproject.editor.Editor"/>
   <inherits name="org.gwtproject.view.View"/>
-  <inherits name="com.google.gwt.user.UserAgent"/>
   <inherits name="org.gwtproject.user.Widgets" />
   <source path="client"/>
   <public path="public" />
-
-  <!-- Standard CellBasedWidgetImpl implementation. -->
-  <replace-with class="org.gwtproject.user.cellview.client.CellBasedWidgetImplStandard">
-    <when-type-is class="org.gwtproject.user.cellview.client.CellBasedWidgetImpl"/>
-    <any>
-      <when-property-is name="user.agent" value="gecko1_8"/>
-    </any>
-  </replace-with>
-
-  <!-- StandardBase CellBasedWidgetImpl implementation. -->
-  <replace-with class="org.gwtproject.user.cellview.client.CellBasedWidgetImplStandardBase">
-    <when-type-is class="org.gwtproject.user.cellview.client.CellBasedWidgetImpl"/>
-    <any>
-      <when-property-is name="user.agent" value="safari"/>
-    </any>
-  </replace-with>
-
 </module>

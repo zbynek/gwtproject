@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.i18n.shared.cldr.LocaleInfo;
 import org.gwtproject.user.client.DOM;
 
 /**
@@ -401,14 +400,6 @@ public class DockPanel extends CellPanel implements HasAlignment {
       return true;
     }
 
-    if (LocaleInfo.getCurrentLocale().isRTL()) {
-      // In an RTL layout, the logical left columns will be displayed on the right hand
-      // side. When the direction for the widget is EAST, adding the widget to the logical
-      // left columns will have the desired effect of displaying the widget on the 'eastern'
-      // side of the screen.
-      return (widgetDirection == EAST);
-    }
-
     // In an LTR layout, the logical left columns are displayed on the left hand
     // side. When the direction for the widget is WEST, adding the widget to the
     // logical left columns will have the desired effect of displaying the widget on the
@@ -427,10 +418,6 @@ public class DockPanel extends CellPanel implements HasAlignment {
 
     if (widgetDirection == LINE_END) {
       return true;
-    }
-
-    if (LocaleInfo.getCurrentLocale().isRTL()) {
-      return (widgetDirection == WEST);
     }
 
     return (widgetDirection == EAST);

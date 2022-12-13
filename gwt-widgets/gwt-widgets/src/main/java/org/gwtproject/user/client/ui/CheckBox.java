@@ -20,17 +20,12 @@ import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.InputElement;
 import org.gwtproject.dom.client.LabelElement;
 import org.gwtproject.dom.style.shared.WhiteSpace;
-import org.gwtproject.editor.client.IsEditor;
-import org.gwtproject.editor.client.LeafValueEditor;
-import org.gwtproject.editor.client.adapters.TakesValueEditor;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.event.logical.shared.ValueChangeEvent;
 import org.gwtproject.event.logical.shared.ValueChangeHandler;
 import org.gwtproject.event.shared.HandlerRegistration;
-import org.gwtproject.i18n.client.HasDirection.Direction;
-import org.gwtproject.i18n.shared.DirectionEstimator;
-import org.gwtproject.i18n.shared.HasDirectionEstimator;
+import org.gwtproject.safehtml.client.HasSafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
 import org.gwtproject.user.client.DOM;
@@ -44,12 +39,6 @@ import org.gwtproject.user.client.Event;
  * <p><img class='gallery' src='doc-files/CheckBox.png'/>
  *
  * <p>
- *
- * <h3>Built-in Bidi Text Support</h3>
- *
- * This widget is capable of automatically adjusting its direction according to its content. This
- * feature is controlled by {@link #setDirectionEstimator} or passing a DirectionEstimator parameter
- * to the constructor, and is off by default.
  *
  * <h3>CSS Style Rules</h3>
  *
@@ -70,17 +59,11 @@ public class CheckBox extends ButtonBase
     implements HasName,
         HasValue<Boolean>,
         HasWordWrap,
-        HasDirectionalSafeHtml,
-        HasDirectionEstimator,
-        IsEditor<LeafValueEditor<Boolean>> {
-
-  public static final DirectionEstimator DEFAULT_DIRECTION_ESTIMATOR =
-      DirectionalTextHelper.DEFAULT_DIRECTION_ESTIMATOR;
+        HasSafeHtml {
 
   final DirectionalTextHelper directionalTextHelper;
   InputElement inputElem;
   LabelElement labelElem;
-  private LeafValueEditor<Boolean> editor;
   private boolean valueChangeHandlerInitialized;
 
   /** Creates a check box with no label. */
@@ -102,59 +85,9 @@ public class CheckBox extends ButtonBase
    * Creates a check box with the specified text label.
    *
    * @param label the check box's label
-   * @param dir the text's direction. Note that {@code DEFAULT} means direction should be inherited
-   *     from the widget's parent element.
-   */
-  public CheckBox(SafeHtml label, Direction dir) {
-    this();
-    setHTML(label, dir);
-  }
-
-  /**
-   * Creates a check box with the specified text label.
-   *
-   * @param label the check box's label
-   * @param directionEstimator A DirectionEstimator object used for automatic direction adjustment.
-   *     For convenience, {@link #DEFAULT_DIRECTION_ESTIMATOR} can be used.
-   */
-  public CheckBox(SafeHtml label, DirectionEstimator directionEstimator) {
-    this();
-    setDirectionEstimator(directionEstimator);
-    setHTML(label.asString());
-  }
-
-  /**
-   * Creates a check box with the specified text label.
-   *
-   * @param label the check box's label
    */
   public CheckBox(String label) {
     this();
-    setText(label);
-  }
-
-  /**
-   * Creates a check box with the specified text label.
-   *
-   * @param label the check box's label
-   * @param dir the text's direction. Note that {@code DEFAULT} means direction should be inherited
-   *     from the widget's parent element.
-   */
-  public CheckBox(String label, Direction dir) {
-    this();
-    setText(label, dir);
-  }
-
-  /**
-   * Creates a label with the specified text and a default direction estimator.
-   *
-   * @param label the check box's label
-   * @param directionEstimator A DirectionEstimator object used for automatic direction adjustment.
-   *     For convenience, {@link #DEFAULT_DIRECTION_ESTIMATOR} can be used.
-   */
-  public CheckBox(String label, DirectionEstimator directionEstimator) {
-    this();
-    setDirectionEstimator(directionEstimator);
     setText(label);
   }
 
@@ -206,19 +139,6 @@ public class CheckBox extends ButtonBase
     return addHandler(handler, ValueChangeEvent.getType());
   }
 
-  @Override
-  public LeafValueEditor<Boolean> asEditor() {
-    if (editor == null) {
-      editor = TakesValueEditor.of(this);
-    }
-    return editor;
-  }
-
-  @Override
-  public DirectionEstimator getDirectionEstimator() {
-    return directionalTextHelper.getDirectionEstimator();
-  }
-
   /**
    * Returns the value property of the input element that backs this widget. This is the value that
    * will be associated with the CheckBox name and submitted to the server if a {@link FormPanel}
@@ -251,10 +171,6 @@ public class CheckBox extends ButtonBase
     return directionalTextHelper.getText();
   }
 
-  @Override
-  public Direction getTextDirection() {
-    return directionalTextHelper.getTextDirection();
-  }
 
   /**
    * Determines whether this check box is currently checked.
@@ -312,29 +228,6 @@ public class CheckBox extends ButtonBase
     setValue(checked);
   }
 
-  /**
-   * {@inheritDoc}
-   *
-   * <p>See note at {@link #setDirectionEstimator(DirectionEstimator)}.
-   */
-  @Override
-  public void setDirectionEstimator(boolean enabled) {
-    directionalTextHelper.setDirectionEstimator(enabled);
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * <p>Note: DirectionEstimator should be set before the label has any content; it's highly
-   * recommended to set it using a constructor. Reason: if the label already has non-empty content,
-   * this will update its direction according to the new estimator's result. This may cause flicker,
-   * and thus should be avoided.
-   */
-  @Override
-  public void setDirectionEstimator(DirectionEstimator directionEstimator) {
-    directionalTextHelper.setDirectionEstimator(directionEstimator);
-  }
-
   @Override
   public void setEnabled(boolean enabled) {
     inputElem.setDisabled(!enabled);
@@ -368,11 +261,6 @@ public class CheckBox extends ButtonBase
   }
 
   @Override
-  public void setHTML(SafeHtml html, Direction dir) {
-    directionalTextHelper.setHtml(html, dir);
-  }
-
-  @Override
   public void setHTML(@IsSafeHtml String html) {
     directionalTextHelper.setHtml(html);
   }
@@ -396,11 +284,6 @@ public class CheckBox extends ButtonBase
   @Override
   public void setText(String text) {
     directionalTextHelper.setText(text);
-  }
-
-  @Override
-  public void setText(String text, Direction dir) {
-    directionalTextHelper.setText(text, dir);
   }
 
   /**

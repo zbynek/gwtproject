@@ -16,23 +16,4 @@
 <!--                                                                        -->
 <module>
   <inherits name="org.gwtproject.core.Core" />
-  <inherits name="com.google.gwt.user.UserAgent" />
-
-  <!-- Mozilla-specific implementation -->
-  <replace-with
-    class="org.gwtproject.user.client.ui.impl.RichTextAreaImplMozilla">
-    <when-type-is
-      class="org.gwtproject.user.client.ui.impl.RichTextAreaImpl" />
-    <when-property-is name="user.agent" value="gecko1_8" />
-  </replace-with>
-
-  <!-- Safari-specific implementation -->
-  <replace-with
-    class="org.gwtproject.user.client.ui.impl.RichTextAreaImplSafari">
-    <when-type-is
-      class="org.gwtproject.user.client.ui.impl.RichTextAreaImpl" />
-    <any>
-      <when-property-is name="user.agent" value="safari" />
-    </any>
-  </replace-with>
 </module>

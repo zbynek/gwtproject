@@ -1,4 +1,0 @@
-<module>
-    <source path="editor/client/adapters" />
-    <source path="editor/ui/client" />
-</module>

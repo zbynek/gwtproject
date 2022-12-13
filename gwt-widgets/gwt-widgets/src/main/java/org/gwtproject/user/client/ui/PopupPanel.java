@@ -17,6 +17,9 @@ package org.gwtproject.user.client.ui;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLHtmlElement;
 import jsinterop.base.JsPropertyMap;
 import org.gwtproject.animation.client.Animation;
 import org.gwtproject.dom.client.Document;
@@ -32,18 +35,13 @@ import org.gwtproject.event.logical.shared.CloseHandler;
 import org.gwtproject.event.logical.shared.HasCloseHandlers;
 import org.gwtproject.event.logical.shared.ResizeEvent;
 import org.gwtproject.event.logical.shared.ResizeHandler;
-import org.gwtproject.event.logical.shared.ValueChangeEvent;
-import org.gwtproject.event.logical.shared.ValueChangeHandler;
 import org.gwtproject.event.shared.HandlerRegistration;
-import org.gwtproject.i18n.shared.cldr.LocaleInfo;
 import org.gwtproject.timer.client.Timer;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
 import org.gwtproject.user.client.Event.NativePreviewEvent;
 import org.gwtproject.user.client.Event.NativePreviewHandler;
 import org.gwtproject.user.client.ui.impl.PopupImpl;
-import org.gwtproject.user.history.client.History;
-import org.gwtproject.user.window.client.Window;
 
 /**
  * A panel that can "pop up" over other widgets. It overlays the browser's client area (and any
@@ -261,9 +259,6 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
           bottom = top + height;
           break;
         case ONE_WAY_CORNER:
-          if (LocaleInfo.getCurrentLocale().isRTL()) {
-            left = offsetWidth - width;
-          }
           right = left + width;
           bottom = top + height;
           break;
@@ -283,7 +278,7 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
         if (curPanel.isGlassEnabled) {
           Document.get().getBody().appendChild(curPanel.glass);
 
-          resizeRegistration = Window.addResizeHandler(curPanel.glassResizer);
+          resizeRegistration = DOM.addWindowResizeHandler(curPanel.glassResizer);
           curPanel.glassResizer.onResize(null);
 
           glassShowing = true;
@@ -332,8 +327,8 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
         public void onResize(ResizeEvent event) {
           Style style = glass.getStyle();
 
-          int winWidth = Window.getClientWidth();
-          int winHeight = Window.getClientHeight();
+          int winWidth = DomGlobal.document.documentElement.clientWidth;
+          int winHeight = DomGlobal.document.documentElement.clientHeight;
 
           // Hide the glass while checking the document size. Otherwise it would
           // interfere with the measurement.
@@ -380,7 +375,6 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
   private int leftPosition = -1;
 
   private HandlerRegistration nativePreviewHandlerRegistration;
-  private HandlerRegistration historyHandlerRegistration;
 
   /** The {@link ResizeAnimation} used to open and close the {@link PopupPanel}s. */
   private ResizeAnimation resizeAnimation = new ResizeAnimation(this);
@@ -465,10 +459,11 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
     elem.getStyle().setPropertyPx("left", 0);
     elem.getStyle().setPropertyPx("top", 0);
 
-    int left = (Window.getClientWidth() - getOffsetWidth()) >> 1;
-    int top = (Window.getClientHeight() - getOffsetHeight()) >> 1;
+    int left = (DomGlobal.document.documentElement.clientWidth - getOffsetWidth()) >> 1;
+    int top = (DomGlobal.document.documentElement.clientHeight - getOffsetHeight()) >> 1;
     setPopupPosition(
-        Math.max(Window.getScrollLeft() + left, 0), Math.max(Window.getScrollTop() + top, 0));
+        Math.max((int)DomGlobal.document.documentElement.scrollLeft + left, 0),
+            Math.max((int)DomGlobal.document.documentElement.scrollTop + top, 0));
 
     if (!initiallyShowing) {
       setAnimationEnabled(initiallyAnimated);
@@ -1065,76 +1060,38 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
 
     int left;
 
-    if (LocaleInfo.getCurrentLocale().isRTL()) { // RTL case
+    // LTR case
 
-      int textBoxAbsoluteLeft = relativeObject.getAbsoluteLeft();
+    // Left-align the popup.
+    left = relativeObject.getAbsoluteLeft();
 
-      // Right-align the popup. Note that this computation is
-      // valid in the case where offsetWidthDiff is negative.
-      left = textBoxAbsoluteLeft - offsetWidthDiff;
+    // If the suggestion popup is not as wide as the text box, always align to
+    // the left edge of the text box. Otherwise, figure out whether to
+    // left-align or right-align the popup.
+    HTMLHtmlElement documentElement = DomGlobal.document.documentElement;
+    if (offsetWidthDiff > 0) {
+      // Make sure scrolling is taken into account, since
+      // box.getAbsoluteLeft() takes scrolling into account.
+      int windowRight = documentElement.clientWidth
+              + (int) documentElement.scrollLeft;
+      int windowLeft = (int) documentElement.scrollLeft;
 
-      // If the suggestion popup is not as wide as the text box, always
-      // align to the right edge of the text box. Otherwise, figure out whether
-      // to right-align or left-align the popup.
-      if (offsetWidthDiff > 0) {
+      // Distance from the left edge of the text box to the right edge
+      // of the window
+      int distanceToWindowRight = windowRight - left;
 
-        // Make sure scrolling is taken into account, since
-        // box.getAbsoluteLeft() takes scrolling into account.
-        int windowRight = Window.getClientWidth() + Window.getScrollLeft();
-        int windowLeft = Window.getScrollLeft();
+      // Distance from the left edge of the text box to the left edge of the
+      // window
+      int distanceFromWindowLeft = left - windowLeft;
 
-        // Compute the left value for the right edge of the textbox
-        int textBoxLeftValForRightEdge = textBoxAbsoluteLeft + textBoxOffsetWidth;
-
-        // Distance from the right edge of the text box to the right edge
-        // of the window
-        int distanceToWindowRight = windowRight - textBoxLeftValForRightEdge;
-
-        // Distance from the right edge of the text box to the left edge of the
-        // window
-        int distanceFromWindowLeft = textBoxLeftValForRightEdge - windowLeft;
-
-        // If there is not enough space for the overflow of the popup's
-        // width to the right of the text box and there IS enough space for the
-        // overflow to the right of the text box, then left-align the popup.
-        // However, if there is not enough space on either side, stick with
-        // right-alignment.
-        if (distanceFromWindowLeft < offsetWidth && distanceToWindowRight >= offsetWidthDiff) {
-          // Align with the left edge of the text box.
-          left = textBoxAbsoluteLeft;
-        }
-      }
-    } else { // LTR case
-
-      // Left-align the popup.
-      left = relativeObject.getAbsoluteLeft();
-
-      // If the suggestion popup is not as wide as the text box, always align to
-      // the left edge of the text box. Otherwise, figure out whether to
-      // left-align or right-align the popup.
-      if (offsetWidthDiff > 0) {
-        // Make sure scrolling is taken into account, since
-        // box.getAbsoluteLeft() takes scrolling into account.
-        int windowRight = Window.getClientWidth() + Window.getScrollLeft();
-        int windowLeft = Window.getScrollLeft();
-
-        // Distance from the left edge of the text box to the right edge
-        // of the window
-        int distanceToWindowRight = windowRight - left;
-
-        // Distance from the left edge of the text box to the left edge of the
-        // window
-        int distanceFromWindowLeft = left - windowLeft;
-
-        // If there is not enough space for the overflow of the popup's
-        // width to the right of hte text box, and there IS enough space for the
-        // overflow to the left of the text box, then right-align the popup.
-        // However, if there is not enough space on either side, then stick with
-        // left-alignment.
-        if (distanceToWindowRight < offsetWidth && distanceFromWindowLeft >= offsetWidthDiff) {
-          // Align with the right edge of the text box.
-          left -= offsetWidthDiff;
-        }
+      // If there is not enough space for the overflow of the popup's
+      // width to the right of hte text box, and there IS enough space for the
+      // overflow to the left of the text box, then right-align the popup.
+      // However, if there is not enough space on either side, then stick with
+      // left-alignment.
+      if (distanceToWindowRight < offsetWidth && distanceFromWindowLeft >= offsetWidthDiff) {
+        // Align with the right edge of the text box.
+        left -= offsetWidthDiff;
       }
     }
 
@@ -1144,8 +1101,9 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
 
     // Make sure scrolling is taken into account, since
     // box.getAbsoluteTop() takes scrolling into account.
-    int windowTop = Window.getScrollTop();
-    int windowBottom = Window.getScrollTop() + Window.getClientHeight();
+    int windowTop = (int) documentElement.scrollTop;
+    int windowBottom = (int) documentElement.scrollTop
+            + documentElement.clientHeight;
 
     // Distance from the top edge of the window to the top edge of the
     // text box
@@ -1270,10 +1228,6 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
       nativePreviewHandlerRegistration.removeHandler();
       nativePreviewHandlerRegistration = null;
     }
-    if (historyHandlerRegistration != null) {
-      historyHandlerRegistration.removeHandler();
-      historyHandlerRegistration = null;
-    }
 
     // Create handlers if showing.
     if (showing) {
@@ -1282,15 +1236,6 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
               new NativePreviewHandler() {
                 public void onPreviewNativeEvent(NativePreviewEvent event) {
                   previewNativeEvent(event);
-                }
-              });
-      historyHandlerRegistration =
-          History.addValueChangeHandler(
-              new ValueChangeHandler<String>() {
-                public void onValueChange(ValueChangeEvent<String> event) {
-                  if (autoHideOnHistoryEvents) {
-                    hide();
-                  }
                 }
               });
     }

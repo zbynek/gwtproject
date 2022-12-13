@@ -22,8 +22,6 @@ import org.gwtproject.cell.client.ValueUpdater;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.NativeEvent;
 import com.google.gwt.junit.client.GWTTestCase;
-import org.gwtproject.regexp.shared.MatchResult;
-import org.gwtproject.regexp.shared.RegExp;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 import org.gwtproject.user.cellview.client.AbstractHasData.RedrawEvent.Handler;
 import org.gwtproject.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;

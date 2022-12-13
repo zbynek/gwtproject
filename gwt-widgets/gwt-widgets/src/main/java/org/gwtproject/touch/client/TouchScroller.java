@@ -39,11 +39,11 @@ import org.gwtproject.event.logical.shared.ResizeEvent;
 import org.gwtproject.event.logical.shared.ResizeHandler;
 import org.gwtproject.event.shared.HandlerRegistration;
 import org.gwtproject.touch.client.Momentum.State;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
 import org.gwtproject.user.client.Event.NativePreviewEvent;
 import org.gwtproject.user.client.Event.NativePreviewHandler;
 import org.gwtproject.user.client.ui.HasScrolling;
-import org.gwtproject.user.window.client.Window;
 
 /**
  * Adds touch based scrolling to a scroll panel.
@@ -113,12 +113,7 @@ public class TouchScroller {
        * reflow and invalidates the current scrolling position.
        */
       windowResizeHandler =
-          Window.addResizeHandler(
-              new ResizeHandler() {
-                public void onResize(ResizeEvent event) {
-                  finish();
-                }
-              });
+          DOM.addWindowResizeHandler(event -> finish());
     }
 
     @Override

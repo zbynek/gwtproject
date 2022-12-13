@@ -17,20 +17,12 @@ package org.gwtproject.user.client.ui;
 
 import java.text.ParseException;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.editor.client.IsEditor;
-import org.gwtproject.editor.ui.client.adapters.ValueBoxEditor;
 import org.gwtproject.event.dom.client.ChangeEvent;
 import org.gwtproject.event.dom.client.ChangeHandler;
 import org.gwtproject.event.dom.client.HasChangeHandlers;
 import org.gwtproject.event.logical.shared.ValueChangeEvent;
 import org.gwtproject.event.logical.shared.ValueChangeHandler;
 import org.gwtproject.event.shared.HandlerRegistration;
-import org.gwtproject.i18n.client.AutoDirectionHandler;
-import org.gwtproject.i18n.client.BidiPolicy;
-import org.gwtproject.i18n.client.BidiUtils;
-import org.gwtproject.i18n.client.HasDirection;
-import org.gwtproject.i18n.shared.DirectionEstimator;
-import org.gwtproject.i18n.shared.HasDirectionEstimator;
 import org.gwtproject.text.shared.Parser;
 import org.gwtproject.text.shared.Renderer;
 import org.gwtproject.user.client.DOM;
@@ -47,17 +39,13 @@ import org.gwtproject.user.client.ui.impl.TextBoxImpl;
 public class ValueBoxBase<T> extends FocusWidget
     implements HasChangeHandlers,
         HasName,
-        HasDirectionEstimator,
         HasValue<T>,
-        HasText,
-        AutoDirectionHandler.Target,
-        IsEditor<ValueBoxEditor<T>> {
+        HasText {
 
   private static TextBoxImpl impl = new TextBoxImpl();
-  private final AutoDirectionHandler autoDirHandler;
+
   private final Parser<T> parser;
   private final Renderer<T> renderer;
-  private ValueBoxEditor<T> editor;
   private Event currentEvent;
   private boolean valueChangeHandlerInitialized;
 
@@ -69,7 +57,6 @@ public class ValueBoxBase<T> extends FocusWidget
    */
   protected ValueBoxBase(Element elem, Renderer<T> renderer, Parser<T> parser) {
     super(elem);
-    autoDirHandler = AutoDirectionHandler.addTo(this, BidiPolicy.isBidiEnabled());
     this.renderer = renderer;
     this.parser = parser;
   }
@@ -88,18 +75,6 @@ public class ValueBoxBase<T> extends FocusWidget
           });
     }
     return addHandler(handler, ValueChangeEvent.getType());
-  }
-
-  /**
-   * Returns an Editor that is backed by the ValueBoxBase. The default implementation returns {@link
-   * ValueBoxEditor#of(ValueBoxBase)}. Subclasses may override this method to provide custom
-   * error-handling when using the Editor framework.
-   */
-  public ValueBoxEditor<T> asEditor() {
-    if (editor == null) {
-      editor = ValueBoxEditor.of(this);
-    }
-    return editor;
   }
 
   /**
@@ -131,24 +106,6 @@ public class ValueBoxBase<T> extends FocusWidget
    */
   public void setCursorPos(int pos) {
     setSelectionRange(pos, 0);
-  }
-
-  public HasDirection.Direction getDirection() {
-    return BidiUtils.getDirectionOnElement(getElement());
-  }
-
-  public void setDirection(HasDirection.Direction direction) {
-    BidiUtils.setDirectionOnElement(getElement(), direction);
-  }
-
-  /** Gets the direction estimation model of the auto-dir handler. */
-  public DirectionEstimator getDirectionEstimator() {
-    return autoDirHandler.getDirectionEstimator();
-  }
-
-  /** Sets the direction estimation model of the auto-dir handler. */
-  public void setDirectionEstimator(DirectionEstimator directionEstimator) {
-    autoDirHandler.setDirectionEstimator(directionEstimator);
   }
 
   public String getName() {
@@ -196,7 +153,6 @@ public class ValueBoxBase<T> extends FocusWidget
    */
   public void setText(String text) {
     getElement().setPropertyString("value", text != null ? text : "");
-    autoDirHandler.refreshDirection();
   }
 
   /** Return the parsed value, or null if the field is empty or parsing fails. */
@@ -288,11 +244,6 @@ public class ValueBoxBase<T> extends FocusWidget
     getElement().getStyle().setProperty("textAlign", align.getTextAlignString());
   }
 
-  /** Toggles on / off direction estimation. */
-  public void setDirectionEstimator(boolean enabled) {
-    autoDirHandler.setDirectionEstimator(enabled);
-  }
-
   /**
    * If a keyboard event is currently being handled by the text box, this method replaces the
    * unicode character or key code associated with it. This allows listeners to easily filter
@@ -353,7 +304,6 @@ public class ValueBoxBase<T> extends FocusWidget
   @Override
   protected void onLoad() {
     super.onLoad();
-    autoDirHandler.refreshDirection();
   }
 
   /** Alignment values for {@link ValueBoxBase#setAlignment}. */

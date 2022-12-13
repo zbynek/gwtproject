@@ -28,7 +28,7 @@ import org.gwtproject.user.client.EventListener;
 import org.gwtproject.user.client.ui.Widget;
 
 /** Standard implementation used by most cell based widgets. */
-class CellBasedWidgetImplStandard extends CellBasedWidgetImpl {
+public class CellBasedWidgetImplStandard extends CellBasedWidgetImpl {
 
   /** The method used to dispatch non-bubbling events. */
   private static FnWithOneArg dispatchNonBubblingEvent;

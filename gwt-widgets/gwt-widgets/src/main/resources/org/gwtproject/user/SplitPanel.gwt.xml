@@ -15,17 +15,5 @@
 -->
 <module>
 
-  <replace-with class="org.gwtproject.user.client.ui.HorizontalSplitPanel.Impl">
-    <when-type-is class="org.gwtproject.user.client.ui.HorizontalSplitPanel.Impl"/>
-  </replace-with>
-
-  <replace-with class="org.gwtproject.user.client.ui.HorizontalSplitPanel.ImplSafari">
-    <when-type-is class="org.gwtproject.user.client.ui.HorizontalSplitPanel.Impl"/>
-    <when-property-is name="user.agent" value="safari"/>
-  </replace-with>
-
-  <replace-with class="org.gwtproject.user.client.ui.VerticalSplitPanel.Impl">
-    <when-type-is class="org.gwtproject.user.client.ui.VerticalSplitPanel.Impl"/>
-  </replace-with>
 
 </module>

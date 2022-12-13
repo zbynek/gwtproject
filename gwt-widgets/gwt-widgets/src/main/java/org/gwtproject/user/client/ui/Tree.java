@@ -62,7 +62,6 @@ import org.gwtproject.event.logical.shared.OpenHandler;
 import org.gwtproject.event.logical.shared.SelectionEvent;
 import org.gwtproject.event.logical.shared.SelectionHandler;
 import org.gwtproject.event.shared.HandlerRegistration;
-import org.gwtproject.i18n.shared.cldr.LocaleInfo;
 import org.gwtproject.resources.client.ClientBundle;
 import org.gwtproject.resources.client.ImageResource;
 import org.gwtproject.safehtml.shared.SafeHtml;
@@ -832,8 +831,6 @@ public class Tree extends Widget
   void showLeafImage(TreeItem treeItem) {
     if (useLeafImages || treeItem.isFullNode()) {
       showImage(treeItem, images.treeLeaf());
-    } else if (LocaleInfo.getCurrentLocale().isRTL()) {
-      treeItem.getElement().getStyle().setProperty("paddingRight", indentValue);
     } else {
       treeItem.getElement().getStyle().setProperty("paddingLeft", indentValue);
     }
@@ -964,7 +961,7 @@ public class Tree extends Widget
     if (isKeyboardNavigationEnabled(curSelection)) {
       int code = event.getKeyCode();
 
-      switch (KeyCodes.maybeSwapArrowKeysForRtl(code, LocaleInfo.getCurrentLocale().isRTL())) {
+      switch (KeyCodes.maybeSwapArrowKeysForRtl(code, false)) {
         case KeyCodes.KEY_UP:
           {
             moveSelectionUp(curSelection);

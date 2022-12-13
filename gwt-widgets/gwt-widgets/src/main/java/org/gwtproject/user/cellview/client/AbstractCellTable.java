@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import elemental2.dom.DomGlobal;
 import org.gwtproject.cell.client.Cell;
 import org.gwtproject.cell.client.Cell.Context;
 import org.gwtproject.cell.client.FieldUpdater;
@@ -43,19 +45,16 @@ import org.gwtproject.dom.client.TableSectionElement;
 import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.dom.client.KeyCodes;
 import org.gwtproject.event.shared.HandlerRegistration;
-import org.gwtproject.i18n.shared.cldr.LocaleInfo;
 import org.gwtproject.resources.client.ImageResource;
 import org.gwtproject.safehtml.client.SafeHtmlTemplates;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
-import org.gwtproject.uibinder.client.UiChild;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
 import org.gwtproject.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 import org.gwtproject.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
 import org.gwtproject.user.client.ui.Widget;
-import org.gwtproject.user.window.client.Window;
 import org.gwtproject.view.client.CellPreviewEvent;
 import org.gwtproject.view.client.ProvidesKey;
 import org.gwtproject.view.client.SelectionModel;
@@ -126,7 +125,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
          */
         int oldRow = table.getKeyboardSelectedRow();
         int oldColumn = table.getKeyboardSelectedColumn();
-        boolean isRtl = LocaleInfo.getCurrentLocale().isRTL();
+        boolean isRtl = false;
         int keyCodeLineEnd = isRtl ? KeyCodes.KEY_LEFT : KeyCodes.KEY_RIGHT;
         int keyCodeLineStart = isRtl ? KeyCodes.KEY_RIGHT : KeyCodes.KEY_LEFT;
         int keyCode = nativeEvent.getKeyCode();
@@ -1315,7 +1314,6 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
    *
    * @param widget the empty table widget, or null to disable
    */
-  @UiChild(tagname = "emptyTableWidget", limit = 1)
   public void setEmptyTableWidget(Widget widget) {
     this.emptyTableWidget = widget;
   }
@@ -1390,7 +1388,6 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
    *
    * @param widget the loading indicator, or null to disable
    */
-  @UiChild(tagname = "loadingIndicator", limit = 1)
   public void setLoadingIndicator(Widget widget) {
     loadingIndicator = widget;
   }
@@ -1712,8 +1709,8 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
             // on top of the row, mouseout event should not be triggered. This is to avoid the
             // flickring
             // effect if the floating element is shown/hide based on hover event.
-            int clientX = event.getClientX() + Window.getScrollLeft();
-            int clientY = event.getClientY() + Window.getScrollTop();
+            int clientX = event.getClientX() + (int) DomGlobal.document.documentElement.scrollLeft;
+            int clientY = event.getClientY() + (int) DomGlobal.document.documentElement.scrollTop;
             int rowLeft = hoveringRow.getAbsoluteLeft();
             int rowTop = hoveringRow.getAbsoluteTop();
             int rowWidth = hoveringRow.getOffsetWidth();

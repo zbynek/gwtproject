@@ -30,7 +30,6 @@ import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.TableRowElement;
 import org.gwtproject.dom.style.shared.Position;
 import org.gwtproject.dom.style.shared.Unit;
-import org.gwtproject.i18n.shared.cldr.LocaleInfo;
 import org.gwtproject.resources.client.ImageResource;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
@@ -286,8 +285,7 @@ public abstract class AbstractHeaderOrFooterBuilder<T>
     isSorted = isSorted && !isFooter;
     if (isSorted) {
       // Determine the position of the sort icon.
-      boolean posRight =
-          LocaleInfo.getCurrentLocale().isRTL() ? isSortIconStartOfLine : !isSortIconStartOfLine;
+      boolean posRight = !isSortIconStartOfLine;
 
       // Create an outer container to hold the icon and the header.
       int iconWidth = isSortAscending ? sortAscIconWidth : sortDescIconWidth;

@@ -21,7 +21,6 @@ import org.gwtproject.animation.client.Animation;
 import org.gwtproject.aria.client.Roles;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.style.shared.Unit;
-import org.gwtproject.i18n.shared.cldr.LocaleInfo;
 import org.gwtproject.safehtml.client.HasSafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
@@ -490,11 +489,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
     // Set the margin.
     // Use no margin on top-most items.
     double margin = isRoot ? 0.0 : CHILD_MARGIN;
-    if (LocaleInfo.getCurrentLocale().isRTL()) {
-      item.getElement().getStyle().setMarginRight(margin, Unit.PX);
-    } else {
-      item.getElement().getStyle().setMarginLeft(margin, Unit.PX);
-    }
+    item.getElement().getStyle().setMarginLeft(margin, Unit.PX);
 
     // Physical attach.
     Element childContainer = isRoot ? tree.getElement() : childSpanElem;

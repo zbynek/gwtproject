@@ -18,19 +18,5 @@
 <!--                                                                        -->
 <module>
   <inherits name="org.gwtproject.core.Core"/>
-  <inherits name="com.google.gwt.user.UserAgent"/>
-
-  <!-- Firefox uses a hidden input to set accesskeys -->
-  <replace-with class="org.gwtproject.user.client.ui.impl.FocusImplStandard">
-    <when-type-is class="org.gwtproject.user.client.ui.impl.FocusImpl"/>
-    <when-property-is name="user.agent" value="gecko1_8"/>
-  </replace-with>
-
-  <!-- Safari uses a hidden input to set accesskeys and -->
-  <!-- fires focus/blur after a timeout                 -->
-  <replace-with class="org.gwtproject.user.client.ui.impl.FocusImplSafari">
-    <when-type-is class="org.gwtproject.user.client.ui.impl.FocusImpl"/>
-    <when-property-is name="user.agent" value="safari"/>
-  </replace-with>
 
 </module>

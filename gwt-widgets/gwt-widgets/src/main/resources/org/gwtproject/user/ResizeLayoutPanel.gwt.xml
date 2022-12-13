@@ -18,12 +18,7 @@
 <!--                                                                        -->
 <module>
   <inherits name="org.gwtproject.core.Core"/>
-  <inherits name="com.google.gwt.user.UserAgent"/>
 
   <!-- Most browsers do not support onresize. -->
   <!-- FIXME: Maybe use ImplTrident and check if onresize works everywhere -->
-  <replace-with class="org.gwtproject.user.client.ui.ResizeLayoutPanel.ImplStandard">
-    <when-type-is class="org.gwtproject.user.client.ui.ResizeLayoutPanel.Impl"/>
-  </replace-with>
-
 </module>

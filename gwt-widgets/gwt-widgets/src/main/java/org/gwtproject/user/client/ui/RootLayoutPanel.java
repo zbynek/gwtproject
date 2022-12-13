@@ -15,9 +15,7 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.event.logical.shared.ResizeEvent;
-import org.gwtproject.event.logical.shared.ResizeHandler;
-import org.gwtproject.user.window.client.Window;
+import org.gwtproject.user.client.DOM;
 
 /**
  * A singleton implementation of {@link LayoutPanel} that always attaches itself to the document
@@ -56,12 +54,8 @@ public class RootLayoutPanel extends LayoutPanel {
   }
 
   private RootLayoutPanel() {
-    Window.addResizeHandler(
-        new ResizeHandler() {
-          public void onResize(ResizeEvent event) {
-            RootLayoutPanel.this.onResize();
-          }
-        });
+    DOM.addWindowResizeHandler(
+            event -> RootLayoutPanel.this.onResize());
 
     // TODO(jgw): We need notification of font-size changes as well.
     // I believe there's a hidden iframe trick that we can use to get

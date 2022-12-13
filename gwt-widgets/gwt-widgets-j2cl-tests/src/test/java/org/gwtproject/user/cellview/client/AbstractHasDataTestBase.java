@@ -25,8 +25,6 @@ import org.gwtproject.cell.client.TextCell;
 import org.gwtproject.cell.client.ValueUpdater;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.NativeEvent;
-import org.gwtproject.regexp.shared.MatchResult;
-import org.gwtproject.regexp.shared.RegExp;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 import org.gwtproject.user.cellview.client.AbstractHasData.RedrawEvent.Handler;
 import org.gwtproject.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
@@ -209,14 +207,6 @@ public abstract class AbstractHasDataTestBase extends GWTTestCase {
 
   public void testSetTabIndex() {
     // Skip this test on Safari 3 because it does not support focusable divs.
-    String userAgent = Window.Navigator.getUserAgent();
-    if (userAgent.contains("Safari")) {
-      RegExp versionRegExp = RegExp.compile("Version/[0-3]", "ig");
-      MatchResult result = versionRegExp.exec(userAgent);
-      if (result != null && result.getGroupCount() > 0) {
-        return;
-      }
-    }
 
     AbstractHasData<String> display = createAbstractHasData(new TextCell());
     ListDataProvider<String> provider = new ListDataProvider<String>(createData(0, 10));

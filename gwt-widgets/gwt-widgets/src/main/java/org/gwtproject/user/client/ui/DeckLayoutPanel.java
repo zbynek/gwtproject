@@ -17,7 +17,6 @@ package org.gwtproject.user.client.ui;
 
 import org.gwtproject.dom.client.Document;
 import org.gwtproject.dom.style.shared.Unit;
-import org.gwtproject.i18n.shared.cldr.LocaleInfo;
 import org.gwtproject.layout.client.Layout;
 import org.gwtproject.layout.client.Layout.AnimationCallback;
 import org.gwtproject.layout.client.Layout.Layer;
@@ -337,7 +336,7 @@ public class DeckLayoutPanel extends ComplexPanel
     double direction = (oldIndex < newIndex) ? 100.0 : -100.0;
     double vDirection = isAnimationVertical ? direction : 0.0;
     double hDirection =
-        isAnimationVertical ? 0.0 : LocaleInfo.getCurrentLocale().isRTL() ? -direction : direction;
+        isAnimationVertical ? 0.0 : direction;
 
     /*
      * Position the old widget in the center of the panel, and the new widget

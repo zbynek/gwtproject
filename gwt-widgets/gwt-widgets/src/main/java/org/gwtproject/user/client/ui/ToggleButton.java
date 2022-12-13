@@ -16,9 +16,6 @@
 
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.editor.client.IsEditor;
-import org.gwtproject.editor.client.LeafValueEditor;
-import org.gwtproject.editor.client.adapters.TakesValueEditor;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.event.logical.shared.ValueChangeEvent;
 import org.gwtproject.event.logical.shared.ValueChangeHandler;
@@ -43,10 +40,8 @@ import org.gwtproject.event.shared.HandlerRegistration;
  * {@example com.google.gwt.examples.ToggleButtonExample}
  */
 public class ToggleButton extends CustomButton
-    implements HasValue<Boolean>, IsEditor<LeafValueEditor<Boolean>> {
+    implements HasValue<Boolean> {
   private static String STYLENAME_DEFAULT = "gwt-ToggleButton";
-
-  private LeafValueEditor<Boolean> editor;
 
   {
     setStyleName(STYLENAME_DEFAULT);
@@ -143,13 +138,6 @@ public class ToggleButton extends CustomButton
 
   public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Boolean> handler) {
     return addHandler(handler, ValueChangeEvent.getType());
-  }
-
-  public LeafValueEditor<Boolean> asEditor() {
-    if (editor == null) {
-      editor = TakesValueEditor.of(this);
-    }
-    return editor;
   }
 
   /**

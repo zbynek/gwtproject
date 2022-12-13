@@ -119,62 +119,6 @@ public class ListBoxTest extends GWTTestCase {
       assertEquals("b", lb.getItemText(1));
       assertEquals("c", lb.getItemText(2));
     }
-
-    // Insert items of different directions
-    {
-      // Explicit direction, no direction estimation
-      ListBox lb = new ListBox();
-      lb.insertItem(RTL_TEXT, Direction.RTL, 0);
-      assertEquals(RTL_TEXT, lb.getItemText(0));
-      assertOptionText(
-          BidiFormatter.getInstanceForCurrentLocale()
-              .unicodeWrap(RTL_TEXT, false /* isHtml */, false /* dirReset */),
-          lb,
-          0);
-      lb.insertItem(LTR_TEXT, Direction.LTR, 0);
-      assertEquals(LTR_TEXT, lb.getItemText(0));
-      assertOptionText(
-          BidiFormatter.getInstanceForCurrentLocale()
-              .unicodeWrap(LTR_TEXT, false /* isHtml */, false /* dirReset */),
-          lb,
-          0);
-      lb.clear();
-
-      // Direction estimation
-      lb.setDirectionEstimator(true);
-      lb.addItem(RTL_TEXT);
-      assertEquals(RTL_TEXT, lb.getItemText(0));
-      assertOptionText(
-          BidiFormatter.getInstanceForCurrentLocale()
-              .unicodeWrap(RTL_TEXT, false /* isHtml */, false /* dirReset */),
-          lb,
-          0);
-      lb.addItem(LTR_TEXT);
-      assertEquals(LTR_TEXT, lb.getItemText(1));
-      assertOptionText(
-          BidiFormatter.getInstanceForCurrentLocale()
-              .unicodeWrap(LTR_TEXT, false /* isHtml */, false /* dirReset */),
-          lb,
-          1);
-
-      // Explicit direction which is opposite to the estimated direction
-      lb.insertItem(RTL_TEXT, Direction.LTR, 0);
-      assertEquals(RTL_TEXT, lb.getItemText(0));
-      assertOptionText(
-          BidiFormatter.getInstanceForCurrentLocale()
-              .unicodeWrapWithKnownDir(
-                  Direction.LTR, RTL_TEXT, false /* isHtml */, false /* dirReset */),
-          lb,
-          0);
-      lb.insertItem(LTR_TEXT, Direction.RTL, 1);
-      assertEquals(LTR_TEXT, lb.getItemText(1));
-      assertOptionText(
-          BidiFormatter.getInstanceForCurrentLocale()
-              .unicodeWrapWithKnownDir(
-                  Direction.RTL, LTR_TEXT, false /* isHtml */, false /* dirReset */),
-          lb,
-          1);
-    }
   }
 
   public void testRemove() {
@@ -289,61 +233,6 @@ public class ListBoxTest extends GWTTestCase {
     assertEquals("bc", box.getItemText(1));
     box.setItemText(0, "");
     assertEquals("", box.getItemText(0));
-
-    // Text of different directions
-    {
-      ListBox lb = new ListBox();
-      // Explicit direction, no direction estimation
-      lb.insertItem(RTL_TEXT, Direction.RTL, 0);
-      assertEquals(RTL_TEXT, lb.getItemText(0));
-      assertOptionText(
-          BidiFormatter.getInstanceForCurrentLocale()
-              .unicodeWrap(RTL_TEXT, false /* isHtml */, false /* dirReset */),
-          lb,
-          0);
-      lb.insertItem(LTR_TEXT, Direction.LTR, 0);
-      assertEquals(LTR_TEXT, lb.getItemText(0));
-      assertOptionText(
-          BidiFormatter.getInstanceForCurrentLocale()
-              .unicodeWrap(LTR_TEXT, false /* isHtml */, false /* dirReset */),
-          lb,
-          0);
-
-      // Direction estimation
-      lb.setDirectionEstimator(true);
-      lb.setItemText(0, RTL_TEXT);
-      assertEquals(RTL_TEXT, lb.getItemText(0));
-      assertOptionText(
-          BidiFormatter.getInstanceForCurrentLocale()
-              .unicodeWrap(RTL_TEXT, false /* isHtml */, false /* dirReset */),
-          lb,
-          0);
-      lb.setItemText(0, LTR_TEXT);
-      assertEquals(LTR_TEXT, lb.getItemText(0));
-      assertOptionText(
-          BidiFormatter.getInstanceForCurrentLocale()
-              .unicodeWrap(LTR_TEXT, false /* isHtml */, false /* dirReset */),
-          lb,
-          0);
-
-      // Explicit direction which is opposite to the estimated direction
-      lb.setItemText(0, LTR_TEXT, Direction.RTL);
-      assertEquals(LTR_TEXT, lb.getItemText(0));
-      assertOptionText(
-          BidiFormatter.getInstanceForCurrentLocale()
-              .unicodeWrapWithKnownDir(
-                  Direction.RTL, LTR_TEXT, false /* isHtml */, false /* dirReset */),
-          lb,
-          0);
-      lb.setItemText(0, RTL_TEXT, Direction.LTR);
-      assertEquals(RTL_TEXT, lb.getItemText(0));
-      assertOptionText(
-          BidiFormatter.getInstanceForCurrentLocale()
-              .unicodeWrapWithKnownDir(
-                  Direction.LTR, RTL_TEXT, false /* isHtml */, false /* dirReset */),
-          lb,
-          0);
-    }
 
     try {
       box.setItemText(0, null);

@@ -34,50 +34,18 @@
         </developer>
     </developers>
 
-    <!--  <scm>
-        <connection>scm:git:git://github.com/gwtproject/gwt-event-dom.git</connection>
-        <developerConnection>scm:git:ssh://github.com/gwtproject/gwt-event-dom.git</developerConnection>
-        <url>https://github.com/gwtproject/gwt-event-dom/tree/master</url>
-      </scm>-->
+
 
     <inceptionYear>2019</inceptionYear>
 
     <modules>
         <module>gwt-internal-bom</module>
         <module>gwt-bom</module>
-
-        <module>gwt-animation</module>
-        <module>gwt-aria</module>
-        <module>gwt-callback</module>
-        <module>gwt-core</module>
-        <module>gwt-dom</module>
-        <module>gwt-dom-style-definitions</module>
-        <module>gwt-editor</module>
-        <module>gwt-event</module>
-        <module>gwt-http</module>
-        <module>gwt-history</module>
-        <module>gwt-window</module>
-        <module>gwt-geolocation</module>
-        <module>gwt-json</module>
-        <module>gwt-jsonp</module>
-        <module>gwt-layout</module>
-        <module>gwt-regexp</module>
-        <module>gwt-safehtml</module>
-        <module>gwt-storage</module>
-        <module>gwt-timer</module>
-        <module>gwt-typedarrays</module>
-        <module>gwt-xhr</module>
-        <module>gwt-xml</module>
-        <module>gwt-i18n</module>
-        <module>gwt-resources</module>
         <module>gwt-widgets</module>
-        <module>gwt-uibinder</module>
-        <module>gwt-validation</module>
-        <module>gwt-time</module>
     </modules>
 
     <properties>
-        <revision>202206111</revision>
+        <revision>202212132</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <maven.compiler.source>1.8</maven.compiler.source>

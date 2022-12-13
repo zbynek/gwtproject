@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
-import org.gwtproject.event.legacy.shared.EventHandler;
 
 /**
  * Manager responsible for adding handlers to event sources and firing those handlers on passed in
@@ -31,8 +30,6 @@ import org.gwtproject.event.legacy.shared.EventHandler;
  * {org.gwtproject.user.client.ui.Widget}.
  *
  * <p>While widget authors should continue to use {@link
- * org.gwtproject.user.client.ui.Widget#addDomHandler(EventHandler,
- * org.gwtproject.event.dom.client.DomEvent.Type)} and {@link
  * org.gwtproject.user.client.ui.Widget#addHandler(Object, org.gwtproject.event.shared.Event.Type)}
  * , application developers are strongly discouraged from using a HandlerManager instance as a
  * global event dispatch mechanism.
@@ -100,32 +97,6 @@ public class HandlerManager implements HasHandlers {
   }
 
   /**
-   * Gets the handler at the given index.
-   *
-   * @param <H> the event handler type
-   * @param index the index
-   * @param type the handler's event type
-   * @return the given handler
-   * @deprecated
-   */
-  @Deprecated // Removal: gwt-widgets:2.0
-  public <H extends EventHandler> H getHandler(Event.Type<H> type, int index) {
-    return eventBus.getHandler(type, index);
-  }
-
-  /**
-   * Gets the number of handlers listening to the event type.
-   *
-   * @param type the event type
-   * @return the number of registered handlers
-   * @deprecated
-   */
-  @Deprecated // Removal: gwt-widgets:2.0
-  public int getHandlerCount(Event.Type<?> type) {
-    return eventBus.getHandlerCount(type);
-  }
-
-  /**
    * Does this handler manager handle the given event type?
    *
    * @param e the event type
@@ -135,19 +106,6 @@ public class HandlerManager implements HasHandlers {
   @Deprecated // Removal: gwt-widgets:2.0
   public boolean isEventHandled(Event.Type<?> e) {
     return eventBus.isEventHandled(e);
-  }
-
-  /**
-   * Removes the given handler from the specified event type.
-   *
-   * @param <H> handler type
-   * @param type the event type
-   * @param handler the handler
-   * @deprecated
-   */
-  @Deprecated // Removal: gwt-widgets:2.0
-  public <H extends EventHandler> void removeHandler(Event.Type<H> type, final H handler) {
-    eventBus.doRemove(type, null, handler);
   }
 
   private static class Bus extends EventBus {

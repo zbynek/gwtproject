@@ -22,6 +22,16 @@
         <name>The GWT Project Authors</name>
         <url>https://github.com/gwtproject</url>
     </organization>
+    <repositories>
+        <repository>
+            <id>ggb</id>
+            <url>https://dev.geogebra.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2/</url>
+        </repository>
+    </repositories>
 
     <licenses>
         <license>
@@ -49,7 +59,7 @@
     <modules>
         <module>gwt-widgets</module>
 <!--        <module>gwt-widgets-gwt2-tests</module>-->
-        <module>gwt-widgets-j2cl-tests</module>
+        <!--module>gwt-widgets-j2cl-tests</module-->
     </modules>
 
     <build>

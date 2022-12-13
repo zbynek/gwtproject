@@ -20,9 +20,6 @@ import java.util.List;
 import org.gwtproject.core.client.Scheduler.ScheduledCommand;
 import org.gwtproject.dom.client.Document;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.editor.client.IsEditor;
-import org.gwtproject.editor.client.LeafValueEditor;
-import org.gwtproject.editor.client.adapters.TakesValueEditor;
 import org.gwtproject.event.dom.client.*;
 import org.gwtproject.event.logical.shared.*;
 import org.gwtproject.event.shared.HandlerRegistration;
@@ -84,8 +81,7 @@ public class SuggestBox extends Composite
         HasEnabled,
         HasAllKeyHandlers,
         HasValue<String>,
-        HasSelectionHandlers<Suggestion>,
-        IsEditor<LeafValueEditor<String>> {
+        HasSelectionHandlers<Suggestion> {
 
   /** The callback used when a user selects a {@link Suggestion}. */
   public interface SuggestionCallback {
@@ -612,7 +608,6 @@ public class SuggestBox extends Composite
   private boolean selectsFirstItem = true;
   private SuggestOracle oracle;
   private String currentText;
-  private LeafValueEditor<String> editor;
   private final SuggestionDisplay display;
   private final ValueBoxBase<String> box;
   private final Callback callback =
@@ -707,14 +702,6 @@ public class SuggestBox extends Composite
 
   public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
     return addHandler(handler, ValueChangeEvent.getType());
-  }
-
-  /** Returns a {@link TakesValueEditor} backed by the SuggestBox. */
-  public LeafValueEditor<String> asEditor() {
-    if (editor == null) {
-      editor = TakesValueEditor.of(this);
-    }
-    return editor;
   }
 
   /**

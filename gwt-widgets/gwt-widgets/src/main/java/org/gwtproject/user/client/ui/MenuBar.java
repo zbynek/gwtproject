@@ -17,6 +17,8 @@ package org.gwtproject.user.client.ui;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import elemental2.dom.DomGlobal;
 import org.gwtproject.aria.client.Id;
 import org.gwtproject.aria.client.Roles;
 import org.gwtproject.core.client.Scheduler;
@@ -30,7 +32,6 @@ import org.gwtproject.event.logical.shared.CloseEvent;
 import org.gwtproject.event.logical.shared.CloseHandler;
 import org.gwtproject.event.logical.shared.HasCloseHandlers;
 import org.gwtproject.event.shared.HandlerRegistration;
-import org.gwtproject.i18n.shared.cldr.LocaleInfo;
 import org.gwtproject.resources.client.ClientBundle;
 import org.gwtproject.resources.client.ImageResource;
 import org.gwtproject.resources.client.ImageResource.ImageOptions;
@@ -40,7 +41,6 @@ import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
 import org.gwtproject.user.client.Event.NativePreviewEvent;
 import org.gwtproject.user.client.ui.PopupPanel.PositionCallback;
-import org.gwtproject.user.window.client.Window;
 
 /**
  * A standard menu bar widget. A menu bar can contain any number of menu items, each of which can
@@ -158,7 +158,7 @@ public class MenuBar extends Widget
   }
 
   private final class MenuPopup extends DecoratedPopupPanel {
-    private boolean towardsEast = !LocaleInfo.getCurrentLocale().isRTL();
+    private boolean towardsEast = true;
 
     public MenuPopup() {
       super(true, false, "menuPopup");
@@ -225,7 +225,7 @@ public class MenuBar extends Widget
 
     private void setPositionInClient(int left, int top) {
       // Keep the popup inside client area
-      if (getOffsetWidth() < Window.getClientWidth()) {
+      if (getOffsetWidth() < DomGlobal.document.documentElement.clientWidth) {
         left = Math.min(left, getClientRight() - getOffsetWidth());
         left = Math.max(getClientLeft(), left);
       }
@@ -253,11 +253,11 @@ public class MenuBar extends Widget
     }
 
     private int getClientLeft() {
-      return Window.getScrollLeft();
+      return (int)DomGlobal.document.documentElement.scrollLeft;
     }
 
     private int getClientRight() {
-      return getClientLeft() + Window.getClientWidth();
+      return getClientLeft() + DomGlobal.document.documentElement.clientWidth;
     }
   }
 
@@ -664,7 +664,7 @@ public class MenuBar extends Widget
       case Event.ONKEYDOWN:
         {
           int keyCode = event.getKeyCode();
-          boolean isRtl = LocaleInfo.getCurrentLocale().isRTL();
+          boolean isRtl = false;
           keyCode = KeyCodes.maybeSwapArrowKeysForRtl(keyCode, isRtl);
           switch (keyCode) {
             case KeyCodes.KEY_LEFT:

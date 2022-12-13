@@ -18,8 +18,6 @@ package org.gwtproject.user.client.ui;
 import org.gwtproject.dom.client.Document;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.style.shared.WhiteSpace;
-import org.gwtproject.i18n.shared.DirectionEstimator;
-import org.gwtproject.i18n.shared.HasDirectionEstimator;
 
 /**
  * Abstract base class for all text display widgets.
@@ -29,7 +27,7 @@ import org.gwtproject.i18n.shared.HasDirectionEstimator;
  * @param <T> the value type
  */
 public class LabelBase<T> extends Widget
-    implements HasWordWrap, HasDirectionEstimator, HasAutoHorizontalAlignment {
+    implements HasWordWrap, HasAutoHorizontalAlignment {
 
   /** The widget's DirectionalTextHelper object. */
   final DirectionalTextHelper directionalTextHelper;
@@ -62,10 +60,6 @@ public class LabelBase<T> extends Widget
     return autoHorizontalAlignment;
   }
 
-  public DirectionEstimator getDirectionEstimator() {
-    return directionalTextHelper.getDirectionEstimator();
-  }
-
   public HorizontalAlignmentConstant getHorizontalAlignment() {
     return horzAlign;
   }
@@ -76,29 +70,6 @@ public class LabelBase<T> extends Widget
 
   public void setAutoHorizontalAlignment(AutoHorizontalAlignmentConstant autoAlignment) {
     autoHorizontalAlignment = autoAlignment;
-    updateHorizontalAlignment();
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * <p>See note at {@link #setDirectionEstimator(DirectionEstimator)}.
-   */
-  public void setDirectionEstimator(boolean enabled) {
-    directionalTextHelper.setDirectionEstimator(enabled);
-    updateHorizontalAlignment();
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * <p>Note: DirectionEstimator should be set before the widget has any content; it's highly
-   * recommended to set it using a constructor. Reason: if the widget already has non-empty content,
-   * this will update its direction according to the new estimator's result. This may cause flicker,
-   * and thus should be avoided.
-   */
-  public void setDirectionEstimator(DirectionEstimator directionEstimator) {
-    directionalTextHelper.setDirectionEstimator(directionEstimator);
     updateHorizontalAlignment();
   }
 
@@ -139,8 +110,8 @@ public class LabelBase<T> extends Widget
        */
       align =
           autoHorizontalAlignment == ALIGN_CONTENT_START
-              ? HorizontalAlignmentConstant.startOf(directionalTextHelper.getTextDirection())
-              : HorizontalAlignmentConstant.endOf(directionalTextHelper.getTextDirection());
+              ? HorizontalAlignmentConstant.startOf()
+              : HorizontalAlignmentConstant.endOf();
     }
 
     if (align != horzAlign) {

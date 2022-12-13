@@ -20,7 +20,6 @@
   <inherits name="org.gwtproject.core.Core"/>
   <inherits name="org.gwtproject.dom.DOM"/>
   <inherits name="org.gwtproject.event.Event"/>
-  <inherits name="org.gwtproject.user.history.History"/>
   <!-- Following needed for WindowImplIE -->
   <inherits name="org.gwtproject.resources.Resources"/>
   <inherits name="com.google.gwt.useragent.UserAgent"/>
@@ -40,14 +39,4 @@
     <include name="Window*.java" />
     <include name="impl/Window*.java" />
   </source>
-
-  <replace-with class="org.gwtproject.user.client.impl.DOMImplWebkit">
-    <when-type-is class="org.gwtproject.user.client.impl.DOMImpl"/>
-    <when-property-is name="user.agent" value="safari"/>
-  </replace-with>
-
-  <replace-with class="org.gwtproject.user.client.impl.DOMImplMozilla">
-    <when-type-is class="org.gwtproject.user.client.impl.DOMImpl"/>
-    <when-property-is name="user.agent" value="gecko1_8"/>
-  </replace-with>
 </module>

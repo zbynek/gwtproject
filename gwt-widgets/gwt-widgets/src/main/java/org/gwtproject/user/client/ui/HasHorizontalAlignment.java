@@ -16,8 +16,6 @@
 package org.gwtproject.user.client.ui;
 
 import org.gwtproject.dom.style.shared.TextAlign;
-import org.gwtproject.i18n.client.HasDirection.Direction;
-import org.gwtproject.i18n.shared.cldr.LocaleInfo;
 
 /**
  * Characteristic interface which indicates that a widget can be aligned horizontally.
@@ -58,16 +56,12 @@ public interface HasHorizontalAlignment {
    */
   public static class HorizontalAlignmentConstant extends AutoHorizontalAlignmentConstant {
 
-    public static HorizontalAlignmentConstant endOf(Direction direction) {
-      return direction == Direction.LTR
-          ? ALIGN_RIGHT
-          : direction == Direction.RTL ? ALIGN_LEFT : ALIGN_LOCALE_END;
+    public static HorizontalAlignmentConstant endOf() {
+      return ALIGN_RIGHT;
     }
 
-    public static HorizontalAlignmentConstant startOf(Direction direction) {
-      return direction == Direction.LTR
-          ? ALIGN_LEFT
-          : direction == Direction.RTL ? ALIGN_RIGHT : ALIGN_LOCALE_START;
+    public static HorizontalAlignmentConstant startOf() {
+      return ALIGN_LEFT;
     }
 
     private final String textAlignString;
@@ -106,15 +100,13 @@ public interface HasHorizontalAlignment {
    * In a RTL layout, specifies that the widget's contents should be aligned to the right. In a LTR
    * layout, specifies that the widget's constants should be aligned to the left.
    */
-  HorizontalAlignmentConstant ALIGN_LOCALE_START =
-      LocaleInfo.getCurrentLocale().isRTL() ? ALIGN_RIGHT : ALIGN_LEFT;
+  HorizontalAlignmentConstant ALIGN_LOCALE_START = ALIGN_LEFT;
 
   /**
    * In a RTL layout, specifies that the widget's contents should be aligned to the left. In a LTR
    * layout, specifies that the widget's constants should be aligned to the right.
    */
-  HorizontalAlignmentConstant ALIGN_LOCALE_END =
-      LocaleInfo.getCurrentLocale().isRTL() ? ALIGN_LEFT : ALIGN_RIGHT;
+  HorizontalAlignmentConstant ALIGN_LOCALE_END = ALIGN_RIGHT;
 
   /** Synonym of {@link #ALIGN_LOCALE_START}. */
   HorizontalAlignmentConstant ALIGN_DEFAULT = ALIGN_LOCALE_START;

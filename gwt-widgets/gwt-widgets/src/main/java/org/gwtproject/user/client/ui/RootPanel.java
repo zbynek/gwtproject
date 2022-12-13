@@ -22,18 +22,13 @@ import java.util.Set;
 import org.gwtproject.dom.client.BodyElement;
 import org.gwtproject.dom.client.Document;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.i18n.client.BidiUtils;
-import org.gwtproject.i18n.client.HasDirection;
-import org.gwtproject.i18n.shared.cldr.LocaleInfo;
 import org.gwtproject.user.client.Event;
-import org.gwtproject.user.window.client.Window;
 
 /**
  * The panel to which all other widgets must ultimately be added. RootPanels are never created
  * directly. Rather, they are accessed via {@link RootPanel#get()} .
  *
- * <p>Most applications will add widgets to the default root panel in their {@link
- * org.gwtproject.core.client.EntryPoint#onModuleLoad} methods.
+ * <p>Most applications will add widgets to the default root panel in their onModuleLoad methods.
  */
 public class RootPanel extends AbsolutePanel {
 
@@ -158,19 +153,6 @@ public class RootPanel extends AbsolutePanel {
       }
     }
 
-    // Note that the code in this if block only happens once -
-    // on the first RootPanel.get(String) or RootPanel.get()
-    // call.
-    if (rootPanels.size() == 0) {
-      hookWindowClosing();
-
-      // If we're in a RTL locale, set the RTL directionality
-      // on the entire document.
-      if (LocaleInfo.getCurrentLocale().isRTL()) {
-        BidiUtils.setDirectionOnElement(getRootElement(), HasDirection.Direction.RTL);
-      }
-    }
-
     // Create the panel and put it in the map.
     if (elem == null) {
       // 'null' means use document's body element.
@@ -229,11 +211,6 @@ public class RootPanel extends AbsolutePanel {
    */
   private static Element getRootElement() {
     return Document.get().getDocumentElement();
-  }
-
-  private static void hookWindowClosing() {
-    // Catch the window closing event.
-    Window.addCloseHandler(closeEvent -> detachWidgets());
   }
 
   /*
