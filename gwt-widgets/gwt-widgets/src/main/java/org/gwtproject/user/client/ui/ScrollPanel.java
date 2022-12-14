@@ -22,7 +22,6 @@ import org.gwtproject.dom.style.shared.Position;
 import org.gwtproject.event.dom.client.ScrollEvent;
 import org.gwtproject.event.dom.client.ScrollHandler;
 import org.gwtproject.event.shared.HandlerRegistration;
-import org.gwtproject.touch.client.TouchScroller;
 import org.gwtproject.user.client.Event;
 
 /** A simple panel that wraps its contents in a scrollable area. */
@@ -31,9 +30,6 @@ public class ScrollPanel extends SimplePanel
 
   private final Element containerElem;
   private final Element scrollableElem;
-
-  /** The scroller used to support touch events. */
-  private TouchScroller touchScroller;
 
   /** Creates an empty scroll panel. */
   public ScrollPanel() {
@@ -127,16 +123,6 @@ public class ScrollPanel extends SimplePanel
     return getScrollPosition();
   }
 
-  /**
-   * Check whether or not touch based scrolling is disabled. This method always returns false on
-   * devices that do not support touch scrolling.
-   *
-   * @return true if disabled, false if enabled
-   */
-  public boolean isTouchScrollingDisabled() {
-    return touchScroller == null;
-  }
-
   public void onResize() {
     Widget child = getWidget();
     if ((child != null) && (child instanceof RequiresResize)) {
@@ -204,43 +190,7 @@ public class ScrollPanel extends SimplePanel
     getScrollableElement().setScrollTop(position);
   }
 
-  /**
-   * Sets the object's size. This size does not include decorations such as border, margin, and
-   * padding.
-   *
-   * @param width the object's new width, in absolute CSS units (e.g. "10px", "1em", but not "50%")
-   * @param height the object's new height, in absolute CSS units (e.g. "10px", "1em", but not
-   *     "50%")
-   */
-  @Override
-  public void setSize(String width, String height) {
-    super.setSize(width, height);
-  }
-
-  /**
-   * Set whether or not touch scrolling is disabled. By default, touch scrolling is enabled on
-   * devices that support touch events.
-   *
-   * @param isDisabled true to disable, false to enable
-   * @return true if touch scrolling is enabled and supported, false if disabled or not supported
-   */
-  public boolean setTouchScrollingDisabled(boolean isDisabled) {
-    if (isDisabled == isTouchScrollingDisabled()) {
-      return isDisabled;
-    }
-
-    if (isDisabled) {
-      // Detach the touch scroller.
-      touchScroller.setTargetWidget(null);
-      touchScroller = null;
-    } else {
-      // Attach a new touch scroller.
-      touchScroller = TouchScroller.createIfSupported(this);
-    }
-    return isTouchScrollingDisabled();
-  }
-
-  public void setVerticalScrollPosition(int position) {
+   public void setVerticalScrollPosition(int position) {
     setScrollPosition(position);
   }
 
@@ -320,9 +270,6 @@ public class ScrollPanel extends SimplePanel
     // http://stackoverflow.com/questions/139000/div-with-overflowauto-and-a-100-wide-table-problem
     scrollableElem.getStyle().setProperty("zoom", "1");
     containerElem.getStyle().setProperty("zoom", "1");
-
-    // Enable touch scrolling.
-    setTouchScrollingDisabled(false);
 
     // Initialize the scrollable element.
     ScrollImpl.get().initialize(scrollableElem, containerElem);
