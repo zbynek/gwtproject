@@ -18,7 +18,6 @@ package org.gwtproject.user.client.ui;
 import java.util.ArrayList;
 import java.util.List;
 import org.gwtproject.animation.client.Animation;
-import org.gwtproject.aria.client.Roles;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.safehtml.client.HasSafeHtml;
@@ -94,7 +93,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
       // Simulates padding from table element.
       BASE_BARE_ELEM.getStyle().setProperty("padding", "3px");
       DOM.appendChild(BASE_BARE_ELEM, contentElem);
-      Roles.getTreeitemRole().set(contentElem);
+      contentElem.setAttribute("role", "treeitem");
     }
   }
 

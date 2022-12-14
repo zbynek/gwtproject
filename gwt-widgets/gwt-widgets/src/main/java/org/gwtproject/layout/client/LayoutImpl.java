@@ -17,7 +17,6 @@ package org.gwtproject.layout.client;
 
 import static org.gwtproject.dom.style.shared.Unit.*;
 
-import org.gwtproject.aria.client.State;
 import org.gwtproject.dom.client.DivElement;
 import org.gwtproject.dom.client.Document;
 import org.gwtproject.dom.client.Element;
@@ -65,7 +64,7 @@ class LayoutImpl {
     style.setHeight(10, heightUnit);
 
     style.setVisibility(Visibility.HIDDEN);
-    State.HIDDEN.set(ruler, true);
+    ruler.setAttribute("aria-hidden", "true");
     return ruler;
   }
 

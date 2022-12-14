@@ -21,10 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import jsinterop.base.Js;
-import org.gwtproject.aria.client.ExpandedValue;
-import org.gwtproject.aria.client.Id;
-import org.gwtproject.aria.client.Roles;
-import org.gwtproject.aria.client.SelectedValue;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.event.dom.client.BlurEvent;
 import org.gwtproject.event.dom.client.BlurHandler;
@@ -953,7 +949,7 @@ public class Tree extends Widget
     setStyleName("gwt-Tree");
 
     // Add a11y role "tree"
-    Roles.getTreeRole().set(focusable);
+    focusable.setAttribute("role", "tree");
   }
 
   private void keyboardNavigation(Event event) {
@@ -1191,8 +1187,7 @@ public class Tree extends Widget
       tempItem = tempItem.getParentItem();
       ++curSelectionLevel;
     }
-
-    Roles.getTreeitemRole().setAriaLevelProperty(curSelectionContentElem, curSelectionLevel + 1);
+    curSelectionContentElem.setAttribute("aria-level", String.valueOf(curSelectionLevel + 1));
 
     // Set the 'aria-setsize' and 'aria-posinset' states. To do this, we need to
     // compute the number of siblings that the currently selected item has,
@@ -1203,32 +1198,33 @@ public class Tree extends Widget
       curSelectionParent = root;
     }
 
-    Roles.getTreeitemRole()
-        .setAriaSetsizeProperty(curSelectionContentElem, curSelectionParent.getChildCount());
+   curSelectionContentElem.setAttribute("aria-setsize",
+           String.valueOf(curSelectionParent.getChildCount()));
 
     int curSelectionIndex = curSelectionParent.getChildIndex(curSelection);
 
-    Roles.getTreeitemRole().setAriaPosinsetProperty(curSelectionContentElem, curSelectionIndex + 1);
+    curSelectionContentElem.setAttribute("aria-posinset", String.valueOf(curSelectionIndex + 1));
 
     // Set the 'aria-expanded' state. This depends on the state of the currently
     // selected item.
     // If the item has no children, we remove the 'aria-expanded' state.
 
     if (curSelection.getChildCount() == 0) {
-      Roles.getTreeitemRole().removeAriaExpandedState(curSelectionContentElem);
+      curSelectionContentElem.removeAttribute("aria-expanded");
 
     } else {
-      Roles.getTreeitemRole()
-          .setAriaExpandedState(curSelectionContentElem, ExpandedValue.of(curSelection.getState()));
+      curSelectionContentElem.setAttribute("aria-expanded", String.valueOf(curSelection.getState()));
     }
 
     // Make sure that 'aria-selected' is true.
 
-    Roles.getTreeitemRole().setAriaSelectedState(curSelectionContentElem, SelectedValue.of(true));
+    curSelectionContentElem.setAttribute("aria-selected", "true");
 
     // Update the 'aria-activedescendant' state for the focusable element to
     // match the id of the currently selected item
-
-    Roles.getTreeRole().setAriaActivedescendantProperty(focusable, Id.of(curSelectionContentElem));
+    if (curSelectionContentElem.getId().isEmpty()) {
+      curSelectionContentElem.setId(DOM.createUniqueId());
+    }
+    focusable.setAttribute("aria-activedescendant", curSelectionContentElem.getId());
   }
 }

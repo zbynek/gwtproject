@@ -16,8 +16,6 @@
 
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.aria.client.PressedValue;
-import org.gwtproject.aria.client.Roles;
 import org.gwtproject.dom.client.Document;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.NativeEvent;
@@ -99,23 +97,6 @@ import org.gwtproject.user.client.Event;
  * <td>down</td>
  * </tr>
  * </table>
- *
- * <h3>Use in UiBinder Templates</h3>
- *
- * When working with CustomButton subclasses in {@link org.gwtproject.uibinder.client.UiBinder
- * UiBinder} templates, you can set text and assign ImageResources for their various faces via child
- * elements:
- *
- * <p>
- *
- * <dl>
- *   <dt>&lt;g:upFace>
- *   <dt>&lt;g:downFace>
- *   <dt>&lt;g:upHoveringFace>
- *   <dt>&lt;g:downHoveringFace>
- *   <dt>&lt;g:upDisabledFace>
- *   <dt>&lt;g:downDisabledFace>
- * </dl>
  *
  * Each face element can take an optional <code>image</code> attribute and an html body. For
  * example:
@@ -427,7 +408,7 @@ public abstract class CustomButton extends ButtonBase {
     setStyleName(STYLENAME_DEFAULT);
 
     // Add a11y role "button"
-    Roles.getButtonRole().set(getElement());
+    getElement().setAttribute("role", "button");
   }
 
   /**
@@ -643,7 +624,7 @@ public abstract class CustomButton extends ButtonBase {
       super.setEnabled(enabled);
       if (!enabled) {
         cleanupCaptureState();
-        Roles.getButtonRole().removeAriaPressedState(getElement());
+        getElement().removeAttribute("aria-pressed");
       } else {
         setAriaPressed(getCurrentFace());
       }
@@ -880,7 +861,7 @@ public abstract class CustomButton extends ButtonBase {
 
   private void setAriaPressed(Face newFace) {
     boolean pressed = (newFace.getFaceID() & DOWN_ATTRIBUTE) == 1;
-    Roles.getButtonRole().setAriaPressedState(getElement(), PressedValue.of(pressed));
+    getElement().setAttribute("aria-pressed", String.valueOf(pressed));
   }
 
   /**

@@ -15,7 +15,6 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.aria.client.Roles;
 import org.gwtproject.core.client.Scheduler.ScheduledCommand;
 import org.gwtproject.safehtml.client.HasSafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtml;
@@ -262,10 +261,10 @@ public class MenuItem extends UIObject implements HasHTML, HasEnabled, HasSafeHt
       FocusPanel.impl.setTabIndex(subMenu.getElement(), -1);
 
       // Update a11y role "haspopup"
-      Roles.getMenuitemRole().setAriaHaspopupProperty(getElement(), true);
+      getElement().setAttribute("aria-haspopup", "true");
     } else {
       // Update a11y role "haspopup"
-      Roles.getMenuitemRole().setAriaHaspopupProperty(getElement(), false);
+      getElement().setAttribute("aria-haspopup", "false");
     }
   }
 

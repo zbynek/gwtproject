@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import elemental2.dom.DomGlobal;
-import org.gwtproject.aria.client.Id;
-import org.gwtproject.aria.client.Roles;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.core.client.Scheduler.ScheduledCommand;
 import org.gwtproject.dom.client.Element;
@@ -789,9 +787,10 @@ public class MenuBar extends Widget
           setStyleName(td, "subMenuIcon-selected", true);
         }
       }
-
-      Roles.getMenubarRole()
-          .setAriaActivedescendantProperty(getElement(), Id.of(item.getElement()));
+      if (item.getElement().getId().isEmpty()) {
+        item.getElement().setId(DOM.createUniqueId());
+      }
+      getElement().setAttribute("aria-activedescendant", item.getElement().getId());
     }
 
     selectedItem = item;
@@ -1119,7 +1118,7 @@ public class MenuBar extends Widget
     DOM.appendChild(outer, table);
     setElement(outer);
 
-    Roles.getMenubarRole().set(getElement());
+    getElement().setAttribute("role", "menubar");
 
     sinkEvents(
         Event.ONCLICK | Event.ONMOUSEOVER | Event.ONMOUSEOUT | Event.ONFOCUS | Event.ONKEYDOWN);

@@ -16,7 +16,6 @@
 package org.gwtproject.user.client.ui;
 
 import java.util.Iterator;
-import org.gwtproject.aria.client.Roles;
 import org.gwtproject.event.logical.shared.BeforeSelectionEvent;
 import org.gwtproject.event.logical.shared.BeforeSelectionHandler;
 import org.gwtproject.event.logical.shared.HasBeforeSelectionHandlers;
@@ -205,7 +204,7 @@ public class TabPanel extends Composite
     setStyleName("gwt-TabPanel");
     deck.setStyleName("gwt-TabPanelBottom");
     // Add a11y role "tabpanel"
-    Roles.getTabpanelRole().set(deck.getElement());
+    deck.getElement().setAttribute("role", "tabpanel");
   }
 
   /** Convenience overload to allow {@link IsWidget} to be used directly. */

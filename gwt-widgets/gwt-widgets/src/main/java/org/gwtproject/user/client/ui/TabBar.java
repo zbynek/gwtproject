@@ -15,7 +15,6 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.aria.client.Roles;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.event.dom.client.HasAllKeyHandlers;
@@ -81,8 +80,7 @@ public class TabBar extends Composite
 
   /**
    * <code>ClickDelegatePanel</code> decorates any widget with the minimal amount of machinery to
-   * receive clicks for delegation to the parent. {@link SourcesClickEvents} is not implemented due
-   * to the fact that only a single observer is needed.
+   * receive clicks for delegation to the parent.
    */
   private class ClickDelegatePanel extends Composite implements Tab {
     private SimplePanel focusablePanel;
@@ -190,7 +188,7 @@ public class TabBar extends Composite
     setStyleName("gwt-TabBar");
 
     // Add a11y role "tablist"
-    Roles.getTablistRole().set(panel.getElement());
+    panel.getElement().setAttribute("role", "tablist");
 
     panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
 
@@ -530,7 +528,7 @@ public class TabBar extends Composite
 
     // Add a11y role "tab"
     SimplePanel focusablePanel = delWidget.getFocusablePanel();
-    Roles.getTabRole().set(focusablePanel.getElement());
+    focusablePanel.getElement().setAttribute("role", "tab");
 
     panel.insert(delWidget, beforeIndex + 1);
 
