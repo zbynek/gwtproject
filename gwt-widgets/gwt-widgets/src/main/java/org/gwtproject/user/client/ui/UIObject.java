@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.stream.Collectors;
 import org.gwtproject.core.client.JavaScriptObject;
-import org.gwtproject.debug.client.DebugInfo;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.Node;
 import org.gwtproject.dom.style.shared.Display;
@@ -117,7 +116,6 @@ import org.gwtproject.user.client.Event;
  */
 public abstract class UIObject implements HasVisibility {
 
-  public static final String DEBUG_ID_PREFIX = DebugInfo.DEFAULT_DEBUG_ID_PREFIX;
 
   /*
    * WARNING: For historical reasons, there are two Element classes being used
@@ -143,14 +141,12 @@ public abstract class UIObject implements HasVisibility {
    */
   private static JavaScriptObject numberRegex;
 
-  private static DebugIdImpl debugIdImpl =
-      DebugInfo.isDebugIdEnabled() ? new DebugIdImplEnabled() : new DebugIdImpl();
+  private static DebugIdImpl debugIdImpl = new DebugIdImpl();
   private Element element;
 
   /**
    * Ensure that elem has an ID property set, which allows it to integrate with third-party
-   * libraries and test tools. If elem already has an ID, this method WILL override it. The ID that
-   * you specify will be prefixed by the static string {@link #DEBUG_ID_PREFIX}.
+   * libraries and test tools. If elem already has an ID, this method WILL override it.
    *
    * <p>This method will be compiled out and will have no effect unless you inherit the DebugID
    * module in your gwt.xml file by adding the following line:
@@ -425,8 +421,6 @@ public abstract class UIObject implements HasVisibility {
    * also set the IDs of their important sub-elements.
    *
    * <p>If the main element already has an ID, this method WILL override it.
-   *
-   * <p>The ID that you specify will be prefixed by the static string {@link #DEBUG_ID_PREFIX}.
    *
    * <p>This method will be compiled out and will have no effect unless you inherit the DebugID
    * module in your gwt.xml file by adding the following line:
@@ -788,7 +782,7 @@ public abstract class UIObject implements HasVisibility {
    *
    * <ul>
    *   <li>create a real {@link Element} to replace its {@link PotentialElement}
-   *   <li>call {@link #setElement()} with the new Element
+   *   <li>call {@link #setElement(Element)} with the new Element
    *   <li>and return the new Element
    * </ul>
    *
@@ -858,31 +852,5 @@ public abstract class UIObject implements HasVisibility {
     @SuppressWarnings("unused")
     // parameters
     public void ensureDebugId(Element elem, String baseID, String id) {}
-  }
-
-  /**
-   * The implementation of the setDebugId method, which sets the id of the {@link Element}s in this
-   * {@link UIObject}.
-   */
-  public static class DebugIdImplEnabled extends DebugIdImpl {
-
-    @Override
-    public void ensureDebugId(UIObject uiObject, String id) {
-      uiObject.onEnsureDebugId(id);
-    }
-
-    @Override
-    public void ensureDebugId(Element elem, String baseID, String id) {
-      assert baseID != null;
-      baseID = (baseID.length() > 0) ? baseID + "-" : "";
-      String prefix = DebugInfo.getDebugIdPrefix();
-      String debugId = ((prefix == null) ? "" : prefix) + baseID + id;
-      String attribute = DebugInfo.getDebugIdAttribute();
-      if (DebugInfo.isDebugIdAsProperty()) {
-        elem.setPropertyString(attribute, debugId);
-      } else {
-        elem.setAttribute(attribute, debugId);
-      }
-    }
   }
 }
