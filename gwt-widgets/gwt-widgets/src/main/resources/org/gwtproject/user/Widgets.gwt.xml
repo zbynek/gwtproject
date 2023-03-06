@@ -32,7 +32,6 @@
     <inherits name="org.gwtproject.layout.Layout" />
     <inherits name="org.gwtproject.timer.Timer" />
     <inherits name="org.gwtproject.animation.Animation" />
-    <inherits name="org.gwtproject.aria.Aria" />
     <inherits name="org.gwtproject.dom.builder.BuilderDOM"/>
     <inherits name="org.gwtproject.user.cellview.CellView" />
 

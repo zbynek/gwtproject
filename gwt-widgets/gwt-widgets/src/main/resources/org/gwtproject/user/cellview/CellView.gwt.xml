@@ -14,7 +14,6 @@
   the License.
 -->
 <module>
-  <inherits name="org.gwtproject.aria.Aria"/>
   <inherits name="org.gwtproject.cell.Cell"/>
   <inherits name="org.gwtproject.view.View"/>
   <inherits name="org.gwtproject.user.Widgets" />
