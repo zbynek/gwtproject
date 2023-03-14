@@ -24,6 +24,7 @@ import org.gwtproject.event.legacy.shared.EventHandler;
 import org.gwtproject.event.legacy.shared.GwtEvent;
 import org.gwtproject.event.shared.HandlerManager;
 import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.user.client.impl.DOMImpl;
 
 /**
  * An opaque handle to a native DOM Event. An <code>Event</code> cannot be created directly.
@@ -464,7 +465,7 @@ public class Event extends NativeEvent {
      * @return the type int associated with this native event
      */
     public final int getTypeInt() {
-      return getNativeEvent().getKeyCode();
+      return DOM.impl.eventGetTypeInt(getNativeEvent().getType());
     }
 
     /**
