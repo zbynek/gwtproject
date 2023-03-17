@@ -47,7 +47,8 @@ public class ClippedImageImpl {
     SafeHtml image(SafeUri clearImage, SafeStyles style);
   }
 
-  protected static final SafeUri clearImage = UriUtils.fromTrustedString("clear.cache.gif"); // TODO
+  protected static final SafeUri clearImage = UriUtils.fromTrustedString(
+          "data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==");
   private static Template template;
   private static DraggableTemplate draggableTemplate;
 
