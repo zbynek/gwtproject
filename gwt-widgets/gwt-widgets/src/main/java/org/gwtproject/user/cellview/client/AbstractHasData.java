@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import jsinterop.base.Js;
 import org.gwtproject.cell.client.Cell;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.dom.client.BrowserEvents;
@@ -862,47 +861,6 @@ public abstract class AbstractHasData<T> extends Composite
     // Never called.
   }
 
-  /**
-   * Add a {@link ValueChangeHandler} that is called when the display values change. Used by {@link
-   * CellBrowser} to detect when the displayed data changes.
-   *
-   * @param handler the handler
-   * @return a {@link HandlerRegistration} to remove the handler
-   */
-  final HandlerRegistration addValueChangeHandler(ValueChangeHandler<List<T>> handler) {
-    return addHandler(handler, ValueChangeEvent.getType());
-  }
-
-  /**
-   * Adopt the specified widget.
-   *
-   * @param child the child to adopt
-   */
-  void adopt(Widget child) {
-    _Widget proxy = Js.uncheckedCast(child);
-    proxy.setParent(this);
-  }
-
-  /**
-   * Attach a child.
-   *
-   * @param child the child to attach
-   */
-  void doAttach(Widget child) {
-    _Widget proxy = Js.uncheckedCast(child);
-    proxy.onAttach();
-  }
-
-  /**
-   * Detach a child.
-   *
-   * @param child the child to detach
-   */
-  void doDetach(Widget child) {
-    _Widget proxy = Js.uncheckedCast(child);
-    proxy.onDetach();
-  }
-
   HasDataPresenter<T> getPresenter() {
     return presenter;
   }
@@ -1230,21 +1188,6 @@ public abstract class AbstractHasData<T> extends Composite
         // the replaceChildren method.
         return null;
       }
-    }
-  }
-
-  private class _Widget extends org.gwtproject.user.client.ui.Widget {
-
-    protected void setParent(Widget parent) {
-      super.setParent(parent);
-    }
-
-    protected void onAttach() {
-      super.onAttach();
-    }
-
-    protected void onDetach() {
-      super.onDetach();
     }
   }
 }

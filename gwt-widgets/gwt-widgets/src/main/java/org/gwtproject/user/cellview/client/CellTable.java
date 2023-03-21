@@ -411,9 +411,6 @@ public class CellTable<T> extends AbstractCellTable<T>
   private final SimplePanel emptyTableWidgetContainer = new SimplePanel();
   private final SimplePanel loadingIndicatorContainer = new SimplePanel();
 
-  /** A {@link DeckPanel} to hold widgets associated with various loading states. */
-  private final DeckPanel messagesPanel = new DeckPanel();
-
   private final Style style;
   private final TableElement table;
   private TableSectionElement tbody;
@@ -565,10 +562,6 @@ public class CellTable<T> extends AbstractCellTable<T>
       tbodyLoading.appendChild(tr);
       tr.appendChild(tbodyLoadingCell);
       tbodyLoadingCell.setAlign("center");
-      tbodyLoadingCell.appendChild(messagesPanel.getElement());
-      adopt(messagesPanel);
-      messagesPanel.add(emptyTableWidgetContainer);
-      messagesPanel.add(loadingIndicatorContainer);
       loadingIndicatorContainer.setStyleName(style.cellTableLoading());
     }
 
@@ -792,11 +785,6 @@ public class CellTable<T> extends AbstractCellTable<T>
       message = emptyTableWidgetContainer;
     }
 
-    // Switch out the message to display.
-    if (message != null) {
-      messagesPanel.showWidget(messagesPanel.getWidgetIndex(message));
-    }
-
     // Adjust the colspan of the messages panel container.
     tbodyLoadingCell.setColSpan(Math.max(1, getRealColumnCount()));
 
@@ -836,13 +824,11 @@ public class CellTable<T> extends AbstractCellTable<T>
   @Override
   protected void doAttachChildren() {
     super.doAttachChildren();
-    doAttach(messagesPanel);
   }
 
   @Override
   protected void doDetachChildren() {
     super.doDetachChildren();
-    doDetach(messagesPanel);
   }
 
   /**

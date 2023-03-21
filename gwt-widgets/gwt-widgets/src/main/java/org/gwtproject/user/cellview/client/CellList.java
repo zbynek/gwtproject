@@ -135,9 +135,6 @@ public class CellList<T> extends AbstractHasData<T> {
   private final SimplePanel emptyListWidgetContainer = new SimplePanel();
   private final SimplePanel loadingIndicatorContainer = new SimplePanel();
 
-  /** A {@link DeckPanel} to hold widgets associated with various loading states. */
-  private final DeckPanel messagesPanel = new DeckPanel();
-
   private final Style style;
 
   private ValueUpdater<T> valueUpdater;
@@ -199,10 +196,6 @@ public class CellList<T> extends AbstractHasData<T> {
     outerDiv.appendChild(childContainer);
 
     // Attach the message panel.
-    outerDiv.appendChild(messagesPanel.getElement());
-    adopt(messagesPanel);
-    messagesPanel.add(emptyListWidgetContainer);
-    messagesPanel.add(loadingIndicatorContainer);
 
     // Sink events that the cell consumes.
     org.gwtproject.user.cellview.client.CellBasedWidgetImpl.get()
@@ -304,20 +297,12 @@ public class CellList<T> extends AbstractHasData<T> {
 
   @Override
   protected void doAttachChildren() {
-    try {
-      doAttach(messagesPanel);
-    } catch (Throwable e) {
-      throw new AttachDetachException(Collections.singleton(e));
-    }
+    // not needed
   }
 
   @Override
   protected void doDetachChildren() {
-    try {
-      doDetach(messagesPanel);
-    } catch (Throwable e) {
-      throw new AttachDetachException(Collections.singleton(e));
-    }
+    // not needed
   }
 
   /**
@@ -446,14 +431,8 @@ public class CellList<T> extends AbstractHasData<T> {
       message = emptyListWidgetContainer;
     }
 
-    // Switch out the message to display.
-    if (message != null) {
-      messagesPanel.showWidget(messagesPanel.getWidgetIndex(message));
-    }
-
     // Show the correct container.
     showOrHide(getChildContainer(), message == null);
-    messagesPanel.setVisible(message != null);
 
     // Fire an event.
     super.onLoadingStateChanged(state);
