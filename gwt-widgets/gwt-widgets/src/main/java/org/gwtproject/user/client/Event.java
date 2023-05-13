@@ -15,9 +15,9 @@
  */
 package org.gwtproject.user.client;
 
+import elemental2.dom.HTMLElement;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.event.dom.client.HasNativeEvent;
 import org.gwtproject.event.shared.HandlerManager;
@@ -189,8 +189,8 @@ public class Event extends NativeEvent {
    * @param elem the element whose listener is to be set
    * @return the element's event listener
    */
-  public static EventListener getEventListener(Element elem) {
-    return DOM.getEventListener(elem);
+  public static EventListener getEventListener(HTMLElement elem) {
+    return DOM.getEventListener(Js.uncheckedCast(elem));
   }
 
   /**
@@ -200,8 +200,8 @@ public class Event extends NativeEvent {
    * @return a bitfield describing the events sunk on this element (its possible values are
    *     described in {@link Event})
    */
-  public static int getEventsSunk(Element elem) {
-    return DOM.getEventsSunk(elem);
+  public static int getEventsSunk(HTMLElement elem) {
+    return DOM.getEventsSunk(Js.uncheckedCast(elem));
   }
 
   /**
@@ -219,19 +219,19 @@ public class Event extends NativeEvent {
    * does not currently have mouse capture.
    *
    * @param elem the element to release capture
-   * @see #setCapture(Element)
+   * @see #setCapture(HTMLElement)
    */
-  public static void releaseCapture(Element elem) {
+  public static void releaseCapture(HTMLElement elem) {
     DOM.releaseCapture(elem);
   }
 
   /**
    * Sets mouse-capture on the given element. This element will directly receive all mouse events
-   * until {@link #releaseCapture(Element)} is called on it.
+   * until {@link #releaseCapture(HTMLElement)} is called on it.
    *
    * @param elem the element on which to set mouse capture
    */
-  public static void setCapture(Element elem) {
+  public static void setCapture(HTMLElement elem) {
     DOM.setCapture(elem);
   }
 
@@ -242,7 +242,7 @@ public class Event extends NativeEvent {
    * @param elem the element whose listener is to be set
    * @param listener the listener to receive {@link Event events}
    */
-  public static void setEventListener(Element elem, EventListener listener) {
+  public static void setEventListener(HTMLElement elem, EventListener listener) {
     DOM.setEventListener(elem, listener);
   }
 
@@ -254,8 +254,8 @@ public class Event extends NativeEvent {
    * @param eventBits a bitfield describing the events sunk on this element (its possible values are
    *     described in {@link Event})
    */
-  public static void sinkEvents(Element elem, int eventBits) {
-    DOM.sinkEvents(elem, eventBits);
+  public static void sinkEvents(HTMLElement elem, int eventBits) {
+    DOM.sinkEvents(Js.uncheckedCast(elem), eventBits);
   }
 
   /**
@@ -278,7 +278,7 @@ public class Event extends NativeEvent {
    * @deprecated use {@link NativeEvent#getCurrentEventTarget()} instead
    */
   @Deprecated
-  public final Element getCurrentTarget() {
+  public final HTMLElement getCurrentTarget() {
     return getCurrentEventTarget().cast();
   }
 
@@ -290,7 +290,7 @@ public class Event extends NativeEvent {
    * @deprecated use {@link NativeEvent#getRelatedEventTarget()} instead
    */
   @Deprecated
-  public final Element getFromElement() {
+  public final HTMLElement getFromElement() {
     return DOM.eventGetFromElement(this);
   }
 
@@ -301,7 +301,7 @@ public class Event extends NativeEvent {
    * @deprecated use {@link NativeEvent#getRelatedEventTarget()} instead
    */
   @Deprecated
-  public final Element getRelatedTarget() {
+  public final HTMLElement getRelatedTarget() {
     return getRelatedEventTarget().cast();
   }
 
@@ -323,7 +323,7 @@ public class Event extends NativeEvent {
    * @deprecated use {@link NativeEvent#getEventTarget()} instead
    */
   @Deprecated
-  public final Element getTarget() {
+  public final HTMLElement getTarget() {
     return getEventTarget().cast();
   }
 
@@ -335,7 +335,7 @@ public class Event extends NativeEvent {
    * @deprecated use {@link NativeEvent#getRelatedEventTarget()} instead
    */
   @Deprecated
-  public final Element getToElement() {
+  public final HTMLElement getToElement() {
     return DOM.eventGetToElement(this);
   }
 

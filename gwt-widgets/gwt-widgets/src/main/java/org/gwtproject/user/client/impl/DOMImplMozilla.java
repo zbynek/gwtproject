@@ -15,7 +15,7 @@
  */
 package org.gwtproject.user.client.impl;
 
-import org.gwtproject.dom.client.Element;
+import elemental2.dom.HTMLElement;
 
 /** Mozilla implementation of StandardBrowser. */
 class DOMImplMozilla extends DOMImplStandard {
@@ -29,12 +29,12 @@ class DOMImplMozilla extends DOMImplStandard {
   }
 
   @Override
-  public void sinkEvents(Element elem, int bits) {
+  public void sinkEvents(HTMLElement elem, int bits) {
     super.sinkEvents(elem, bits);
     sinkEventsMozilla(elem, bits);
   }
 
-  public void sinkEventsMozilla(Element elem, int bits) {
+  public void sinkEventsMozilla(HTMLElement elem, int bits) {
     throw new UnsupportedOperationException();
   }
 

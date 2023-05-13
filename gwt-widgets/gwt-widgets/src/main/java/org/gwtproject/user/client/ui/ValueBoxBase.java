@@ -16,7 +16,10 @@
 package org.gwtproject.user.client.ui;
 
 import java.text.ParseException;
-import org.gwtproject.dom.client.Element;
+
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
+import jsinterop.base.Js;
 import org.gwtproject.event.dom.client.ChangeEvent;
 import org.gwtproject.event.dom.client.ChangeHandler;
 import org.gwtproject.event.dom.client.HasChangeHandlers;
@@ -55,7 +58,7 @@ public class ValueBoxBase<T> extends FocusWidget
    *
    * @param elem the browser element to wrap
    */
-  protected ValueBoxBase(Element elem, Renderer<T> renderer, Parser<T> parser) {
+  protected ValueBoxBase(HTMLElement elem, Renderer<T> renderer, Parser<T> parser) {
     super(elem);
     this.renderer = renderer;
     this.parser = parser;
@@ -109,11 +112,11 @@ public class ValueBoxBase<T> extends FocusWidget
   }
 
   public String getName() {
-    return getElement().getPropertyString("name");
+    return Js.asPropertyMap(getElement()).get("name").toString();
   }
 
   public void setName(String name) {
-    getElement().setPropertyString("name", name);
+    Js.asPropertyMap(getElement()).set("name", name);
   }
 
   /**
@@ -140,7 +143,7 @@ public class ValueBoxBase<T> extends FocusWidget
   }
 
   public String getText() {
-    return getElement().getPropertyString("value");
+    return Js.asPropertyMap(getElement()).get("value").toString();
   }
 
   /**
@@ -152,7 +155,7 @@ public class ValueBoxBase<T> extends FocusWidget
    * @param text the object's new text
    */
   public void setText(String text) {
-    getElement().setPropertyString("value", text != null ? text : "");
+    Js.asPropertyMap(getElement()).set("value", text != null ? text : "");
   }
 
   /** Return the parsed value, or null if the field is empty or parsing fails. */
@@ -192,7 +195,7 @@ public class ValueBoxBase<T> extends FocusWidget
    *     widget is currently editable
    */
   public boolean isReadOnly() {
-    return getElement().getPropertyBoolean("readOnly");
+    return Js.<HTMLInputElement>uncheckedCast(getElement()).readOnly;
   }
 
   /**
@@ -202,7 +205,7 @@ public class ValueBoxBase<T> extends FocusWidget
    *     widget becomes editable
    */
   public void setReadOnly(boolean readOnly) {
-    getElement().setPropertyBoolean("readOnly", readOnly);
+    Js.<HTMLInputElement>uncheckedCast(getElement()).readOnly = readOnly;
     String readOnlyStyle = "readonly";
     if (readOnly) {
       addStyleDependentName(readOnlyStyle);
@@ -241,7 +244,7 @@ public class ValueBoxBase<T> extends FocusWidget
   }
 
   public void setAlignment(TextAlignment align) {
-    getElement().getStyle().setProperty("textAlign", align.getTextAlignString());
+    getElement().style.setProperty("textAlign", align.getTextAlignString());
   }
 
   /**

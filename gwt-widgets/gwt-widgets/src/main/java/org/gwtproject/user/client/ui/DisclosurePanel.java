@@ -16,8 +16,10 @@
 package org.gwtproject.user.client.ui;
 
 import java.util.Iterator;
+
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLTableCellElement;
 import org.gwtproject.animation.client.Animation;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.event.logical.shared.CloseEvent;
 import org.gwtproject.event.logical.shared.CloseHandler;
 import org.gwtproject.event.logical.shared.HasCloseHandlers;
@@ -103,10 +105,10 @@ public final class DisclosurePanel extends Composite
     private ClickableHeader() {
       // Anchor is used to allow keyboard access.
       super(DOM.createAnchor());
-      Element elem = getElement();
-      elem.setPropertyString("href", "javascript:void(0);");
+      HTMLElement elem = getElement();
+      elem.setAttribute("href", "javascript:void(0);");
       // Avoids layout problems from having blocks in inlines.
-      elem.getStyle().setProperty("display", "block");
+      elem.style.setProperty("display", "block");
       sinkEvents(Event.ONCLICK);
       setStyleName(STYLENAME_HEADER);
     }
@@ -160,7 +162,7 @@ public final class DisclosurePanel extends Composite
       if (!opening) {
         curPanel.contentWrapper.setVisible(false);
       }
-      curPanel.contentWrapper.getElement().getStyle().setProperty("height", "auto");
+      curPanel.contentWrapper.getElement().style.setProperty("height", "auto");
       curPanel = null;
     }
 
@@ -176,14 +178,14 @@ public final class DisclosurePanel extends Composite
 
     @Override
     protected void onUpdate(double progress) {
-      int scrollHeight = curPanel.contentWrapper.getElement().getPropertyInt("scrollHeight");
+      int scrollHeight = curPanel.contentWrapper.getElement().scrollHeight;
       int height = (int) (progress * scrollHeight);
       if (!opening) {
         height = scrollHeight - height;
       }
       height = Math.max(height, 1);
-      curPanel.contentWrapper.getElement().getStyle().setProperty("height", height + "px");
-      curPanel.contentWrapper.getElement().getStyle().setProperty("width", "auto");
+      curPanel.contentWrapper.getElement().style.setProperty("height", height + "px");
+      curPanel.contentWrapper.getElement().style.setProperty("width", "auto");
     }
   }
 
@@ -192,7 +194,7 @@ public final class DisclosurePanel extends Composite
       implements HasText, OpenHandler<DisclosurePanel>, CloseHandler<DisclosurePanel> {
 
     /** imageTD holds the image for the icon, not null. labelTD holds the text for the label. */
-    private final Element labelTD;
+    private final HTMLElement labelTD;
 
     private final Image iconImage;
     private final Imager imager;
@@ -221,10 +223,10 @@ public final class DisclosurePanel extends Composite
       iconImage = imager.makeImage();
 
       // I do not need any Widgets here, just a DOM structure.
-      Element root = DOM.createTable();
-      Element tbody = DOM.createTBody();
-      Element tr = DOM.createTR();
-      final Element imageTD = DOM.createTD();
+      HTMLElement root = DOM.createTable();
+      HTMLElement tbody = DOM.createTBody();
+      HTMLElement tr = DOM.createTR();
+      final HTMLTableCellElement imageTD = DOM.createTD();
       labelTD = DOM.createTD();
 
       setElement(root);
@@ -235,9 +237,9 @@ public final class DisclosurePanel extends Composite
       DOM.appendChild(tr, labelTD);
 
       // set image TD to be same width as image.
-      imageTD.setPropertyString("align", "center");
-      imageTD.setPropertyString("valign", "middle");
-      imageTD.getStyle().setProperty("width", iconImage.getWidth() + "px");
+      imageTD.align = "center";
+      imageTD.vAlign = "middle";
+      imageTD.style.setProperty("width", iconImage.getWidth() + "px");
 
       DOM.appendChild(imageTD, iconImage.getElement());
 
@@ -268,7 +270,7 @@ public final class DisclosurePanel extends Composite
     }
 
     public final String getText() {
-      return labelTD.getInnerText();
+      return labelTD.textContent;
     }
 
     public final void onClose(CloseEvent<DisclosurePanel> event) {
@@ -280,7 +282,7 @@ public final class DisclosurePanel extends Composite
     }
 
     public final void setText(String text) {
-      labelTD.setInnerText(text);
+      labelTD.textContent = text;
     }
 
     private void setStyle() {
@@ -332,8 +334,8 @@ public final class DisclosurePanel extends Composite
     initWidget(mainPanel);
     mainPanel.add(header);
     mainPanel.add(contentWrapper);
-    contentWrapper.getElement().getStyle().setProperty("padding", "0px");
-    contentWrapper.getElement().getStyle().setProperty("overflow", "hidden");
+    contentWrapper.getElement().style.setProperty("padding", "0px");
+    contentWrapper.getElement().style.setProperty("overflow", "hidden");
     setStyleName(STYLENAME_DEFAULT);
     setContentDisplay(false);
   }

@@ -15,10 +15,11 @@
  */
 package org.gwtproject.user.client.ui;
 
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 import jsinterop.annotations.JsFunction;
+import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
 
 /** Implementation of scrolling behavior. */
 class ScrollImpl {
@@ -39,8 +40,8 @@ class ScrollImpl {
    * @param scrollable the scrollable element
    * @return the maximum scroll position
    */
-  public int getMaximumHorizontalScrollPosition(Element scrollable) {
-    return isRtl(scrollable) ? 0 : scrollable.getScrollWidth() - scrollable.getClientWidth();
+  public int getMaximumHorizontalScrollPosition(HTMLElement scrollable) {
+    return isRtl(scrollable) ? 0 : scrollable.scrollWidth - scrollable.clientWidth;
   }
 
   /**
@@ -49,8 +50,8 @@ class ScrollImpl {
    * @param scrollable the scrollable element
    * @return the minimum scroll position
    */
-  public int getMinimumHorizontalScrollPosition(Element scrollable) {
-    return isRtl(scrollable) ? scrollable.getClientWidth() - scrollable.getScrollWidth() : 0;
+  public int getMinimumHorizontalScrollPosition(HTMLElement scrollable) {
+    return isRtl(scrollable) ? scrollable.clientWidth - scrollable.scrollWidth : 0;
   }
 
   /**
@@ -59,7 +60,7 @@ class ScrollImpl {
    * @param scrollable the scrollable element
    * @param container the container
    */
-  public void initialize(Element scrollable, Element container) {
+  public void initialize(HTMLElement scrollable, HTMLElement container) {
     // Overridden by ScrollImplTrident.
   }
 
@@ -71,10 +72,10 @@ class ScrollImpl {
    * @return true if the direction is RTL, false if LTR
    */
   // TODO check this
-  public boolean isRtl(Element scrollable) {
+  public boolean isRtl(HTMLElement scrollable) {
     JsPropertyMap result =
         ((Fn)
-                ((JsPropertyMap) ((JsPropertyMap) Document.get()).get("defaultView"))
+                ((JsPropertyMap) (Js.asPropertyMap(DomGlobal.document)).get("defaultView"))
                     .get("getComputedStyle"))
             .onInvoke(scrollable, null);
     return result.get("direction").equals("rtl");

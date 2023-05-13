@@ -18,7 +18,10 @@ package org.gwtproject.user.client.ui;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import org.gwtproject.dom.client.Element;
+
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLTableCellElement;
+import jsinterop.base.Js;
 import org.gwtproject.user.client.DOM;
 
 /**
@@ -51,7 +54,7 @@ public class DockPanel extends CellPanel implements HasAlignment {
     public DockLayoutConstant direction;
     public String hAlign = ALIGN_DEFAULT.getTextAlignString();
     public String height = "";
-    public Element td;
+    public HTMLElement td;
     public String vAlign = ALIGN_TOP.getVerticalAlignString();
     public String width = "";
 
@@ -62,7 +65,7 @@ public class DockPanel extends CellPanel implements HasAlignment {
 
   private static class TmpRow {
     public int center;
-    public Element tr;
+    public HTMLElement tr;
   }
 
   /** Specifies that a widget be added at the center of the dock. */
@@ -117,8 +120,8 @@ public class DockPanel extends CellPanel implements HasAlignment {
 
   /** Creates an empty dock panel. */
   public DockPanel() {
-    getTable().setPropertyInt("cellSpacing", 0);
-    getTable().setPropertyInt("cellPadding", 0);
+    getTable().cellSpacing = "0";
+    getTable().cellPadding = "0";
   }
 
   /**
@@ -210,7 +213,7 @@ public class DockPanel extends CellPanel implements HasAlignment {
     LayoutData data = (LayoutData) w.getLayoutData();
     data.height = height;
     if (data.td != null) {
-      data.td.getStyle().setProperty("height", data.height);
+      data.td.style.setProperty("height", data.height);
     }
   }
 
@@ -237,7 +240,7 @@ public class DockPanel extends CellPanel implements HasAlignment {
     LayoutData data = (LayoutData) w.getLayoutData();
     data.width = width;
     if (data.td != null) {
-      data.td.getStyle().setProperty("width", data.width);
+      data.td.style.setProperty("width", data.width);
     }
   }
 
@@ -307,7 +310,7 @@ public class DockPanel extends CellPanel implements HasAlignment {
    * layout of the children.
    */
   private void realizeTable() {
-    Element bodyElem = getBody();
+    HTMLElement bodyElem = getBody();
     while (DOM.getChildCount(bodyElem) > 0) {
       bodyElem.removeChild(DOM.getChild(bodyElem, 0));
     }
@@ -332,28 +335,28 @@ public class DockPanel extends CellPanel implements HasAlignment {
 
     int logicalLeftCol = 0, logicalRightCol = colCount - 1;
     int northRow = 0, southRow = rowCount - 1;
-    Element centerTd = null;
+    HTMLElement centerTd = null;
 
     for (Iterator<Widget> it = getChildren().iterator(); it.hasNext(); ) {
       Widget child = it.next();
       LayoutData layout = (LayoutData) child.getLayoutData();
 
-      Element td = DOM.createTD();
+      HTMLTableCellElement td = DOM.createTD();
       layout.td = td;
-      layout.td.setPropertyString("align", layout.hAlign);
-      layout.td.getStyle().setProperty("verticalAlign", layout.vAlign);
-      layout.td.setPropertyString("width", layout.width);
-      layout.td.setPropertyString("height", layout.height);
+      Js.asPropertyMap(layout.td).set("align", layout.hAlign);
+      layout.td.style.setProperty("verticalAlign", layout.vAlign);
+      td.width = layout.width;
+      td.height = layout.height;
 
       if (layout.direction == NORTH) {
         DOM.insertChild(rows[northRow].tr, td, rows[northRow].center);
         DOM.appendChild(td, child.getElement());
-        td.setPropertyInt("colSpan", logicalRightCol - logicalLeftCol + 1);
+        td.colSpan = logicalRightCol - logicalLeftCol + 1;
         ++northRow;
       } else if (layout.direction == SOUTH) {
         DOM.insertChild(rows[southRow].tr, td, rows[southRow].center);
         DOM.appendChild(td, child.getElement());
-        td.setPropertyInt("colSpan", logicalRightCol - logicalLeftCol + 1);
+        td.colSpan = logicalRightCol - logicalLeftCol + 1;
         --southRow;
       } else if (layout.direction == CENTER) {
         // Defer adding the center widget, so that it can be added after all
@@ -363,13 +366,13 @@ public class DockPanel extends CellPanel implements HasAlignment {
         TmpRow row = rows[northRow];
         DOM.insertChild(row.tr, td, row.center++);
         DOM.appendChild(td, child.getElement());
-        td.setPropertyInt("rowSpan", southRow - northRow + 1);
+        td.rowSpan = southRow - northRow + 1;
         ++logicalLeftCol;
       } else if (shouldAddToLogicalRightOfTable(layout.direction)) {
         TmpRow row = rows[northRow];
         DOM.insertChild(row.tr, td, row.center);
         DOM.appendChild(td, child.getElement());
-        td.setPropertyInt("rowSpan", southRow - northRow + 1);
+        td.rowSpan = southRow - northRow + 1;
         --logicalRightCol;
       }
     }

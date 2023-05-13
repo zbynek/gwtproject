@@ -16,7 +16,8 @@
 package org.gwtproject.user.client.ui;
 
 import java.util.Iterator;
-import org.gwtproject.dom.client.Element;
+
+import elemental2.dom.HTMLElement;
 import org.gwtproject.user.client.DOM;
 
 /** Abstract base class for panels that can contain multiple child widgets. */
@@ -62,7 +63,7 @@ public abstract class ComplexPanel extends Panel implements IndexedPanel.ForIsWi
       orphan(w);
     } finally {
       // Physical detach.
-      Element elem = w.getElement();
+      HTMLElement elem = w.getElement();
       DOM.getParent(elem).removeChild(elem);
 
       // Logical detach.
@@ -71,7 +72,7 @@ public abstract class ComplexPanel extends Panel implements IndexedPanel.ForIsWi
     return true;
   }
 
-  protected void add(Widget child, Element container) {
+  protected void add(Widget child, HTMLElement container) {
     // Detach new child.
     child.removeFromParent();
 
@@ -155,7 +156,7 @@ public abstract class ComplexPanel extends Panel implements IndexedPanel.ForIsWi
    *     <code>beforeIndex</code>; otherwise append <code>child</code> to the end of <code>container
    *     </code>.
    */
-  protected void insert(Widget child, Element container, int beforeIndex, boolean domInsert) {
+  protected void insert(Widget child, HTMLElement container, int beforeIndex, boolean domInsert) {
     // Validate index; adjust if the widget is already a child of this panel.
     beforeIndex = adjustIndex(child, beforeIndex);
 

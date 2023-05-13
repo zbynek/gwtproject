@@ -15,10 +15,11 @@
  */
 package org.gwtproject.user.client.ui;
 
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
 import jsinterop.base.Js;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.InputElement;
+import org.gwtproject.user.client.DOM;
 
 /**
  * A standard single-line text box.
@@ -33,12 +34,6 @@ import org.gwtproject.dom.client.InputElement;
  * </ul>
  *
  * <p>
- *
- * <h3>Built-in Bidi Text Support</h3>
- *
- * This widget is capable of automatically adjusting its direction according to the input text. This
- * feature is controlled by {@link #setDirectionEstimator}, and is available by default when at
- * least one of the application's locales is right-to-left.
  *
  * <p>
  *
@@ -56,9 +51,9 @@ public class TextBox extends TextBoxBase {
    *
    * @param element the element to be wrapped
    */
-  public static TextBox wrap(Element element) {
+  public static TextBox wrap(HTMLElement element) {
     // Assert that the element is attached.
-    assert Document.get().getBody().isOrHasChild(element);
+    assert DomGlobal.document.body.contains(element);
 
     TextBox textBox = new TextBox(element);
 
@@ -71,7 +66,7 @@ public class TextBox extends TextBoxBase {
 
   /** Creates an empty text box. */
   public TextBox() {
-    this(Document.get().createTextInputElement(), "gwt-TextBox");
+    this(DOM.createInputText(), "gwt-TextBox");
   }
 
   /**
@@ -80,12 +75,13 @@ public class TextBox extends TextBoxBase {
    *
    * @param element the element to be used
    */
-  protected TextBox(Element element) {
+  protected TextBox(HTMLElement element) {
     super(element);
-    assert InputElement.as(element).getType().equalsIgnoreCase("text");
+    assertTagName("input");
+    assert getElement().getAttribute("type").equalsIgnoreCase("text");
   }
 
-  TextBox(Element element, String styleName) {
+  TextBox(HTMLElement element, String styleName) {
     super(element);
     if (styleName != null) {
       setStyleName(styleName);
@@ -98,7 +94,7 @@ public class TextBox extends TextBoxBase {
    * @return the maximum length, in characters
    */
   public int getMaxLength() {
-    return getInputElement().getMaxLength();
+    return getInputElement().maxLength;
   }
 
   /**
@@ -107,7 +103,7 @@ public class TextBox extends TextBoxBase {
    * @return the number of visible characters
    */
   public int getVisibleLength() {
-    return getInputElement().getSize();
+    return getInputElement().size;
   }
 
   /**
@@ -116,7 +112,7 @@ public class TextBox extends TextBoxBase {
    * @param length the maximum length, in characters
    */
   public void setMaxLength(int length) {
-    getInputElement().setMaxLength(length);
+    getInputElement().maxLength = length;
   }
 
   /**
@@ -125,10 +121,10 @@ public class TextBox extends TextBoxBase {
    * @param length the number of visible characters
    */
   public void setVisibleLength(int length) {
-    getInputElement().setSize(length);
+    getInputElement().size = length;
   }
 
-  private InputElement getInputElement() {
+  private HTMLInputElement getInputElement() {
     return Js.uncheckedCast(getElement());
   }
 }

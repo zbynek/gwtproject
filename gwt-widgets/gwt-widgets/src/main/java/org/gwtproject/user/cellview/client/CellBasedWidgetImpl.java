@@ -18,8 +18,9 @@ package org.gwtproject.user.cellview.client;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
+
+import elemental2.dom.HTMLElement;
 import org.gwtproject.core.client.Scheduler.ScheduledCommand;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.user.client.Event;
 import org.gwtproject.user.client.ui.Widget;
@@ -62,9 +63,9 @@ abstract class CellBasedWidgetImpl {
    * @param elem the element
    * @return true if the element is focusable, false if not
    */
-  public boolean isFocusable(Element elem) {
-    return focusableTypes.contains(elem.getTagName().toLowerCase(Locale.ROOT))
-        || elem.getTabIndex() >= 0;
+  public boolean isFocusable(HTMLElement elem) {
+    return focusableTypes.contains(elem.tagName.toLowerCase(Locale.ROOT))
+        || elem.tabIndex >= 0;
   }
 
   /**

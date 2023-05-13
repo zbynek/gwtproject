@@ -45,7 +45,7 @@ public class FlexTable extends HTMLTable {
      * @throws IndexOutOfBoundsException
      */
     public int getColSpan(int row, int column) {
-      return getElement(row, column).getPropertyInt("colSpan");
+      return getElement(row, column).colSpan;
     }
 
     /**
@@ -57,7 +57,7 @@ public class FlexTable extends HTMLTable {
      * @throws IndexOutOfBoundsException
      */
     public int getRowSpan(int row, int column) {
-      return getElement(row, column).getPropertyInt("rowSpan");
+      return getElement(row, column).rowSpan;
     }
 
     /**
@@ -70,7 +70,7 @@ public class FlexTable extends HTMLTable {
      * @throws IndexOutOfBoundsException
      */
     public void setColSpan(int row, int column, int colSpan) {
-      ensureElement(row, column).setPropertyInt("colSpan", colSpan);
+      ensureElement(row, column).colSpan = colSpan;
     }
 
     /**
@@ -82,7 +82,7 @@ public class FlexTable extends HTMLTable {
      * @throws IndexOutOfBoundsException
      */
     public void setRowSpan(int row, int column, int rowSpan) {
-      ensureElement(row, column).setPropertyInt("rowSpan", rowSpan);
+      ensureElement(row, column).rowSpan = rowSpan;
     }
   }
 

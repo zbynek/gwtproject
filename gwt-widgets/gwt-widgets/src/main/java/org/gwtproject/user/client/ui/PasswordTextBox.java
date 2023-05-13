@@ -15,9 +15,9 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.InputElement;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
+import org.gwtproject.user.client.DOM;
 
 /**
  * A text box that visually masks its input to prevent eavesdropping.
@@ -48,9 +48,9 @@ public class PasswordTextBox extends TextBox {
    *
    * @param element the element to be wrapped
    */
-  public static PasswordTextBox wrap(Element element) {
+  public static PasswordTextBox wrap(HTMLElement element) {
     // Assert that the element is attached.
-    assert Document.get().getBody().isOrHasChild(element);
+    assert DomGlobal.document.body.contains(element);
 
     PasswordTextBox textBox = new PasswordTextBox(element);
 
@@ -63,7 +63,7 @@ public class PasswordTextBox extends TextBox {
 
   /** Creates an empty password text box. */
   public PasswordTextBox() {
-    super(Document.get().createPasswordInputElement(), "gwt-PasswordTextBox");
+    super(DOM.createInputPassword(), "gwt-PasswordTextBox");
   }
 
   /**
@@ -72,8 +72,9 @@ public class PasswordTextBox extends TextBox {
    *
    * @param element the element to be used
    */
-  protected PasswordTextBox(Element element) {
+  protected PasswordTextBox(HTMLElement element) {
     super(element, null);
-    assert InputElement.as(element).getType().equalsIgnoreCase("password");
+    assertTagName("input");
+    assert getElement().getAttribute("type").equalsIgnoreCase("text");
   }
 }

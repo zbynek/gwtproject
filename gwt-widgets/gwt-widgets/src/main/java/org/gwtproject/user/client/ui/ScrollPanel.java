@@ -15,26 +15,25 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.Overflow;
-import org.gwtproject.dom.style.shared.Position;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.gwtproject.event.dom.client.ScrollEvent;
 import org.gwtproject.event.dom.client.ScrollHandler;
 import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
 
 /** A simple panel that wraps its contents in a scrollable area. */
 public class ScrollPanel extends SimplePanel
     implements RequiresResize, ProvidesResize, HasScrolling {
 
-  private final Element containerElem;
-  private final Element scrollableElem;
+  private final HTMLElement containerElem;
+  private final HTMLElement scrollableElem;
 
   /** Creates an empty scroll panel. */
   public ScrollPanel() {
     this.scrollableElem = getElement();
-    this.containerElem = Document.get().createDivElement();
+    this.containerElem = DOM.createDiv();
     scrollableElem.appendChild(containerElem);
     initialize();
   }
@@ -56,7 +55,7 @@ public class ScrollPanel extends SimplePanel
    * @param scrollable the scrollable element, which can be the same as the root element
    * @param container the container element that holds the child
    */
-  protected ScrollPanel(Element root, Element scrollable, Element container) {
+  protected ScrollPanel(HTMLElement root, HTMLElement scrollable, HTMLElement container) {
     super(root);
     this.scrollableElem = scrollable;
     this.containerElem = container;
@@ -78,8 +77,8 @@ public class ScrollPanel extends SimplePanel
    * @param item the item whose visibility is to be ensured
    */
   public void ensureVisible(UIObject item) {
-    Element scroll = getScrollableElement();
-    Element element = item.getElement();
+    HTMLElement scroll = getScrollableElement();
+    HTMLElement element = item.getElement();
     ensureVisibleImpl(scroll, element);
   }
 
@@ -89,7 +88,7 @@ public class ScrollPanel extends SimplePanel
    * @return the horizontal scroll position, in pixels
    */
   public int getHorizontalScrollPosition() {
-    return getScrollableElement().getScrollLeft();
+    return (int) getScrollableElement().scrollLeft;
   }
 
   public int getMaximumHorizontalScrollPosition() {
@@ -97,7 +96,7 @@ public class ScrollPanel extends SimplePanel
   }
 
   public int getMaximumVerticalScrollPosition() {
-    return getScrollableElement().getScrollHeight() - getScrollableElement().getClientHeight();
+    return getScrollableElement().scrollHeight - getScrollableElement().clientHeight;
   }
 
   public int getMinimumHorizontalScrollPosition() {
@@ -116,7 +115,7 @@ public class ScrollPanel extends SimplePanel
    */
   @Deprecated
   public int getScrollPosition() {
-    return getScrollableElement().getScrollTop();
+    return (int) getScrollableElement().scrollTop;
   }
 
   public int getVerticalScrollPosition() {
@@ -156,7 +155,7 @@ public class ScrollPanel extends SimplePanel
    * @param alwaysShow <code>true</code> to show scroll bars at all times
    */
   public void setAlwaysShowScrollBars(boolean alwaysShow) {
-    getScrollableElement().getStyle().setOverflow(alwaysShow ? Overflow.SCROLL : Overflow.AUTO);
+    getScrollableElement().style.overflow = alwaysShow ? "scroll" : "auto";
   }
 
   /**
@@ -176,7 +175,7 @@ public class ScrollPanel extends SimplePanel
    * @param position the new horizontal scroll position, in pixels
    */
   public void setHorizontalScrollPosition(int position) {
-    getScrollableElement().setScrollLeft(position);
+    getScrollableElement().scrollLeft = position;
   }
 
   /**
@@ -187,7 +186,7 @@ public class ScrollPanel extends SimplePanel
    */
   @Deprecated
   public void setScrollPosition(int position) {
-    getScrollableElement().setScrollTop(position);
+    getScrollableElement().scrollTop = position;
   }
 
    public void setVerticalScrollPosition(int position) {
@@ -206,7 +205,7 @@ public class ScrollPanel extends SimplePanel
   }
 
   @Override
-  protected Element getContainerElement() {
+  protected HTMLElement getContainerElement() {
     return containerElem;
   }
 
@@ -215,7 +214,7 @@ public class ScrollPanel extends SimplePanel
    *
    * @return the scrollable element
    */
-  protected Element getScrollableElement() {
+  protected HTMLElement getScrollableElement() {
     return scrollableElem;
   }
 
@@ -243,18 +242,18 @@ public class ScrollPanel extends SimplePanel
     super.onDetach();
   }
 
-  private void ensureVisibleImpl(Element scroll, Element e) {
+  private void ensureVisibleImpl(HTMLElement scroll, HTMLElement e) {
     if (e == null) {
       return;
     }
 
-    Element item = e;
+    HTMLElement item = e;
     int realOffset = 0;
     while (item != null && (item != scroll)) {
-      realOffset += item.getOffsetTop();
-      item = item.getOffsetParent();
+      realOffset += item.offsetTop;
+      item = Js.uncheckedCast(item.offsetParent);
     }
-    scroll.setScrollTop(realOffset - scroll.getOffsetHeight() / 2);
+    scroll.scrollTop = realOffset - scroll.offsetHeight / 2.0;
   }
 
   /** Initialize the widget. */
@@ -262,14 +261,14 @@ public class ScrollPanel extends SimplePanel
     setAlwaysShowScrollBars(false);
 
     // Prevent IE standard mode bug when a AbsolutePanel is contained.
-    scrollableElem.getStyle().setPosition(Position.RELATIVE);
-    containerElem.getStyle().setPosition(Position.RELATIVE);
+    scrollableElem.style.position = "relative";
+    containerElem.style.position = "relative";
 
     // Hack to account for the IE6/7 scrolling bug described here:
     //
     // http://stackoverflow.com/questions/139000/div-with-overflowauto-and-a-100-wide-table-problem
-    scrollableElem.getStyle().setProperty("zoom", "1");
-    containerElem.getStyle().setProperty("zoom", "1");
+    scrollableElem.style.setProperty("zoom", "1");
+    containerElem.style.setProperty("zoom", "1");
 
     // Initialize the scrollable element.
     ScrollImpl.get().initialize(scrollableElem, containerElem);

@@ -15,15 +15,14 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.Overflow;
-import org.gwtproject.dom.style.shared.Position;
-import org.gwtproject.dom.style.shared.Unit;
+import elemental2.dom.CSSProperties;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 import org.gwtproject.event.dom.client.HasScrollHandlers;
 import org.gwtproject.event.dom.client.ScrollEvent;
 import org.gwtproject.event.dom.client.ScrollHandler;
 import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
 
 /** Abstract parent class for scrollbars implemented using the native browser scrollbars. */
@@ -76,28 +75,28 @@ public abstract class AbstractNativeScrollbar extends Widget implements HasScrol
     }
 
     // Create a scrollable element and attach it to the body.
-    Element scrollable = Document.get().createDivElement();
-    scrollable.getStyle().setPosition(Position.ABSOLUTE);
-    scrollable.getStyle().setTop(-1000.0, Unit.PX);
-    scrollable.getStyle().setLeft(-1000.0, Unit.PX);
-    scrollable.getStyle().setHeight(100.0, Unit.PX);
-    scrollable.getStyle().setWidth(100.0, Unit.PX);
-    scrollable.getStyle().setOverflow(Overflow.SCROLL);
-    scrollable.getStyle().setProperty("direction", "rtl");
-    Document.get().getBody().appendChild(scrollable);
+    HTMLElement scrollable = DOM.createDiv();
+    scrollable.style.position = "absolute";
+    scrollable.style.top = "-1000px";
+    scrollable.style.left = "-1000px";
+    scrollable.style.height = CSSProperties.HeightUnionType.of("100px");
+    scrollable.style.width = CSSProperties.WidthUnionType.of("100px");
+    scrollable.style.overflow = "scroll";
+    scrollable.style.setProperty("direction", "rtl");
+    DomGlobal.document.body.appendChild(scrollable);
 
     // Add some content.
-    Element content = Document.get().createDivElement();
-    content.setInnerText("content");
+    HTMLElement content = DOM.createDiv();
+    content.textContent = "content";
     scrollable.appendChild(content);
 
     // Measure the height and width.
-    nativeHeight = scrollable.getOffsetHeight() - scrollable.getClientHeight();
-    nativeWidth = scrollable.getOffsetWidth() - scrollable.getClientWidth();
-    nativeRtl = (content.getAbsoluteLeft() > scrollable.getAbsoluteLeft());
+    nativeHeight = scrollable.offsetHeight - scrollable.clientHeight;
+    nativeWidth = scrollable.offsetWidth - scrollable.clientWidth;
+    nativeRtl = (DOM.getAbsoluteLeft(content) > DOM.getAbsoluteLeft(scrollable));
 
     // Detach the scrollable element.
-    scrollable.removeFromParent();
+    scrollable.remove();
   }
 
   public HandlerRegistration addScrollHandler(ScrollHandler handler) {
@@ -111,7 +110,7 @@ public abstract class AbstractNativeScrollbar extends Widget implements HasScrol
    *
    * @return the scrollable element
    */
-  protected abstract Element getScrollableElement();
+  protected abstract HTMLElement getScrollableElement();
 
   @Override
   protected void onAttach() {

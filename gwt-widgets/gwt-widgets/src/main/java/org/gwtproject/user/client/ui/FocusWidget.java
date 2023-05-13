@@ -15,7 +15,8 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Element;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.gwtproject.event.dom.client.BlurEvent;
 import org.gwtproject.event.dom.client.BlurHandler;
 import org.gwtproject.event.dom.client.ClickEvent;
@@ -106,7 +107,7 @@ public abstract class FocusWidget extends Widget
   }
 
   /**
-   * Creates a new focus widget with no element. {@link #setElement(Element)} must be called before
+   * Creates a new focus widget with no element. {@link #setElement(HTMLElement)} must be called before
    * any other methods.
    */
   protected FocusWidget() {}
@@ -116,7 +117,7 @@ public abstract class FocusWidget extends Widget
    *
    * @param elem the element to be wrapped
    */
-  protected FocusWidget(Element elem) {
+  protected FocusWidget(HTMLElement elem) {
     setElement(elem);
   }
 
@@ -243,11 +244,11 @@ public abstract class FocusWidget extends Widget
    * @return <code>true</code> if the widget is enabled
    */
   public boolean isEnabled() {
-    return !getElement().getPropertyBoolean("disabled");
+    return Js.isTruthy(Js.asPropertyMap(getElement()).get("disabled"));
   }
 
   public void setAccessKey(char key) {
-    getElement().setPropertyString("accessKey", "" + key);
+    Js.asPropertyMap(getElement()).set("accessKey", "" + key);
   }
 
   /**
@@ -256,7 +257,7 @@ public abstract class FocusWidget extends Widget
    * @param enabled <code>true</code> to enable the widget, <code>false</code> to disable it
    */
   public void setEnabled(boolean enabled) {
-    getElement().setPropertyBoolean("disabled", !enabled);
+    Js.asPropertyMap(getElement()).set("disabled", !enabled);
   }
 
   public void setFocus(boolean focused) {

@@ -215,7 +215,7 @@ public class FocusPanel extends SimplePanel
   }
 
   public int getTabIndex() {
-    return impl.getTabIndex(getElement());
+    return getElement().tabIndex;
   }
 
   public void setAccessKey(char key) {

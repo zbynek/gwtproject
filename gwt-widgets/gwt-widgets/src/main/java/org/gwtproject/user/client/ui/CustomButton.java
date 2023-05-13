@@ -16,8 +16,9 @@
 
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.MouseEvent;
+import jsinterop.base.Js;
 import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
@@ -125,7 +126,7 @@ public abstract class CustomButton extends ButtonBase {
   public abstract class Face implements HasHTML, HasSafeHtml {
     private static final String STYLENAME_HTML_FACE = "html-face";
     private final Face delegateTo;
-    private Element face;
+    private HTMLElement face;
 
     /**
      * Constructor for <code>Face</code>. Creates a new face that delegates to the supplied face.
@@ -143,7 +144,7 @@ public abstract class CustomButton extends ButtonBase {
      */
     @Override
     public String getHTML() {
-      return getFace().getInnerHTML();
+      return getFace().innerHTML;
     }
 
     /**
@@ -153,7 +154,7 @@ public abstract class CustomButton extends ButtonBase {
      */
     @Override
     public String getText() {
-      return getFace().getInnerText();
+      return getFace().textContent;
     }
 
     /**
@@ -175,7 +176,7 @@ public abstract class CustomButton extends ButtonBase {
     public void setHTML(@IsSafeHtml String html) {
       face = DOM.createDiv();
       UIObject.setStyleName(face, STYLENAME_HTML_FACE, true);
-      face.setInnerHTML(html);
+      face.innerHTML = html;
       updateButtonFace();
     }
 
@@ -198,7 +199,7 @@ public abstract class CustomButton extends ButtonBase {
     public final void setText(String text) {
       face = DOM.createDiv();
       UIObject.setStyleName(face, STYLENAME_HTML_FACE, true);
-      face.setInnerText(text);
+      face.textContent = text;
       updateButtonFace();
     }
 
@@ -225,7 +226,7 @@ public abstract class CustomButton extends ButtonBase {
     abstract String getName();
 
     /** Gets the contents associated with this face. */
-    private Element getFace() {
+    private HTMLElement getFace() {
       if (face == null) {
         if (delegateTo == null) {
           // provide a default face as none was supplied.
@@ -276,7 +277,7 @@ public abstract class CustomButton extends ButtonBase {
   private static final int DOWN_DISABLED = DOWN | DISABLED_ATTRIBUTE;
 
   /** The button's current face element. */
-  private Element curFaceElement;
+  private HTMLElement curFaceElement;
 
   /** The button's current face. */
   private Face curFace;
@@ -549,9 +550,9 @@ public abstract class CustomButton extends ButtonBase {
         }
         break;
       case Event.ONMOUSEOUT:
-        Element to = DOM.eventGetToElement(event);
-        if (getElement().isOrHasChild(DOM.eventGetTarget(event))
-            && (to == null || !getElement().isOrHasChild(to))) {
+        HTMLElement to = DOM.eventGetToElement(event);
+        if (getElement().contains(DOM.eventGetTarget(event))
+            && (to == null || !getElement().contains(to))) {
           if (isCapturing) {
             onClickCancel();
           }
@@ -559,7 +560,7 @@ public abstract class CustomButton extends ButtonBase {
         }
         break;
       case Event.ONMOUSEOVER:
-        if (getElement().isOrHasChild(DOM.eventGetTarget(event))) {
+        if (getElement().contains(DOM.eventGetTarget(event))) {
           setHovering(true);
           if (isCapturing) {
             onClickStart();
@@ -702,7 +703,7 @@ public abstract class CustomButton extends ButtonBase {
 
     // Mouse coordinates are not always available (e.g., when the click is
     // caused by a keyboard event).
-    NativeEvent evt = Document.get().createClickEvent(1, 0, 0, 0, 0, false, false, false, false);
+    MouseEvent evt = DOM.createClickEvent(1, 0, 0, 0, 0, false, false, false, false);
     getElement().dispatchEvent(evt);
 
     allowClick = false;
@@ -874,7 +875,7 @@ public abstract class CustomButton extends ButtonBase {
     setCurrentFace(newFace);
   }
 
-  private void setCurrentFaceElement(Element newFaceElement) {
+  private void setCurrentFaceElement(HTMLElement newFaceElement) {
     if (curFaceElement != newFaceElement) {
       if (curFaceElement != null) {
         getElement().removeChild(curFaceElement);

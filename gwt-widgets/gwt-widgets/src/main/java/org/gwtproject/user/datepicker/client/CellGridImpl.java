@@ -18,8 +18,8 @@ package org.gwtproject.user.datepicker.client;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
+
+import elemental2.dom.HTMLElement;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.event.dom.client.KeyCodes;
@@ -44,10 +44,10 @@ abstract class CellGridImpl<V> extends Grid {
     private int index;
 
     Cell(V value) {
-      this(Document.get().createDivElement(), value);
+      this(DOM.createDiv(), value);
     }
 
-    Cell(Element elem, V value) {
+    Cell(HTMLElement elem, V value) {
       this.value = value;
       index = cellList.size();
       cellList.add(this);
@@ -172,13 +172,13 @@ abstract class CellGridImpl<V> extends Grid {
     sinkEvents(Event.ONCLICK | Event.ONMOUSEOVER | Event.ONMOUSEOUT);
   }
 
-  public Cell getCell(Element element) {
+  public Cell getCell(HTMLElement element) {
     return elementToCell.get(element);
   }
 
   public Cell getCell(Event e) {
     // Find out which cell was actually clicked.
-    Element td = getEventTargetCell(e);
+    HTMLElement td = getEventTargetCell(e);
     return td != null ? elementToCell.get(td) : null;
   }
 
@@ -223,7 +223,7 @@ abstract class CellGridImpl<V> extends Grid {
         }
       case Event.ONMOUSEOUT:
         {
-          Element e = DOM.eventGetFromElement(event);
+          HTMLElement e = DOM.eventGetFromElement(event);
           if (e != null) {
             Cell cell = elementToCell.get(e);
             if (cell == highlightedCell) {
@@ -234,7 +234,7 @@ abstract class CellGridImpl<V> extends Grid {
         }
       case Event.ONMOUSEOVER:
         {
-          Element e = DOM.eventGetToElement(event);
+          HTMLElement e = DOM.eventGetToElement(event);
           if (e != null) {
             Cell cell = elementToCell.get(e);
             if (isActive(cell)) {

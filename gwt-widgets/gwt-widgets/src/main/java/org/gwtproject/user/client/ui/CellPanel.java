@@ -15,8 +15,11 @@
  */
 package org.gwtproject.user.client.ui;
 
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLTableCellElement;
+import elemental2.dom.HTMLTableElement;
+import jsinterop.base.Js;
 import org.gwtproject.cell.client.Cell;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 import org.gwtproject.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
@@ -66,7 +69,8 @@ import org.gwtproject.user.client.ui.HasVerticalAlignment.VerticalAlignmentConst
 public abstract class CellPanel extends ComplexPanel {
 
   private int spacing;
-  private Element table, body;
+  private HTMLTableElement table;
+  private HTMLElement body;
 
   public CellPanel() {
     table = DOM.createTable();
@@ -92,7 +96,7 @@ public abstract class CellPanel extends ComplexPanel {
    * @param width the width of the panel's cell borders, in pixels
    */
   public void setBorderWidth(int width) {
-    table.setPropertyString("border", "" + width);
+    Js.asPropertyMap(table).set("border", "" + width);
   }
 
   /**
@@ -102,9 +106,9 @@ public abstract class CellPanel extends ComplexPanel {
    * @param height the cell's height, in CSS units
    */
   public void setCellHeight(Widget w, String height) {
-    Element td = getWidgetTd(w);
+    HTMLTableCellElement td = Js.uncheckedCast(getWidgetTd(w));
     if (td != null) {
-      td.setPropertyString("height", height);
+      td.height = height;
     }
   }
 
@@ -124,7 +128,7 @@ public abstract class CellPanel extends ComplexPanel {
    * @param align the widget's horizontal alignment, as defined in {@link HasHorizontalAlignment}.
    */
   public void setCellHorizontalAlignment(Widget w, HorizontalAlignmentConstant align) {
-    Element td = getWidgetTd(w);
+    HTMLElement td = getWidgetTd(w);
     if (td != null) {
       setCellHorizontalAlignment(td, align);
     }
@@ -146,7 +150,7 @@ public abstract class CellPanel extends ComplexPanel {
    * @param align the widget's vertical alignment, as defined in {@link HasVerticalAlignment}.
    */
   public void setCellVerticalAlignment(Widget w, VerticalAlignmentConstant align) {
-    Element td = getWidgetTd(w);
+    HTMLElement td = getWidgetTd(w);
     if (td != null) {
       setCellVerticalAlignment(td, align);
     }
@@ -168,9 +172,9 @@ public abstract class CellPanel extends ComplexPanel {
    * @param width the cell's width, in CSS units
    */
   public void setCellWidth(Widget w, String width) {
-    Element td = getWidgetTd(w);
+    HTMLTableCellElement td = Js.uncheckedCast(getWidgetTd(w));
     if (td != null) {
-      td.setPropertyString("width", width);
+      td.width = width;
     }
   }
 
@@ -190,31 +194,31 @@ public abstract class CellPanel extends ComplexPanel {
    */
   public void setSpacing(int spacing) {
     this.spacing = spacing;
-    table.setPropertyInt("cellSpacing", spacing);
+    table.cellSpacing = spacing + "";
   }
 
-  protected Element getBody() {
+  protected HTMLElement getBody() {
     return body;
   }
 
-  protected Element getTable() {
+  protected HTMLTableElement getTable() {
     return table;
   }
 
   /**
-   * @deprecated Call and override {@link #setCellHorizontalAlignment(Element,
+   * @deprecated Call and override {@link #setCellHorizontalAlignment(HTMLElement,
    *     HorizontalAlignmentConstant)} instead.
    */
   @Deprecated
-  protected void setCellHorizontalAlignment(Element td, HorizontalAlignmentConstant align) {
-    td.setPropertyString("align", align.getTextAlignString());
+  protected void setCellHorizontalAlignment(HTMLElement td, HorizontalAlignmentConstant align) {
+    Js.<HTMLTableCellElement>uncheckedCast(td).align = align.getTextAlignString();
   }
 
-  protected void setCellVerticalAlignment(Element td, VerticalAlignmentConstant align) {
-    td.getStyle().setProperty("verticalAlign", align.getVerticalAlignString());
+  protected void setCellVerticalAlignment(HTMLElement td, VerticalAlignmentConstant align) {
+    td.style.setProperty("verticalAlign", align.getVerticalAlignString());
   }
 
-  Element getWidgetTd(Widget w) {
+  HTMLElement getWidgetTd(Widget w) {
     if (w.getParent() != this) {
       return null;
     }

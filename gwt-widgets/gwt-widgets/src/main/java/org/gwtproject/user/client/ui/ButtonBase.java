@@ -15,7 +15,7 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Element;
+import elemental2.dom.HTMLElement;
 import org.gwtproject.safehtml.client.HasSafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
@@ -28,20 +28,20 @@ public abstract class ButtonBase extends FocusWidget implements HasHTML, HasSafe
    *
    * @param elem the DOM element to be wrapped
    */
-  protected ButtonBase(Element elem) {
+  protected ButtonBase(HTMLElement elem) {
     super(elem);
   }
 
   public String getHTML() {
-    return getElement().getInnerHTML();
+    return getElement().innerHTML;
   }
 
   public String getText() {
-    return getElement().getInnerText();
+    return getElement().textContent;
   }
 
   public void setHTML(@IsSafeHtml String html) {
-    getElement().setInnerHTML(html);
+    getElement().innerHTML = html;
   }
 
   public void setHTML(SafeHtml html) {
@@ -49,6 +49,6 @@ public abstract class ButtonBase extends FocusWidget implements HasHTML, HasSafe
   }
 
   public void setText(String text) {
-    getElement().setInnerText(text);
+    getElement().textContent = text;
   }
 }

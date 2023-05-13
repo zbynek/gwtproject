@@ -15,10 +15,11 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
+import org.gwtproject.user.client.DOM;
 
 /**
  * A widget that can contain arbitrary HTML.
@@ -47,9 +48,9 @@ public class InlineHTML extends HTML {
    *
    * @param element the element to be wrapped
    */
-  public static InlineHTML wrap(Element element) {
+  public static InlineHTML wrap(HTMLElement element) {
     // Assert that the element is attached.
-    assert Document.get().getBody().isOrHasChild(element);
+    assert DomGlobal.document.body.contains(element);
 
     InlineHTML html = new InlineHTML(element);
 
@@ -62,7 +63,7 @@ public class InlineHTML extends HTML {
 
   /** Creates an empty HTML widget. */
   public InlineHTML() {
-    super(Document.get().createSpanElement());
+    super(DOM.createSpan());
     setStyleName("gwt-InlineHTML");
   }
 
@@ -91,7 +92,7 @@ public class InlineHTML extends HTML {
    *
    * @param element the element to be used
    */
-  protected InlineHTML(Element element) {
+  protected InlineHTML(HTMLElement element) {
     // super(element) also asserts that element is either a &lt;div&gt; or
     // &lt;span&gt;.
     super(element);

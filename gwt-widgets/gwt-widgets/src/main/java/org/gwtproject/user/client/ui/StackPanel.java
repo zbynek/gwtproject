@@ -15,7 +15,10 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Element;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLTableCellElement;
+import elemental2.dom.HTMLTableElement;
+import jsinterop.base.Js;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
 import org.gwtproject.safehtml.shared.annotations.SuppressIsSafeHtmlCastCheck;
@@ -53,18 +56,18 @@ public class StackPanel extends ComplexPanel implements InsertPanel.ForIsWidget 
   private static final String DEFAULT_STYLENAME = "gwt-StackPanel";
   private static final String DEFAULT_ITEM_STYLENAME = DEFAULT_STYLENAME + "Item";
 
-  private Element body;
+  private HTMLElement body;
   private int visibleStack = -1;
 
   /** Creates an empty stack panel. */
   public StackPanel() {
-    Element table = DOM.createTable();
+    HTMLTableElement table = DOM.createTable();
     setElement(table);
 
     body = DOM.createTBody();
     DOM.appendChild(table, body);
-    table.setPropertyInt("cellSpacing", 0);
-    table.setPropertyInt("cellPadding", 0);
+    table.cellSpacing = "0";
+    table.cellPadding = "0";
 
     DOM.sinkEvents(table, Event.ONCLICK);
     setStyleName(DEFAULT_STYLENAME);
@@ -123,14 +126,14 @@ public class StackPanel extends ComplexPanel implements InsertPanel.ForIsWidget 
 
   public void insert(Widget w, int beforeIndex) {
     // header
-    Element trh = DOM.createTR();
-    Element tdh = DOM.createTD();
+    HTMLElement trh = DOM.createTR();
+    HTMLTableCellElement tdh = DOM.createTD();
     DOM.appendChild(trh, tdh);
     DOM.appendChild(tdh, createHeaderElem());
 
     // body
-    Element trb = DOM.createTR();
-    Element tdb = DOM.createTD();
+    HTMLElement trb = DOM.createTR();
+    HTMLTableCellElement tdb = DOM.createTD();
     DOM.appendChild(trb, tdb);
 
     // DOM indices are 2x logical indices; 2 dom elements per stack item
@@ -143,13 +146,13 @@ public class StackPanel extends ComplexPanel implements InsertPanel.ForIsWidget 
 
     // header styling
     setStyleName(tdh, DEFAULT_ITEM_STYLENAME, true);
-    tdh.setPropertyInt("__owner", hashCode());
-    tdh.setPropertyString("height", "1px");
+    Js.asPropertyMap(tdh).set("__owner", hashCode());
+    tdh.height = "1px";
 
     // body styling
     setStyleName(tdb, DEFAULT_STYLENAME + "Content", true);
-    tdb.setPropertyString("height", "100%");
-    tdb.setPropertyString("vAlign", "top");
+    tdb.height = "100%";
+    tdb.vAlign = "top";
 
     // Now that the DOM is connected, call insert (this ensures that onLoad() is
     // not fired until the child widget is attached to the DOM).
@@ -174,7 +177,7 @@ public class StackPanel extends ComplexPanel implements InsertPanel.ForIsWidget 
   @Override
   public void onBrowserEvent(Event event) {
     if (DOM.eventGetType(event) == Event.ONCLICK) {
-      Element target = DOM.eventGetTarget(event);
+      HTMLElement target = DOM.eventGetTarget(event);
       int index = findDividerIndex(target);
       if (index != -1) {
         showStack(index);
@@ -226,12 +229,12 @@ public class StackPanel extends ComplexPanel implements InsertPanel.ForIsWidget 
       return;
     }
 
-    Element tdWrapper = DOM.getChild(DOM.getChild(body, index * 2), 0);
-    Element headerElem = DOM.getFirstChild(tdWrapper);
+    HTMLElement tdWrapper = DOM.getChild(DOM.getChild(body, index * 2), 0);
+    HTMLElement headerElem = DOM.getFirstChild(tdWrapper);
     if (asHTML) {
-      getHeaderTextElem(headerElem).setInnerHTML(text);
+      getHeaderTextElem(headerElem).innerHTML = text;
     } else {
-      getHeaderTextElem(headerElem).setInnerText(text);
+      getHeaderTextElem(headerElem).textContent = text;
     }
   }
 
@@ -270,9 +273,9 @@ public class StackPanel extends ComplexPanel implements InsertPanel.ForIsWidget 
 
     int numHeaders = DOM.getChildCount(body) >> 1;
     for (int i = 0; i < numHeaders; i++) {
-      Element tdWrapper = DOM.getFirstChild(DOM.getChild(body, 2 * i));
-      Element headerElem = DOM.getFirstChild(tdWrapper);
-      Element bodyElem = DOM.getFirstChild(DOM.getChild(body, 2 * i + 1));
+      HTMLElement tdWrapper = DOM.getFirstChild(DOM.getChild(body, 2 * i));
+      HTMLElement headerElem = DOM.getFirstChild(tdWrapper);
+      HTMLElement bodyElem = DOM.getFirstChild(DOM.getChild(body, 2 * i + 1));
       ensureDebugId(tdWrapper, baseID, "text-wrapper" + i);
       ensureDebugId(bodyElem, baseID, "content" + i);
       ensureDebugId(getHeaderTextElem(headerElem), baseID, "text" + i);
@@ -280,7 +283,7 @@ public class StackPanel extends ComplexPanel implements InsertPanel.ForIsWidget 
   }
 
   /** Returns a header element. */
-  Element createHeaderElem() {
+  HTMLElement createHeaderElem() {
     return DOM.createDiv();
   }
 
@@ -291,7 +294,7 @@ public class StackPanel extends ComplexPanel implements InsertPanel.ForIsWidget 
    * @param headerElem the header element
    * @return the element around the header text
    */
-  Element getHeaderTextElem(Element headerElem) {
+  HTMLElement getHeaderTextElem(HTMLElement headerElem) {
     return headerElem;
   }
 
@@ -306,7 +309,7 @@ public class StackPanel extends ComplexPanel implements InsertPanel.ForIsWidget 
       return;
     }
 
-    Element tr = DOM.getChild(body, index * 2);
+    HTMLElement tr = DOM.getChild(body, index * 2);
     setStyleName(tr, styleName, true /* add */);
   }
 
@@ -321,17 +324,17 @@ public class StackPanel extends ComplexPanel implements InsertPanel.ForIsWidget 
       return;
     }
 
-    Element tr = DOM.getChild(body, index * 2);
+    HTMLElement tr = DOM.getChild(body, index * 2);
     setStyleName(tr, styleName, false /* remove */);
   }
 
-  private int findDividerIndex(Element elem) {
+  private int findDividerIndex(HTMLElement elem) {
     while (elem != null && elem != getElement()) {
-      String expando = elem.getPropertyString("__index");
+      String expando = (String) Js.asPropertyMap(elem).get("__index");
       if (expando != null) {
         // Make sure it belongs to me!
-        int ownerHash = elem.getPropertyInt("__owner");
-        if (ownerHash == hashCode()) {
+        Object ownerHash = Js.asPropertyMap(elem).get("__owner");
+        if (ownerHash != null && (Integer) ownerHash == hashCode()) {
           // Yes, it's mine.
           return Integer.parseInt(expando);
         } else {
@@ -350,7 +353,7 @@ public class StackPanel extends ComplexPanel implements InsertPanel.ForIsWidget 
     if (removed) {
       // Calculate which internal table elements to remove.
       int rowIndex = 2 * index;
-      Element tr = DOM.getChild(body, rowIndex);
+      HTMLElement tr = DOM.getChild(body, rowIndex);
       body.removeChild(tr);
       tr = DOM.getChild(body, rowIndex);
       body.removeChild(tr);
@@ -369,38 +372,38 @@ public class StackPanel extends ComplexPanel implements InsertPanel.ForIsWidget 
   }
 
   private void setStackContentVisible(int index, boolean visible) {
-    Element tr = DOM.getChild(body, (index * 2) + 1);
+    HTMLElement tr = DOM.getChild(body, (index * 2) + 1);
     UIObject.setVisible(tr, visible);
     getWidget(index).setVisible(visible);
   }
 
   private void setStackVisible(int index, boolean visible) {
     // Get the first table row containing the widget's selector item.
-    Element tr = DOM.getChild(body, (index * 2));
+    HTMLElement tr = DOM.getChild(body, (index * 2));
     if (tr == null) {
       return;
     }
 
     // Style the stack selector item.
-    Element td = DOM.getFirstChild(tr);
+    HTMLElement td = DOM.getFirstChild(tr);
     setStyleName(td, DEFAULT_ITEM_STYLENAME + "-selected", visible);
 
     // Show/hide the contained widget.
     setStackContentVisible(index, visible);
 
     // Set the style of the next header
-    Element trNext = DOM.getChild(body, ((index + 1) * 2));
+    HTMLElement trNext = DOM.getChild(body, ((index + 1) * 2));
     if (trNext != null) {
-      Element tdNext = DOM.getFirstChild(trNext);
+      HTMLElement tdNext = DOM.getFirstChild(trNext);
       setStyleName(tdNext, DEFAULT_ITEM_STYLENAME + "-below-selected", visible);
     }
   }
 
   private void updateIndicesFrom(int beforeIndex) {
     for (int i = beforeIndex, c = getWidgetCount(); i < c; ++i) {
-      Element childTR = DOM.getChild(body, i * 2);
-      Element childTD = DOM.getFirstChild(childTR);
-      childTD.setPropertyInt("__index", i);
+      HTMLElement childTR = DOM.getChild(body, i * 2);
+      HTMLElement childTD = DOM.getFirstChild(childTR);
+      Js.asPropertyMap(childTD).set("__index", i + "");
 
       // Update the special style on the first element
       if (beforeIndex == 0) {

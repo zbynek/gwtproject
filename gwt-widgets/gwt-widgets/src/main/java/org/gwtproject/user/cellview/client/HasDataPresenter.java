@@ -15,19 +15,20 @@
  */
 package org.gwtproject.user.cellview.client;
 
-import elemental2.core.JsArray;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import elemental2.core.JsArray;
+import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
 import org.gwtproject.core.client.JavaScriptObject;
 import org.gwtproject.core.client.JsArrayInteger;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.core.client.Scheduler.ScheduledCommand;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.event.shared.Event;
 import org.gwtproject.event.shared.HandlerRegistration;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
@@ -67,7 +68,7 @@ import org.gwtproject.view.client.SelectionModel;
 class HasDataPresenter<T> implements HasData<T>, HasKeyProvider<T>, HasKeyboardPagingPolicy {
 
   /** An iterator over DOM elements. */
-  static interface ElementIterator extends Iterator<Element> {
+  static interface ElementIterator extends Iterator<HTMLElement> {
     /**
      * Set the selection state of the current element.
      *

@@ -15,11 +15,10 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.Node;
-import org.gwtproject.dom.client.TableCellElement;
-import org.gwtproject.dom.client.TableRowElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLTableCellElement;
+import elemental2.dom.HTMLTableRowElement;
+import org.gwtproject.user.client.DOM;
 
 /**
  * A rectangular grid that can contain text, html, or a child {@link Widget} within its cells. It
@@ -74,12 +73,12 @@ public class Grid extends HTMLTable {
    * @param rows number of rows to add
    * @param columns the number of columns per row
    */
-  private static void addRows(Element table, int rows, int columns) {
-    TableCellElement td = Document.get().createTDElement();
-    td.setInnerHTML("&nbsp;");
-    TableRowElement row = Document.get().createTRElement();
+  private static void addRows(HTMLElement table, int rows, int columns) {
+    HTMLTableCellElement td = DOM.createTD();
+    td.innerHTML = "&nbsp;";
+    HTMLTableRowElement row = DOM.createTR();
     for (int cellNum = 0; cellNum < columns; cellNum++) {
-      Node cell = td.cloneNode(true);
+      elemental2.dom.Node cell = td.cloneNode(true);
       row.appendChild(cell);
     }
     table.appendChild(row);
@@ -123,9 +122,9 @@ public class Grid extends HTMLTable {
    */
   @Override
   public boolean clearCell(int row, int column) {
-    Element td = getCellFormatter().getElement(row, column);
+    HTMLElement td = getCellFormatter().getElement(row, column);
     boolean b = internalClearCell(td, false);
-    td.setInnerHTML("&nbsp;");
+    td.innerHTML = "&nbsp;";
     return b;
   }
 
@@ -249,14 +248,16 @@ public class Grid extends HTMLTable {
     }
   }
 
-  /** Creates a new, empty cell. */
+  /**
+   * Creates a new, empty cell.
+   */
   @Override
-  protected Element createCell() {
-    Element td = super.createCell();
+  protected HTMLTableCellElement createCell() {
+    HTMLTableCellElement td = super.createCell();
 
     // Add a non-breaking space to the TD. This ensures that the cell is
     // displayed.
-    td.setInnerHTML("&nbsp;");
+    td.innerHTML = "&nbsp;";
     return td;
   }
 

@@ -19,7 +19,6 @@ import org.gwtproject.cell.client.Cell.Context;
 import org.gwtproject.dom.builder.shared.DivBuilder;
 import org.gwtproject.dom.builder.shared.TableCellBuilder;
 import org.gwtproject.dom.builder.shared.TableRowBuilder;
-import org.gwtproject.dom.style.shared.OutlineStyle;
 import org.gwtproject.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 import org.gwtproject.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
 import org.gwtproject.view.client.SelectionModel;
@@ -123,7 +122,7 @@ public class DefaultCellTableBuilder<T> extends AbstractCellTableBuilder<T> {
 
       // Add the inner div.
       DivBuilder div = td.startDiv();
-      div.style().outlineStyle(OutlineStyle.NONE).endStyle();
+      div.style().trustedProperty("outlineStyle", "none").endStyle();
 
       // Render the cell into the div.
       renderCell(div, context, column, rowValue);

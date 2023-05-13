@@ -15,10 +15,16 @@
  */
 package org.gwtproject.view.client;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
+import jsinterop.base.Js;
 import org.gwtproject.dom.client.BrowserEvents;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.InputElement;
 import org.gwtproject.dom.client.NativeEvent;
 
 /**
@@ -136,12 +142,12 @@ public class DefaultSelectionEventManager<T> implements CellPreviewEvent.Handler
         }
 
         // Determine if we clicked on a checkbox.
-        Element target = nativeEvent.getEventTarget().cast();
-        if ("input".equals(target.getTagName().toLowerCase(Locale.ROOT))) {
-          final InputElement input = target.cast();
-          if ("checkbox".equals(input.getType().toLowerCase(Locale.ROOT))) {
+        HTMLElement target = nativeEvent.getEventTarget().cast();
+        if ("input".equals(target.tagName.toLowerCase(Locale.ROOT))) {
+          final HTMLInputElement input = Js.uncheckedCast(target);
+          if ("checkbox".equals(input.type.toLowerCase(Locale.ROOT))) {
             // Synchronize the checkbox with the current selection state.
-            input.setChecked(event.getDisplay().getSelectionModel().isSelected(event.getValue()));
+            input.checked = event.getDisplay().getSelectionModel().isSelected(event.getValue());
             return SelectAction.TOGGLE;
           }
         }

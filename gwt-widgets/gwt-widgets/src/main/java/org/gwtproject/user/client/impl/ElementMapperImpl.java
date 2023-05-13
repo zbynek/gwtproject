@@ -18,8 +18,9 @@ package org.gwtproject.user.client.impl;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import elemental2.dom.HTMLElement;
 import jsinterop.base.JsPropertyMap;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.ui.UIObject;
 
 /**
@@ -39,11 +40,11 @@ public class ElementMapperImpl<T extends UIObject> {
     }
   }
 
-  private static void clearIndex(Element elem) {
+  private static void clearIndex(HTMLElement elem) {
     ((JsPropertyMap) elem).set("__uiObjectID", null);
   }
 
-  private static int getIndex(Element elem) {
+  private static int getIndex(HTMLElement elem) {
     try {
       Integer index = Integer.valueOf(((JsPropertyMap) elem).get("__uiObjectID").toString());
       return (index == null) ? -1 : index;
@@ -52,7 +53,7 @@ public class ElementMapperImpl<T extends UIObject> {
     }
   }
 
-  private static void setIndex(Element elem, int index) {
+  private static void setIndex(HTMLElement elem, int index) {
     ((JsPropertyMap) elem).set("__uiObjectID", index);
   }
 
@@ -66,7 +67,7 @@ public class ElementMapperImpl<T extends UIObject> {
    * @param elem uiObject's element
    * @return the uiObject
    */
-  public T get(Element elem) {
+  public T get(HTMLElement elem) {
     int index = getIndex(elem);
     if (index < 0) {
       return null;
@@ -115,12 +116,12 @@ public class ElementMapperImpl<T extends UIObject> {
    *
    * @param elem the uiObject's element
    */
-  public void removeByElement(Element elem) {
+  public void removeByElement(HTMLElement elem) {
     int index = getIndex(elem);
     removeImpl(elem, index);
   }
 
-  private void removeImpl(Element elem, int index) {
+  private void removeImpl(HTMLElement elem, int index) {
     clearIndex(elem);
     uiObjectList.set(index, null);
     freeList = new FreeNode(index, freeList);

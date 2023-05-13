@@ -15,11 +15,11 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.InputElement;
-import org.gwtproject.dom.client.LabelElement;
-import org.gwtproject.dom.style.shared.WhiteSpace;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
+import elemental2.dom.HTMLLabelElement;
+import jsinterop.base.Js;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.event.logical.shared.ValueChangeEvent;
@@ -62,8 +62,8 @@ public class CheckBox extends ButtonBase
         HasSafeHtml {
 
   final DirectionalTextHelper directionalTextHelper;
-  InputElement inputElem;
-  LabelElement labelElem;
+  HTMLInputElement inputElem;
+  HTMLLabelElement labelElem;
   private boolean valueChangeHandlerInitialized;
 
   /** Creates a check box with no label. */
@@ -106,18 +106,18 @@ public class CheckBox extends ButtonBase
     }
   }
 
-  protected CheckBox(Element elem) {
+  protected CheckBox(HTMLElement elem) {
     super(DOM.createSpan());
 
-    inputElem = InputElement.as(elem);
-    labelElem = Document.get().createLabelElement();
+    inputElem = Js.uncheckedCast(elem);
+    labelElem = Js.uncheckedCast(DomGlobal.document.createElement("label"));
 
     getElement().appendChild(inputElem);
     getElement().appendChild(labelElem);
 
     String uid = DOM.createUniqueId();
-    inputElem.setPropertyString("id", uid);
-    labelElem.setHtmlFor(uid);
+    inputElem.id = uid;
+    labelElem.htmlFor = uid;
 
     directionalTextHelper = new DirectionalTextHelper(labelElem, true);
 
@@ -141,14 +141,14 @@ public class CheckBox extends ButtonBase
 
   /**
    * Returns the value property of the input element that backs this widget. This is the value that
-   * will be associated with the CheckBox name and submitted to the server if a {@link FormPanel}
+   * will be associated with the CheckBox name and submitted to the server if a form
    * that holds it is submitted and the box is checked.
    *
    * <p>Don't confuse this with {@link #getValue}, which returns true or false if the widget is
    * checked.
    */
   public String getFormValue() {
-    return inputElem.getValue();
+    return inputElem.value;
   }
 
   @Override
@@ -158,12 +158,12 @@ public class CheckBox extends ButtonBase
 
   @Override
   public String getName() {
-    return inputElem.getName();
+    return inputElem.name;
   }
 
   @Override
   public int getTabIndex() {
-    return inputElem.getTabIndex();
+    return inputElem.tabIndex;
   }
 
   @Override
@@ -183,15 +183,15 @@ public class CheckBox extends ButtonBase
   @Override
   public Boolean getValue() {
     if (isAttached()) {
-      return inputElem.isChecked();
+      return inputElem.checked;
     } else {
-      return inputElem.isDefaultChecked();
+      return inputElem.defaultChecked;
     }
   }
 
   @Override
   public boolean getWordWrap() {
-    return !WhiteSpace.NOWRAP.getCssName().equals(getElement().getStyle().getWhiteSpace());
+    return !"nowrap".equals(getElement().style.whiteSpace);
   }
 
   /**
@@ -208,12 +208,12 @@ public class CheckBox extends ButtonBase
 
   @Override
   public boolean isEnabled() {
-    return !inputElem.isDisabled();
+    return !inputElem.disabled;
   }
 
   @Override
   public void setAccessKey(char key) {
-    inputElem.setAccessKey("" + key);
+    inputElem.accessKey = "" + key;
   }
 
   /**
@@ -230,7 +230,7 @@ public class CheckBox extends ButtonBase
 
   @Override
   public void setEnabled(boolean enabled) {
-    inputElem.setDisabled(!enabled);
+    inputElem.disabled = !enabled;
     if (enabled) {
       removeStyleDependentName("disabled");
     } else {
@@ -249,7 +249,7 @@ public class CheckBox extends ButtonBase
 
   /**
    * Set the value property on the input element that backs this widget. This is the value that will
-   * be associated with the CheckBox's name and submitted to the server if a {@link FormPanel} that
+   * be associated with the CheckBox's name and submitted to the server if a form that
    * holds it is submitted and the box is checked.
    *
    * <p>Don't confuse this with {@link #setValue}, which actually checks and unchecks the box.
@@ -267,7 +267,7 @@ public class CheckBox extends ButtonBase
 
   @Override
   public void setName(String name) {
-    inputElem.setName(name);
+    inputElem.name = name;
   }
 
   @Override
@@ -277,7 +277,7 @@ public class CheckBox extends ButtonBase
     // CheckBox) setElement method calls setTabIndex before inputElem is
     // initialized. See CheckBox's protected constructor for more information.
     if (inputElem != null) {
-      inputElem.setTabIndex(index);
+      inputElem.tabIndex = index;
     }
   }
 
@@ -315,8 +315,8 @@ public class CheckBox extends ButtonBase
     }
 
     Boolean oldValue = getValue();
-    inputElem.setChecked(value);
-    inputElem.setDefaultChecked(value);
+    inputElem.checked = value;
+    inputElem.defaultChecked = value;
     if (value.equals(oldValue)) {
       return;
     }
@@ -327,7 +327,7 @@ public class CheckBox extends ButtonBase
 
   @Override
   public void setWordWrap(boolean wrap) {
-    getElement().getStyle().setWhiteSpace(wrap ? WhiteSpace.NORMAL : WhiteSpace.NOWRAP);
+    getElement().style.whiteSpace = wrap ? "normal" : "nowrap";
   }
 
   // Unlike other widgets the CheckBox sinks on its inputElement, not
@@ -368,7 +368,7 @@ public class CheckBox extends ButtonBase
     super.onEnsureDebugId(baseID);
     ensureDebugId(labelElem, baseID, "label");
     ensureDebugId(inputElem, baseID, "input");
-    labelElem.setHtmlFor(inputElem.getId());
+    labelElem.htmlFor = inputElem.id;
   }
 
   /**
@@ -401,15 +401,15 @@ public class CheckBox extends ButtonBase
    *
    * @param elem the new input element
    */
-  protected void replaceInputElement(Element elem) {
-    InputElement newInputElem = InputElement.as(elem);
+  protected void replaceInputElement(HTMLElement elem) {
+    HTMLInputElement newInputElem = Js.uncheckedCast(elem);
     // Collect information we need to set
     int tabIndex = getTabIndex();
     boolean checked = getValue();
     boolean enabled = isEnabled();
     String formValue = getFormValue();
-    String uid = inputElem.getId();
-    String accessKey = inputElem.getAccessKey();
+    String uid = inputElem.id;
+    String accessKey = inputElem.accessKey;
     int sunkEvents = Event.getEventsSunk(inputElem);
 
     // Clear out the old input element
@@ -424,9 +424,9 @@ public class CheckBox extends ButtonBase
 
     // Setup the new element
     Event.sinkEvents(inputElem, sunkEvents);
-    inputElem.setId(uid);
+    inputElem.id = uid;
     if (!"".equals(accessKey)) {
-      inputElem.setAccessKey(accessKey);
+      inputElem.accessKey = accessKey;
     }
     setTabIndex(tabIndex);
     setValue(checked);

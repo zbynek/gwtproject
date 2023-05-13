@@ -15,11 +15,11 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
+import elemental2.dom.HTMLElement;
 import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.layout.client.Layout;
 import org.gwtproject.layout.client.Layout.Layer;
+import org.gwtproject.user.client.DOM;
 
 /**
  * A panel that lays its child widgets out "docked" at its outer edges, and allows its last widget
@@ -134,7 +134,7 @@ public class DockLayoutPanel extends ComplexPanel
   public DockLayoutPanel(Unit unit) {
     this.unit = unit;
 
-    setElement(Document.get().createDivElement());
+    setElement(DOM.createDiv());
     layout = new Layout(getElement());
     layoutCmd = new DockAnimateCommand(layout);
   }
@@ -271,7 +271,7 @@ public class DockLayoutPanel extends ComplexPanel
    * @param child
    * @return the widget's container element
    */
-  public Element getWidgetContainerElement(Widget child) {
+  public HTMLElement getWidgetContainerElement(Widget child) {
     assertIsChild(child);
     return ((LayoutData) child.getLayoutData()).layer.getContainerElement();
   }
@@ -441,11 +441,11 @@ public class DockLayoutPanel extends ComplexPanel
   }
 
   protected double getCenterHeight() {
-    return getElement().getClientHeight() / layout.getUnitSize(unit, true) - filledHeight;
+    return getElement().clientHeight / layout.getUnitSize(unit, true) - filledHeight;
   }
 
   protected double getCenterWidth() {
-    return getElement().getClientWidth() / layout.getUnitSize(unit, false) - filledWidth;
+    return getElement().clientWidth / layout.getUnitSize(unit, false) - filledWidth;
   }
 
   /**

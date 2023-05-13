@@ -15,10 +15,10 @@
  */
 package org.gwtproject.animation.client;
 
+import elemental2.dom.HTMLElement;
 import org.gwtproject.animation.client.AnimationScheduler.AnimationCallback;
 import org.gwtproject.animation.client.AnimationScheduler.AnimationHandle;
 import org.gwtproject.core.client.Duration;
-import org.gwtproject.dom.client.Element;
 
 /**
  * An {@link Animation} is a continuous event that updates progressively over time at a non-fixed
@@ -31,7 +31,7 @@ public abstract class Animation {
   private int duration = -1;
 
   /** The element being animated. */
-  private Element element;
+  private HTMLElement element;
 
   /** Is the animation running, even if it hasn't started yet. */
   private boolean isRunning = false;
@@ -86,7 +86,7 @@ public abstract class Animation {
    * <p>This is equivalent to <code>run(duration, null)</code>.
    *
    * @param duration the duration of the animation in milliseconds
-   * @see #run(int, Element)
+   * @see #run(int, HTMLElement)
    */
   public void run(int duration) {
     run(duration, null);
@@ -102,7 +102,7 @@ public abstract class Animation {
    * @param duration the duration of the animation in milliseconds
    * @param element the element that visually bounds the entire animation
    */
-  public void run(int duration, Element element) {
+  public void run(int duration, HTMLElement element) {
     run(duration, Duration.currentTimeMillis(), element);
   }
 
@@ -119,7 +119,7 @@ public abstract class Animation {
    * @param startTime the synchronized start time in milliseconds
    * @param element the element that visually bounds the entire animation
    */
-  public void run(int duration, double startTime, Element element) {
+  public void run(int duration, double startTime, HTMLElement element) {
     // Cancel the animation if it is running
     cancel();
 
@@ -209,7 +209,7 @@ public abstract class Animation {
    *
    * @param duration the duration of the animation in milliseconds
    * @param startTime the synchronized start time in milliseconds
-   * @see #run(int, double, Element)
+   * @see #run(int, double, HTMLElement)
    */
   public void run(int duration, double startTime) {
     run(duration, startTime, null);

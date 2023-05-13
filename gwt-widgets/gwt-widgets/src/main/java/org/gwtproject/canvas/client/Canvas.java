@@ -15,12 +15,13 @@
  */
 package org.gwtproject.canvas.client;
 
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLCanvasElement;
+import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.gwtproject.canvas.dom.client.Context;
 import org.gwtproject.canvas.dom.client.Context2d;
-import org.gwtproject.dom.client.CanvasElement;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.PartialSupport;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.FocusWidget;
 import org.gwtproject.user.client.ui.RootPanel;
 
@@ -29,7 +30,6 @@ import org.gwtproject.user.client.ui.RootPanel;
  *
  * <p>This widget may not be supported on all browsers.
  */
-@PartialSupport
 public class Canvas extends FocusWidget {
 
   /**
@@ -38,7 +38,7 @@ public class Canvas extends FocusWidget {
    * @return a new {@link Canvas} if supported, and null otherwise
    */
   public static Canvas createIfSupported() {
-    CanvasElement element = Document.get().createCanvasElement();
+    HTMLCanvasElement element = DOM.createCanvas();
     if (!isSupportedRunTime(element)) {
       return null;
     }
@@ -53,11 +53,11 @@ public class Canvas extends FocusWidget {
    * @param element the element to wrap
    * @return the {@link Canvas} widget or null if canvas is not supported by the current browser.
    */
-  public static Canvas wrap(CanvasElement element) {
+  public static Canvas wrap(HTMLCanvasElement element) {
     if (!isSupported(element)) {
       return null;
     }
-    assert Document.get().getBody().isOrHasChild(element);
+    assert DomGlobal.document.body.contains(element);
     Canvas canvas = new Canvas(element);
 
     // Mark it attached and remember it for cleanup.
@@ -73,15 +73,15 @@ public class Canvas extends FocusWidget {
    * @return whether the canvas element is supported
    */
   public static boolean isSupported() {
-    return isSupported(Document.get().createCanvasElement());
+    return true;
   }
 
-  private static boolean isSupported(CanvasElement element) {
+  private static boolean isSupported(HTMLCanvasElement element) {
     return isSupportedRunTime(element);
   }
 
   /** Protected constructor. Use {@link #createIfSupported()} to create a Canvas. */
-  private Canvas(CanvasElement element) {
+  private Canvas(HTMLCanvasElement element) {
     setElement(element);
   }
 
@@ -90,8 +90,8 @@ public class Canvas extends FocusWidget {
    *
    * @return the Canvas Element
    */
-  public CanvasElement getCanvasElement() {
-    return this.getElement().cast();
+  public HTMLCanvasElement getCanvasElement() {
+    return Js.uncheckedCast(this.getElement());
   }
 
   /**
@@ -101,7 +101,7 @@ public class Canvas extends FocusWidget {
    * @return the canvas rendering context
    */
   public Context getContext(String contextId) {
-    return getCanvasElement().getContext(contextId);
+    return Js.uncheckedCast(getCanvasElement().getContext(contextId));
   }
 
   /**
@@ -112,7 +112,7 @@ public class Canvas extends FocusWidget {
    * @return a 2D canvas rendering context
    */
   public Context2d getContext2d() {
-    return getCanvasElement().getContext2d();
+    return Js.uncheckedCast(getCanvasElement().getContext("2d"));
   }
 
   /**
@@ -122,7 +122,7 @@ public class Canvas extends FocusWidget {
    * @see #setCoordinateSpaceHeight(int)
    */
   public int getCoordinateSpaceHeight() {
-    return getCanvasElement().getHeight();
+    return getCanvasElement().height;
   }
 
   /**
@@ -132,7 +132,7 @@ public class Canvas extends FocusWidget {
    * @see #setCoordinateSpaceWidth(int)
    */
   public int getCoordinateSpaceWidth() {
-    return getCanvasElement().getWidth();
+    return getCanvasElement().width;
   }
 
   /**
@@ -142,7 +142,7 @@ public class Canvas extends FocusWidget {
    * @see #getCoordinateSpaceHeight()
    */
   public void setCoordinateSpaceHeight(int height) {
-    getCanvasElement().setHeight(height);
+    getCanvasElement().height = height;
   }
 
   /**
@@ -152,7 +152,7 @@ public class Canvas extends FocusWidget {
    * @see #getCoordinateSpaceWidth()
    */
   public void setCoordinateSpaceWidth(int width) {
-    getCanvasElement().setWidth(width);
+    getCanvasElement().width = width;
   }
 
   /**
@@ -161,7 +161,7 @@ public class Canvas extends FocusWidget {
    * @return a data URL for the current content of this element.
    */
   public String toDataUrl() {
-    return getCanvasElement().toDataUrl();
+    return getCanvasElement().toDataURL();
   }
 
   /**
@@ -171,16 +171,16 @@ public class Canvas extends FocusWidget {
    * @return a data URL for the current content of this element with the specified type.
    */
   public String toDataUrl(String type) {
-    return getCanvasElement().toDataUrl(type);
+    return getCanvasElement().toDataURL(type);
   }
 
   /**
-   * Using a run-time check, return true if the {@link CanvasElement} is supported.
+   * Using a run-time check, return true if the {@link HTMLCanvasElement} is supported.
    *
    * @return true if supported, false otherwise.
    */
   // TODO: probably safe to assume that everyone supports Canvas
-  private static boolean isSupportedRunTime(CanvasElement element) {
+  private static boolean isSupportedRunTime(HTMLCanvasElement element) {
     return ((JsPropertyMap) element).has("getContext");
   }
 }

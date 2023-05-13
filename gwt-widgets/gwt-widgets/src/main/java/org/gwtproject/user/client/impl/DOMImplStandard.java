@@ -17,13 +17,12 @@ package org.gwtproject.user.client.impl;
 
 import elemental2.dom.DomGlobal;
 import elemental2.dom.EventTarget;
+import elemental2.dom.HTMLElement;
 import jsinterop.annotations.JsFunction;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.gwtproject.core.client.JavaScriptObject;
 import org.gwtproject.dom.client.BrowserEvents;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.Node;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
 
@@ -33,7 +32,7 @@ import org.gwtproject.user.client.Event;
  */
 public abstract class DOMImplStandard extends DOMImpl {
 
-  private static Element captureElem;
+  private static HTMLElement captureElem;
   private static EventMap bitlessEventDispatchers = getBitlessEventDispatchers();
   private static EventMap captureEventDispatchers = getCaptureEventDispatchers();
 
@@ -108,17 +107,17 @@ public abstract class DOMImplStandard extends DOMImpl {
   }
 
   public static void dispatchEvent(Event evt) {
-    Element element = getFirstAncestorWithListener(evt);
+    HTMLElement element = getFirstAncestorWithListener(evt);
     if (element == null) {
       return;
     }
-    DOM.dispatchEvent(evt, element.getNodeType() != 1 ? null : element, getEventListener(element));
+    DOM.dispatchEvent(evt, element.nodeType != 1 ? null : element, getEventListener(element));
   }
 
-  private static Element getFirstAncestorWithListener(Event evt) {
-    Element curElem = evt.getCurrentEventTarget().cast();
+  private static HTMLElement getFirstAncestorWithListener(Event evt) {
+    HTMLElement curElem = evt.getCurrentEventTarget().cast();
     while (curElem != null && getEventListener(curElem) == null) {
-      curElem = curElem.getParentNode().cast();
+      curElem = Js.uncheckedCast(curElem.parentNode);
     }
     return curElem;
   }
@@ -130,8 +129,8 @@ public abstract class DOMImplStandard extends DOMImpl {
   }
 
   private static void dispatchUnhandledEvent(Event evt) {
-    Element element = evt.getCurrentEventTarget().cast();
-    element.setPropertyString("__gwtLastUnhandledEvent", evt.getType());
+    HTMLElement element = evt.getCurrentEventTarget().cast();
+    Js.asPropertyMap(element).set("__gwtLastUnhandledEvent", evt.getType());
     dispatchEvent(evt);
   }
 
@@ -186,7 +185,7 @@ public abstract class DOMImplStandard extends DOMImpl {
   }
 
   @Override
-  public Element eventGetFromElement(Event evt) {
+  public HTMLElement eventGetFromElement(Event evt) {
     if (evt.getType().equals(BrowserEvents.MOUSEOVER)) {
       return evt.getRelatedEventTarget().cast();
     }
@@ -197,7 +196,7 @@ public abstract class DOMImplStandard extends DOMImpl {
   }
 
   @Override
-  public Element eventGetToElement(Event evt) {
+  public HTMLElement eventGetToElement(Event evt) {
     if (evt.getType().equals(BrowserEvents.MOUSEOVER)) {
       return evt.getEventTarget().cast();
     }
@@ -210,71 +209,71 @@ public abstract class DOMImplStandard extends DOMImpl {
   }
 
   @Override
-  public Element getChild(Element elem, int index) {
+  public HTMLElement getChild(HTMLElement elem, int index) {
     int count = 0;
-    Node child = elem.getFirstChild();
+    elemental2.dom.Node child = elem.firstChild;
     while (child != null) {
-      if (child.getNodeType() == 1) {
+      if (child.nodeType == 1) {
         if (index == count) {
-          return (Element) child;
+          return (HTMLElement) child;
         }
         ++count;
       }
-      child = child.getNextSibling();
+      child = child.nextSibling;
     }
     return null;
   }
 
   @Override
-  public int getChildCount(Element elem) {
+  public int getChildCount(HTMLElement elem) {
     int count = 0;
-    Node child = elem.getFirstChild();
+    elemental2.dom.Node child = elem.firstChild;
     while (child != null) {
-      if (child.getNodeType() == 1) {
+      if (child.nodeType == 1) {
         ++count;
       }
-      child = child.getNextSibling();
+      child = child.nextSibling;
     }
     return count;
   }
 
   @Override
-  public int getChildIndex(Element parent, Element toFind) {
+  public int getChildIndex(HTMLElement parent, HTMLElement toFind) {
     int count = 0;
-    Node child = parent.getFirstChild();
+    elemental2.dom.Node child = parent.firstChild;
     while (child != null) {
       if (child == toFind) {
         return count;
       }
-      if (child.getNodeType() == 1) {
+      if (child.nodeType == 1) {
         ++count;
       }
 
-      child = child.getNextSibling();
+      child = child.nextSibling;
     }
     return -1;
   }
 
   @Override
-  public void insertChild(Element parent, Element toAdd, int index) {
+  public void insertChild(HTMLElement parent, HTMLElement toAdd, int index) {
     int count = 0;
-    Node child = parent.getFirstChild();
-    Node before = null;
+    elemental2.dom.Node child = parent.firstChild;
+    elemental2.dom.Node before = null;
     while (child != null) {
-      if (child.getNodeType() == 1) {
+      if (child.nodeType == 1) {
         if (count == index) {
           before = child;
           break;
         }
         ++count;
       }
-      child = child.getNextSibling();
+      child = child.nextSibling;
     }
     parent.insertBefore(toAdd, before);
   }
 
   @Override
-  public void releaseCapture(Element elem) {
+  public void releaseCapture(HTMLElement elem) {
     maybeInitializeEventSystem();
     if (captureElem == elem) {
       captureElem = null;
@@ -282,19 +281,19 @@ public abstract class DOMImplStandard extends DOMImpl {
   }
 
   @Override
-  public void setCapture(Element elem) {
+  public void setCapture(HTMLElement elem) {
     maybeInitializeEventSystem();
     captureElem = elem;
   }
 
   @Override
-  public void sinkBitlessEvent(Element elem, String eventTypeName) {
+  public void sinkBitlessEvent(HTMLElement elem, String eventTypeName) {
     maybeInitializeEventSystem();
     sinkBitlessEventImpl(elem, eventTypeName);
   }
 
   @Override
-  public void sinkEvents(Element elem, int bits) {
+  public void sinkEvents(HTMLElement elem, int bits) {
     maybeInitializeEventSystem();
     sinkEventsImpl(elem, bits);
   }
@@ -306,7 +305,7 @@ public abstract class DOMImplStandard extends DOMImpl {
         (elm, value) -> DomGlobal.window.addEventListener(elm, Js.uncheckedCast(value), true));
   }
 
-  protected void sinkBitlessEventImpl(Element elem, String eventTypeName) {
+  protected void sinkBitlessEventImpl(HTMLElement elem, String eventTypeName) {
     JsPropertyMap map = Js.asPropertyMap(bitlessEventDispatchers);
     Object dispatcher;
     if (map.has(eventTypeName)) {
@@ -319,7 +318,7 @@ public abstract class DOMImplStandard extends DOMImpl {
         .addEventListener(eventTypeName, Js.uncheckedCast(dispatcher), false);
   }
 
-  protected void sinkEventsImpl(Element elem, int bits) {
+  protected void sinkEventsImpl(HTMLElement elem, int bits) {
     JsPropertyMap map = Js.asPropertyMap(elem);
     int chMask =
         (map.has("__eventBits") ? Integer.valueOf(map.get("__eventBits").toString()) : 0) ^ bits;

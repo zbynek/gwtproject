@@ -15,11 +15,11 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Document;
 import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.layout.client.Layout;
 import org.gwtproject.layout.client.Layout.AnimationCallback;
 import org.gwtproject.layout.client.Layout.Layer;
+import org.gwtproject.user.client.DOM;
 
 /**
  * A panel that displays all of its child widgets in a 'deck', where only one can be visible at a
@@ -83,7 +83,7 @@ public class DeckLayoutPanel extends ComplexPanel
 
   /** Creates an empty deck panel. */
   public DeckLayoutPanel() {
-    setElement(Document.get().createDivElement());
+    setElement(DOM.createDiv());
     layout = new Layout(getElement());
     layoutCmd = new DeckAnimateCommand(layout);
   }

@@ -15,7 +15,7 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Element;
+import elemental2.dom.HTMLElement;
 import org.gwtproject.user.client.DOM;
 
 /**
@@ -30,14 +30,14 @@ public class VerticalPanel extends CellPanel implements HasAlignment, InsertPane
 
   /** Creates an empty vertical panel. */
   public VerticalPanel() {
-    getTable().setPropertyString("cellSpacing", "0");
-    getTable().setPropertyString("cellPadding", "0");
+    getTable().cellSpacing = "0";
+    getTable().cellPadding = "0";
   }
 
   @Override
   public void add(Widget w) {
-    Element tr = DOM.createTR();
-    Element td = createAlignedTd();
+    HTMLElement tr = DOM.createTR();
+    HTMLElement td = createAlignedTd();
     DOM.appendChild(tr, td);
     DOM.appendChild(getBody(), tr);
     add(w, td);
@@ -58,8 +58,8 @@ public class VerticalPanel extends CellPanel implements HasAlignment, InsertPane
   public void insert(Widget w, int beforeIndex) {
     checkIndexBoundsForInsertion(beforeIndex);
 
-    Element tr = DOM.createTR();
-    Element td = createAlignedTd();
+    HTMLElement tr = DOM.createTR();
+    HTMLElement td = createAlignedTd();
     DOM.appendChild(tr, td);
 
     /*
@@ -80,7 +80,7 @@ public class VerticalPanel extends CellPanel implements HasAlignment, InsertPane
      * Get the TR to be removed before calling super.remove() because
      * super.remove() will detach the child widget's element from its parent.
      */
-    Element td = DOM.getParent(w.getElement());
+    HTMLElement td = DOM.getParent(w.getElement());
     boolean removed = super.remove(w);
     if (removed) {
       getBody().removeChild(DOM.getParent(td));
@@ -126,8 +126,8 @@ public class VerticalPanel extends CellPanel implements HasAlignment, InsertPane
     }
   }
 
-  private Element createAlignedTd() {
-    Element td = DOM.createTD();
+  private HTMLElement createAlignedTd() {
+    HTMLElement td = DOM.createTD();
     setCellHorizontalAlignment(td, horzAlign);
     setCellVerticalAlignment(td, vertAlign);
     return td;

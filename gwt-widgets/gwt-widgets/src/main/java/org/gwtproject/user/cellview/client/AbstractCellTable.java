@@ -24,6 +24,13 @@ import java.util.Map;
 import java.util.Set;
 
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLCollection;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLTableCellElement;
+import elemental2.dom.HTMLTableElement;
+import elemental2.dom.HTMLTableRowElement;
+import elemental2.dom.HTMLTableSectionElement;
+import jsinterop.base.Js;
 import org.gwtproject.cell.client.Cell;
 import org.gwtproject.cell.client.Cell.Context;
 import org.gwtproject.cell.client.FieldUpdater;
@@ -33,15 +40,8 @@ import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.dom.builder.shared.HtmlTableSectionBuilder;
 import org.gwtproject.dom.builder.shared.TableSectionBuilder;
 import org.gwtproject.dom.client.BrowserEvents;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.EventTarget;
 import org.gwtproject.dom.client.NativeEvent;
-import org.gwtproject.dom.client.NodeList;
-import org.gwtproject.dom.client.TableCellElement;
-import org.gwtproject.dom.client.TableElement;
-import org.gwtproject.dom.client.TableRowElement;
-import org.gwtproject.dom.client.TableSectionElement;
 import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.dom.client.KeyCodes;
 import org.gwtproject.event.shared.HandlerRegistration;
@@ -181,7 +181,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
           if (BrowserEvents.CLICK.equals(eventType)) {
             // If a natively focusable element was just clicked, then do not
             // steal focus.
-            Element target = Element.as(event.getNativeEvent().getEventTarget());
+            HTMLElement target = Js.uncheckedCast(event.getNativeEvent().getEventTarget());
             stealFocus = !CellBasedWidgetImpl.get().isFocusable(target);
           }
 
@@ -343,21 +343,21 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
      *
      * @param newTBody the new body section
      */
-    void onTableBodyChange(TableSectionElement newTBody);
+    void onTableBodyChange(HTMLTableSectionElement newTBody);
 
     /**
      * Notify that a table body section has been changed.
      *
      * @param newTFoot the new foot section
      */
-    void onTableFootChange(TableSectionElement newTFoot);
+    void onTableFootChange(HTMLTableSectionElement newTFoot);
 
     /**
      * Notify that a table head section has been changed.
      *
      * @param newTHead the new head section
      */
-    void onTableHeadChange(TableSectionElement newTHead);
+    void onTableHeadChange(HTMLTableSectionElement newTHead);
   }
 
   interface Template extends SafeHtmlTemplates {
@@ -386,7 +386,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
   /** Implementation of {@link AbstractCellTable}. */
   private static class Impl {
 
-    private final Element tmpElem = Document.get().createDivElement();
+    private final HTMLElement tmpElem = DOM.createDiv();
 
     /**
      * Convert the rowHtml into Elements wrapped by the specified table section.
@@ -396,7 +396,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
      * @param rowHtml the Html for the rows
      * @return the section element
      */
-    public TableSectionElement convertToSectionElement(
+    public HTMLElement convertToSectionElement(
         AbstractCellTable<?> table, String sectionTag, SafeHtml rowHtml) {
       // Attach an event listener so we can catch synchronous load events from
       // cached images.
@@ -411,26 +411,26 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
        */
       sectionTag = sectionTag.toLowerCase(Locale.ROOT);
       if ("tbody".equals(sectionTag)) {
-        tmpElem.setInnerSafeHtml(Template.INSTANCE.tbody(rowHtml));
+        tmpElem.innerHTML = Template.INSTANCE.tbody(rowHtml).asString();
       } else if ("thead".equals(sectionTag)) {
-        tmpElem.setInnerSafeHtml(Template.INSTANCE.thead(rowHtml));
+        tmpElem.innerHTML = Template.INSTANCE.thead(rowHtml).asString();
       } else if ("tfoot".equals(sectionTag)) {
-        tmpElem.setInnerSafeHtml(Template.INSTANCE.tfoot(rowHtml));
+        tmpElem.innerHTML = Template.INSTANCE.tfoot(rowHtml).asString();
       } else {
         throw new IllegalArgumentException("Invalid table section tag: " + sectionTag);
       }
-      TableElement tableElem = tmpElem.getFirstChildElement().cast();
+      HTMLTableElement tableElem = Js.uncheckedCast(tmpElem.firstElementChild);
 
       // Detach the event listener.
       DOM.setEventListener(tmpElem, null);
 
       // Get the section out of the table.
       if ("tbody".equals(sectionTag)) {
-        return tableElem.getTBodies().getItem(0);
+        return tableElem.tBodies.getAt(0);
       } else if ("thead".equals(sectionTag)) {
-        return tableElem.getTHead();
+        return tableElem.tHead;
       } else if ("tfoot".equals(sectionTag)) {
-        return tableElem.getTFoot();
+        return tableElem.tFoot;
       } else {
         throw new IllegalArgumentException("Invalid table section tag: " + sectionTag);
       }
@@ -440,11 +440,11 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
      * Render a table section in the table.
      *
      * @param table the {@link AbstractCellTable}
-     * @param section the {@link TableSectionElement} to replace
+     * @param section the {@link HTMLTableSectionElement} to replace
      * @param html the html of a table section element containing the rows
      */
     public final void replaceAllRows(
-        AbstractCellTable<?> table, TableSectionElement section, SafeHtml html) {
+        AbstractCellTable<?> table, HTMLTableSectionElement section, SafeHtml html) {
       // If the widget is not attached, attach an event listener so we can catch
       // synchronous load events from cached images.
       if (!table.isAttached()) {
@@ -452,8 +452,8 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
       }
 
       // Remove the section from the tbody.
-      Element parent = section.getParentElement();
-      Element nextSection = section.getNextSiblingElement();
+      elemental2.dom.Element parent = section.parentElement;
+      elemental2.dom.Element nextSection = section.nextElementSibling;
       detachSectionElement(section);
 
       // Render the html.
@@ -478,14 +478,14 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
      * rendered as multiple row elements, while others are rendered as only one row element.
      *
      * @param table the {@link AbstractCellTable}
-     * @param section the {@link TableSectionElement} to replace
+     * @param section the {@link HTMLTableSectionElement} to replace
      * @param html the html of a table section element containing the rows
      * @param startIndex the start index to replace
      * @param childCount the number of row values to replace
      */
     public final void replaceChildren(
         AbstractCellTable<?> table,
-        TableSectionElement section,
+        HTMLTableSectionElement section,
         SafeHtml html,
         int startIndex,
         int childCount) {
@@ -496,36 +496,36 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
       }
 
       // Remove the section from the tbody.
-      Element parent = section.getParentElement();
-      Element nextSection = section.getNextSiblingElement();
+      elemental2.dom.Element parent = section.parentElement;
+      elemental2.dom.Element nextSection = section.nextElementSibling;
       detachSectionElement(section);
 
       // Remove all children in the range.
       final int absEndIndex = table.getPageStart() + startIndex + childCount;
 
-      TableRowElement insertBefore = table.getChildElement(startIndex).cast();
+      HTMLTableRowElement insertBefore = table.getChildElement(startIndex);
       if (table.legacyRenderRowValues) {
         int count = 0;
         while (insertBefore != null && count < childCount) {
-          Element next = insertBefore.getNextSiblingElement();
+          elemental2.dom.Element next = insertBefore.nextElementSibling;
           section.removeChild(insertBefore);
-          insertBefore = (next == null) ? null : next.<TableRowElement>cast();
+          insertBefore = (next == null) ? null : Js.uncheckedCast(next);
           count++;
         }
       } else {
         while (insertBefore != null
             && table.tableBuilder.getRowValueIndex(insertBefore) < absEndIndex) {
-          Element next = insertBefore.getNextSiblingElement();
+          elemental2.dom.Element next = insertBefore.nextElementSibling;
           section.removeChild(insertBefore);
-          insertBefore = (next == null) ? null : next.<TableRowElement>cast();
+          insertBefore = (next == null) ? null : Js.uncheckedCast(next);
         }
       }
 
       // Add new child elements.
-      TableSectionElement newSection = convertToSectionElement(table, section.getTagName(), html);
-      Element newChild = newSection.getFirstChildElement();
+      HTMLElement newSection = convertToSectionElement(table, section.tagName, html);
+      elemental2.dom.Element newChild = newSection.firstElementChild;
       while (newChild != null) {
-        Element next = newChild.getNextSiblingElement();
+        elemental2.dom.Element next = newChild.nextElementSibling;
         section.insertBefore(newChild, insertBefore);
         newChild = next;
       }
@@ -547,8 +547,8 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
      *
      * @param section the element to detach
      */
-    protected void detachSectionElement(TableSectionElement section) {
-      section.removeFromParent();
+    protected void detachSectionElement(HTMLTableSectionElement section) {
+      section.remove();
     }
 
     /**
@@ -559,7 +559,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
      * @param nextSection the next section
      */
     protected void reattachSectionElement(
-        Element parent, TableSectionElement section, Element nextSection) {
+        elemental2.dom.Element parent, HTMLTableSectionElement section, elemental2.dom.Element nextSection) {
       parent.insertBefore(section, nextSection);
     }
 
@@ -567,12 +567,12 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
      * Render a table section in the table.
      *
      * @param table the {@link AbstractCellTable}
-     * @param section the {@link TableSectionElement} to replace
+     * @param section the {@link HTMLTableSectionElement} to replace
      * @param html the html of a table section element containing the rows
      */
     protected void replaceAllRowsImpl(
-        AbstractCellTable<?> table, TableSectionElement section, SafeHtml html) {
-      section.setInnerSafeHtml(html);
+        AbstractCellTable<?> table, HTMLTableSectionElement section, SafeHtml html) {
+      section.innerHTML = html.asString();
     }
   }
 
@@ -593,7 +593,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
   }
 
   /**
-   * Get the {@link TableSectionElement} containing the children.
+   * Get the {@link HTMLTableSectionElement} containing the children.
    *
    * @param tag the expected tag (tbody, tfoot, or thead)
    */
@@ -642,7 +642,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
    */
   private boolean headersDirty;
 
-  private TableRowElement hoveringRow;
+  private HTMLTableRowElement hoveringRow;
 
   /** Indicates that at least one column is interactive. */
   private boolean isInteractive;
@@ -676,14 +676,14 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
    * Constructs a table with the given page size, the specified {@link Style}, and the given key
    * provider.
    *
-   * @param elem the parent {@link Element}
+   * @param elem the parent {@link HTMLElement}
    * @param pageSize the page size
    * @param resources the resources to apply to the widget
    * @param keyProvider an instance of ProvidesKey<T>, or null if the record object should act as
    *     its own key
    */
   public AbstractCellTable(
-      Element elem, final int pageSize, Resources resources, ProvidesKey<T> keyProvider) {
+      HTMLElement elem, final int pageSize, Resources resources, ProvidesKey<T> keyProvider) {
     super(elem, pageSize, keyProvider);
     this.resources = resources;
     this.style = resources.style();
@@ -974,14 +974,14 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
   }
 
   /**
-   * Get the {@link TableRowElement} for the specified row. If the row element has not been created,
+   * Get the {@link HTMLTableRowElement} for the specified row. If the row element has not been created,
    * null is returned.
    *
    * @param row the row index
    * @return the row element, or null if it doesn't exists
    * @throws IndexOutOfBoundsException if the row index is outside of the current page
    */
-  public TableRowElement getRowElement(int row) {
+  public HTMLTableRowElement getRowElement(int row) {
     flush();
     return getChildElement(row);
   }
@@ -1426,7 +1426,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
    * Sets the skipRowHoverStyleUpdate flag. If set, the CellTable will not update the row's style on
    * row-level hover events (MOUSEOVER and MOUSEOUT).
    *
-   * @param skipRowHoverCheck the new flag value
+   * @param skipRowHoverStyleUpdate the new flag value
    */
   public void setSkipRowHoverStyleUpdate(boolean skipRowHoverStyleUpdate) {
     this.skipRowHoverStyleUpdate = skipRowHoverStyleUpdate;
@@ -1442,7 +1442,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
   }
 
   @Override
-  protected Element convertToElements(SafeHtml html) {
+  protected HTMLElement convertToElements(SafeHtml html) {
     return TABLE_IMPL.convertToSectionElement(AbstractCellTable.this, "tbody", html);
   }
 
@@ -1468,7 +1468,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
   protected abstract void doSetHeaderVisible(boolean isFooter, boolean isVisible);
 
   @Override
-  protected Element getChildContainer() {
+  protected HTMLElement getChildContainer() {
     return getTableBodyElement();
   }
 
@@ -1483,12 +1483,12 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
    * @throws IndexOutOfBoundsException if the row index is outside of the current page
    */
   @Override
-  protected TableRowElement getChildElement(int row) {
+  protected HTMLTableRowElement getChildElement(int row) {
     return getSubRowElement(row + getPageStart(), 0);
   }
 
   @Override
-  protected Element getKeyboardSelectedElement() {
+  protected HTMLElement getKeyboardSelectedElement() {
     return getKeyboardSelectedElement(getKeyboardSelectedTableCellElement());
   }
 
@@ -1501,13 +1501,13 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
   }
 
   /** Get the tbody element that contains the render row values. */
-  protected abstract TableSectionElement getTableBodyElement();
+  protected abstract HTMLTableSectionElement getTableBodyElement();
 
   /** Get the tfoot element that contains the footers. */
-  protected abstract TableSectionElement getTableFootElement();
+  protected abstract HTMLTableSectionElement getTableFootElement();
 
   /** Get the thead element that contains the headers. */
-  protected abstract TableSectionElement getTableHeadElement();
+  protected abstract HTMLTableSectionElement getTableHeadElement();
 
   @Override
   protected boolean isKeyboardNavigationSuppressed() {
@@ -1516,10 +1516,10 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
 
   @Override
   protected void onBlur() {
-    TableCellElement td = getKeyboardSelectedTableCellElement();
+    HTMLTableCellElement td = getKeyboardSelectedTableCellElement();
     if (td != null) {
-      TableRowElement tr = td.getParentElement().cast();
-      td.removeClassName(style.keyboardSelectedCell());
+      HTMLTableRowElement tr = Js.uncheckedCast(td.parentElement);
+      td.classList.remove(style.keyboardSelectedCell());
       setRowStyleName(tr, style.keyboardSelectedRow(), style.keyboardSelectedRowCell(), false);
     }
   }
@@ -1528,33 +1528,33 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
   protected void onBrowserEvent2(Event event) {
     // Get the event target.
     EventTarget eventTarget = event.getEventTarget();
-    if (!Element.is(eventTarget)) {
+    if (!DOM.isElement(eventTarget)) {
       return;
     }
-    final Element target = event.getEventTarget().cast();
+    final HTMLElement target = event.getEventTarget().cast();
 
     // Find the cell where the event occurred.
-    TableSectionElement tbody = getTableBodyElement();
-    TableSectionElement tfoot = getTableFootElement();
-    TableSectionElement thead = getTableHeadElement();
-    TableSectionElement targetTableSection = null;
-    TableCellElement targetTableCell = null;
-    Element cellParent = null;
-    Element headerParent = null; // Header in the headerBuilder.
-    Element headerColumnParent = null; // Column in the headerBuilder.
-    Element footerParent = null; // Header in the footerBuilder.
-    Element footerColumnParent = null; // Column in the footerBuilder.
+    HTMLTableSectionElement tbody = getTableBodyElement();
+    HTMLTableSectionElement tfoot = getTableFootElement();
+    HTMLTableSectionElement thead = getTableHeadElement();
+    HTMLTableSectionElement targetTableSection = null;
+    HTMLTableCellElement targetTableCell = null;
+    HTMLElement cellParent = null;
+    HTMLElement headerParent = null; // Header in the headerBuilder.
+    HTMLElement headerColumnParent = null; // Column in the headerBuilder.
+    HTMLElement footerParent = null; // Header in the footerBuilder.
+    HTMLElement footerColumnParent = null; // Column in the footerBuilder.
     {
-      Element maybeTableCell = null;
-      Element cur = target;
+      HTMLElement maybeTableCell = null;
+      HTMLElement cur = target;
 
       /*
        * If an event happens in the TD element but outside the cell's div, we want
        * to handle it as if it happened within the table cell.
        */
-      if (TableCellElement.TAG_TD.equalsIgnoreCase(cur.getTagName())
-          && tableBuilder.isColumn(cur.getFirstChildElement())) {
-        cur = cur.getFirstChildElement();
+      if ("td".equalsIgnoreCase(cur.tagName)
+          && tableBuilder.isColumn(Js.uncheckedCast(cur.firstElementChild))) {
+        cur = Js.uncheckedCast(cur.firstElementChild);
       }
 
       while (cur != null && targetTableSection == null) {
@@ -1563,17 +1563,17 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
          * discovered.
          */
         if (cur == tbody || cur == tfoot || cur == thead) {
-          targetTableSection = cur.cast(); // We found the table section.
+          targetTableSection = Js.uncheckedCast(cur); // We found the table section.
           if (maybeTableCell != null) {
-            targetTableCell = maybeTableCell.cast();
+            targetTableCell = Js.uncheckedCast(maybeTableCell);
             break;
           }
         }
 
         // Look for a table cell.
-        String tagName = cur.getTagName();
-        if (TableCellElement.TAG_TD.equalsIgnoreCase(tagName)
-            || TableCellElement.TAG_TH.equalsIgnoreCase(tagName)) {
+        String tagName = cur.tagName;
+        if ("td".equalsIgnoreCase(tagName)
+            || "th".equalsIgnoreCase(tagName)) {
           /*
            * Found a table cell, but we can't return yet because it may be part
            * of a sub table within the a CellTable cell.
@@ -1609,7 +1609,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
         }
 
         // Iterate.
-        cur = cur.getParentElement();
+        cur = Js.uncheckedCast(cur.parentElement);
       }
     }
     if (targetTableCell == null) {
@@ -1619,24 +1619,24 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
     // Support the legacy mode where the div inside of the TD is the cell
     // parent.
     if (legacyRenderRowValues) {
-      cellParent = targetTableCell.getFirstChildElement();
+      cellParent = Js.uncheckedCast(targetTableCell.firstElementChild);
     }
 
     /*
      * Forward the event to the associated header, footer, or column.
      */
-    TableRowElement targetTableRow = targetTableCell.getParentElement().cast();
+    HTMLTableRowElement targetTableRow = Js.uncheckedCast(targetTableCell.parentElement);
     String eventType = event.getType();
     boolean isSelect =
         BrowserEvents.CLICK.equals(eventType)
             || (BrowserEvents.KEYDOWN.equals(eventType)
                 && event.getKeyCode() == KeyCodes.KEY_ENTER);
 
-    int col = targetTableCell.getCellIndex();
+    int col = targetTableCell.cellIndex;
     if (targetTableSection == thead || targetTableSection == tfoot) {
       boolean isHeader = (targetTableSection == thead);
       headerParent = isHeader ? headerParent : footerParent;
-      Element columnParent = isHeader ? headerColumnParent : footerColumnParent;
+      HTMLElement columnParent = isHeader ? headerColumnParent : footerColumnParent;
 
       boolean shouldSortColumn = true;
       // Fire the event to the header.
@@ -1697,7 +1697,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
         boolean isRowChange = hoveringRow != targetTableRow;
         if (BrowserEvents.MOUSEOVER.equals(eventType)) {
           // Unstyle the old row if it is still part of the table.
-          if (hoveringRow != null && getTableBodyElement().isOrHasChild(hoveringRow)) {
+          if (hoveringRow != null && getTableBodyElement().contains(hoveringRow)) {
             setRowHover(hoveringRow, event, false, isRowChange);
           }
           hoveringRow = targetTableRow;
@@ -1711,10 +1711,10 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
             // effect if the floating element is shown/hide based on hover event.
             int clientX = event.getClientX() + (int) DomGlobal.document.documentElement.scrollLeft;
             int clientY = event.getClientY() + (int) DomGlobal.document.documentElement.scrollTop;
-            int rowLeft = hoveringRow.getAbsoluteLeft();
-            int rowTop = hoveringRow.getAbsoluteTop();
-            int rowWidth = hoveringRow.getOffsetWidth();
-            int rowHeight = hoveringRow.getOffsetHeight();
+            int rowLeft = DOM.getAbsoluteLeft(hoveringRow);
+            int rowTop = DOM.getAbsoluteTop(hoveringRow);
+            int rowWidth = hoveringRow.offsetWidth;
+            int rowHeight = hoveringRow.offsetHeight;
             int rowBottom = rowTop + rowHeight;
             int rowRight = rowLeft + rowWidth;
             unhover =
@@ -1773,10 +1773,10 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
 
   @Override
   protected void onFocus() {
-    TableCellElement td = getKeyboardSelectedTableCellElement();
+    HTMLTableCellElement td = getKeyboardSelectedTableCellElement();
     if (td != null) {
-      TableRowElement tr = td.getParentElement().cast();
-      td.addClassName(style.keyboardSelectedCell());
+      HTMLTableRowElement tr = Js.uncheckedCast(td.parentElement);
+      td.classList.add(style.keyboardSelectedCell());
       setRowStyleName(tr, style.keyboardSelectedRow(), style.keyboardSelectedRowCell(), true);
     }
   }
@@ -1948,7 +1948,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
 
   @Override
   protected boolean resetFocusOnCell() {
-    Element elem = getKeyboardSelectedElement();
+    HTMLElement elem = getKeyboardSelectedElement();
     if (elem == null) {
       // There is no selected element.
       return false;
@@ -1985,7 +1985,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
     }
 
     // Deselect the row.
-    TableRowElement tr = getSubRowElement(index + getPageStart(), subrow);
+    HTMLTableRowElement tr = getSubRowElement(index + getPageStart(), subrow);
     if (tr == null) {
       // The row does not exist.
       return;
@@ -1993,17 +1993,17 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
     String cellStyle = style.keyboardSelectedCell();
     boolean updatedSelection = !selected || isFocused || stealFocus;
     setRowStyleName(tr, style.keyboardSelectedRow(), style.keyboardSelectedRowCell(), selected);
-    NodeList<TableCellElement> cells = tr.getCells();
+    HTMLCollection<HTMLTableCellElement> cells = tr.cells;
     int keyboardColumn = Math.min(getKeyboardSelectedColumn(), cells.getLength() - 1);
     for (int i = 0; i < cells.getLength(); i++) {
-      TableCellElement td = cells.getItem(i);
+      HTMLTableCellElement td = cells.getAt(i);
       boolean isKeyboardSelected = (i == keyboardColumn);
 
       // Update the selected style.
       setStyleName(td, cellStyle, updatedSelection && selected && isKeyboardSelected);
 
       // Mark as focusable.
-      final Element focusable = getKeyboardSelectedElement(td);
+      final HTMLElement focusable = getKeyboardSelectedElement(td);
       setFocusable(focusable, selected && isKeyboardSelected);
 
       // Move focus to the cell.
@@ -2047,7 +2047,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
    * @param subrow the index of the subrow beneath the row.
    * @return the row element, or null if not found
    */
-  protected TableRowElement getSubRowElement(int absRow, int subrow) {
+  protected HTMLTableRowElement getSubRowElement(int absRow, int subrow) {
     int relRow = absRow - getPageStart();
     checkRowBounds(relRow);
 
@@ -2060,7 +2060,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
      * We use a binary search to find the row, but we start at the index as that
      * is the most likely location.
      */
-    NodeList<TableRowElement> rows = getTableBodyElement().getRows();
+    HTMLCollection<HTMLTableRowElement> rows = getTableBodyElement().rows;
     int rowCount = rows.getLength();
     if (rowCount == 0) {
       return null;
@@ -2070,7 +2070,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
     int frameEnd = rowCount - 1;
     int domIndex = Math.min(relRow, frameEnd);
     while (domIndex >= frameStart && domIndex <= frameEnd) {
-      TableRowElement curRow = rows.getItem(domIndex);
+      HTMLTableRowElement curRow = rows.getAt(domIndex);
       int rowValueIndex = tableBuilder.getRowValueIndex(curRow);
       if (rowValueIndex == absRow) {
         // Found a subrow in the row index.
@@ -2083,7 +2083,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
             // The subrow is out of range of the table.
             return null;
           }
-          curRow = rows.getItem(subrowIndex);
+          curRow = rows.getAt(subrowIndex);
           if (tableBuilder.getRowValueIndex(curRow) != absRow) {
             // The "subrow" is actually part of the next row.
             return null;
@@ -2183,11 +2183,11 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
     }
   }
 
-  /** Fire an event to the Cell within the specified {@link TableCellElement}. */
+  /** Fire an event to the Cell within the specified {@link HTMLTableCellElement}. */
   private <C> void fireEventToCell(
       Event event,
       String eventType,
-      Element parentElem,
+      HTMLElement parentElem,
       final T rowValue,
       Context context,
       HasCell<T, C> column) {
@@ -2243,7 +2243,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
    *
    * @return the keyboard selected element, or null if there is none
    */
-  private Element getKeyboardSelectedElement(TableCellElement td) {
+  private HTMLElement getKeyboardSelectedElement(HTMLTableCellElement td) {
     if (td == null) {
       return null;
     }
@@ -2263,10 +2263,10 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
      * builder with a different structure, we must assume the keyboard selected
      * element is the TD itself.
      */
-    Element firstChild = td.getFirstChildElement();
+    HTMLElement firstChild = Js.uncheckedCast(td.firstElementChild);
     if (firstChild != null
-        && td.getChildCount() == 1
-        && "div".equalsIgnoreCase(firstChild.getTagName())) {
+        && td.childElementCount == 1
+        && "div".equalsIgnoreCase(firstChild.tagName)) {
       return firstChild;
     }
 
@@ -2274,11 +2274,11 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
   }
 
   /**
-   * Get the {@link TableCellElement} that is currently keyboard selected.
+   * Get the {@link HTMLTableCellElement} that is currently keyboard selected.
    *
    * @return the table cell element, or null if not selected
    */
-  private TableCellElement getKeyboardSelectedTableCellElement() {
+  private HTMLTableCellElement getKeyboardSelectedTableCellElement() {
     int colIndex = getKeyboardSelectedColumn();
     if (colIndex < 0) {
       return null;
@@ -2286,15 +2286,15 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
 
     // Do not use getRowElement() because that will flush the presenter.
     int rowIndex = getKeyboardSelectedRow();
-    if (rowIndex < 0 || rowIndex >= getTableBodyElement().getRows().getLength()) {
+    if (rowIndex < 0 || rowIndex >= getTableBodyElement().rows.length) {
       return null;
     }
-    TableRowElement tr = getSubRowElement(rowIndex + getPageStart(), keyboardSelectedSubrow);
+    HTMLTableRowElement tr = getSubRowElement(rowIndex + getPageStart(), keyboardSelectedSubrow);
     if (tr != null) {
-      int cellCount = tr.getCells().getLength();
+      int cellCount = tr.cells.getLength();
       if (cellCount > 0) {
         int column = Math.min(colIndex, cellCount - 1);
-        return tr.getCells().getItem(column);
+        return tr.cells.getAt(column);
       }
     }
     return null;
@@ -2349,7 +2349,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
   }
 
   private <C> boolean resetFocusOnCellImpl(
-      Context context, T value, HasCell<T, C> column, Element cellParent) {
+      Context context, T value, HasCell<T, C> column, HTMLElement cellParent) {
     C cellValue = column.getValue(value);
     Cell<C> cell = column.getCell();
     return cell.resetFocus(context, cellParent, cellValue);
@@ -2365,13 +2365,13 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
    *     cell. Row style update is called only on full row change.
    */
   private void setRowHover(
-      TableRowElement tr, Event event, boolean isHovering, boolean isRowChange) {
+      HTMLTableRowElement tr, Event event, boolean isHovering, boolean isRowChange) {
     if (!skipRowHoverStyleUpdate) {
       setRowStyleName(tr, style.hoveredRow(), style.hoveredRowCell(), isHovering);
     }
     RowHoverEvent.fire(
         this,
-        tr,
+        Js.uncheckedCast(tr),
         event,
         !isHovering,
         isRowChange
@@ -2387,11 +2387,11 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
    * @param cellStyle the style to apply to the cells
    * @param add true to add the style, false to remove
    */
-  private void setRowStyleName(TableRowElement tr, String rowStyle, String cellStyle, boolean add) {
+  private void setRowStyleName(HTMLTableRowElement tr, String rowStyle, String cellStyle, boolean add) {
     setStyleName(tr, rowStyle, add);
-    NodeList<TableCellElement> cells = tr.getCells();
+    HTMLCollection<HTMLTableCellElement> cells = tr.cells;
     for (int i = 0; i < cells.getLength(); i++) {
-      setStyleName(cells.getItem(i), cellStyle, add);
+      setStyleName(cells.getAt(i), cellStyle, add);
     }
   }
 

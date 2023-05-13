@@ -15,13 +15,14 @@
  */
 package org.gwtproject.layout.client;
 
-import static org.gwtproject.dom.style.shared.Unit.PX;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import elemental2.dom.HTMLElement;
 import org.gwtproject.animation.client.Animation;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.style.shared.Unit;
+
+import static org.gwtproject.dom.style.shared.Unit.PX;
 
 /**
  * Helper class for laying out a container element and its children.
@@ -32,8 +33,8 @@ import org.gwtproject.dom.style.shared.Unit;
  * margins, borders, and padding.
  *
  * <p>To use this class, create a container element (again, usually a &lt;div&gt;) and pass it to
- * {@link #Layout(Element)}. Rather than attaching child elements directly to the element managed by
- * this {@link Layout}, use the {@link Layout#attachChild(Element)} method. This will attach the
+ * {@link #Layout(HTMLElement)}. Rather than attaching child elements directly to the element managed by
+ * this {@link Layout}, use the {@link Layout#attachChild(HTMLElement)} method. This will attach the
  * child element and return a {@link Layer} object which is used to manage the child.
  *
  * <p>A separate {@link Layer} instance is associated with each child element. There is a set of
@@ -89,7 +90,7 @@ import org.gwtproject.dom.style.shared.Unit;
  */
 public class Layout {
 
-  private final Element parentElem;
+  private final HTMLElement parentElem;
 
   private LayoutImpl impl = new LayoutImpl();
 
@@ -102,7 +103,7 @@ public class Layout {
    *
    * @param parent the element to serve as the layout parent
    */
-  public Layout(Element parent) {
+  public Layout(HTMLElement parent) {
     this.parentElem = parent;
     impl.initParent(parent);
   }
@@ -112,8 +113,8 @@ public class Layout {
    *
    * @param elem the element to be tested
    */
-  public void assertIsChild(Element elem) {
-    assert elem.getParentElement().getParentElement() == this.parentElem
+  public void assertIsChild(HTMLElement elem) {
+    assert elem.parentElement.parentElement == this.parentElem
         : "Element is not a child of this layout";
   }
 
@@ -126,7 +127,7 @@ public class Layout {
    * @param child the child to be attached
    * @return the {@link Layer} associated with the element
    */
-  public Layer attachChild(Element child) {
+  public Layer attachChild(HTMLElement child) {
     return attachChild(child, null);
   }
 
@@ -140,7 +141,7 @@ public class Layout {
    * @param before the child element before which to insert
    * @return the {@link Layer} associated with the element
    */
-  public Layer attachChild(Element child, Element before) {
+  public Layer attachChild(HTMLElement child, HTMLElement before) {
     return attachChild(child, before, null);
   }
 
@@ -154,7 +155,7 @@ public class Layout {
    * @param userObject an arbitrary object to be associated with this layer
    * @return the {@link Layer} associated with the element
    */
-  public Layer attachChild(Element child, Object userObject) {
+  public Layer attachChild(HTMLElement child, Object userObject) {
     return attachChild(child, null, userObject);
   }
 
@@ -169,8 +170,8 @@ public class Layout {
    * @param userObject an arbitrary object to be associated with this layer
    * @return the {@link Layer} associated with the element
    */
-  public Layer attachChild(Element child, Element before, Object userObject) {
-    Element container = impl.attachChild(parentElem, child, before);
+  public Layer attachChild(HTMLElement child, HTMLElement before, Object userObject) {
+    HTMLElement container = impl.attachChild(parentElem, child, before);
     Layer layer = new Layer(container, child, userObject);
     layers.add(layer);
     return layer;
@@ -273,8 +274,8 @@ public class Layout {
     }
 
     // Deal with constraint changes (e.g. left-width => right-width, etc)
-    int parentWidth = parentElem.getClientWidth();
-    int parentHeight = parentElem.getClientHeight();
+    int parentWidth = parentElem.clientWidth;
+    int parentHeight = parentElem.clientHeight;
     for (Layer l : layers) {
       adjustHorizontalConstraints(parentWidth, l);
       adjustVerticalConstraints(parentHeight, l);
@@ -528,7 +529,7 @@ public class Layout {
    */
   public class Layer {
 
-    final Element container, child;
+    final HTMLElement container, child;
 
     Object userObject;
 
@@ -587,7 +588,7 @@ public class Layout {
 
     boolean visible = true;
 
-    Layer(Element container, Element child, Object userObject) {
+    Layer(HTMLElement container, HTMLElement child, Object userObject) {
       this.container = container;
       this.child = child;
       this.userObject = userObject;
@@ -602,7 +603,7 @@ public class Layout {
      *
      * @return the container element
      */
-    public Element getContainerElement() {
+    public HTMLElement getContainerElement() {
       return container;
     }
 

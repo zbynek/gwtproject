@@ -15,8 +15,8 @@
  */
 package org.gwtproject.user.client.ui;
 
+import elemental2.dom.HTMLElement;
 import jsinterop.annotations.JsConstructor;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.resources.client.ImageResource;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.user.client.ui.impl.ClippedImagePrototype;
@@ -49,7 +49,7 @@ public abstract class AbstractImagePrototype {
   /**
    * This corresponds to the top Element of the DOM structure created by {@link #createElement()}.
    */
-  public static class ImagePrototypeElement extends Element {
+  public static class ImagePrototypeElement extends HTMLElement {
 
     @JsConstructor
     protected ImagePrototypeElement() {}
@@ -93,7 +93,7 @@ public abstract class AbstractImagePrototype {
   }
 
   /**
-   * Creates a new {@link Element} based on the image represented by this prototype. The DOM
+   * Creates a new {@link HTMLElement} based on the image represented by this prototype. The DOM
    * structure may not necessarily a simple <code>&lt;img&gt;</code> element. It may be a more
    * complex structure that should be treated opaquely.
    *

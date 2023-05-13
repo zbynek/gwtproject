@@ -15,29 +15,30 @@
  */
 package org.gwtproject.user.client.ui.impl;
 
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
+import org.gwtproject.user.client.DOM;
 
 /** Implementation class used by PopupPanel. */
 public class PopupImpl {
 
-  public Element createElement() {
-    return Document.get().createDivElement();
+  public HTMLElement createElement() {
+    return DOM.createDiv();
   }
 
-  public Element getContainerElement(Element popup) {
+  public HTMLElement getContainerElement(HTMLElement popup) {
     return popup;
   }
 
-  public Element getStyleElement(Element popup) {
-    return popup.getParentElement();
+  public HTMLElement getStyleElement(HTMLElement popup) {
+    return Js.uncheckedCast(popup.parentElement);
   }
 
   /**
    * @param popup the popup
    * @param rect the clip rect
    */
-  public void setClip(Element popup, String rect) {
-    popup.getStyle().setProperty("clip", rect);
+  public void setClip(HTMLElement popup, String rect) {
+    popup.style.setProperty("clip", rect);
   }
 }

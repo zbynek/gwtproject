@@ -15,7 +15,7 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Element;
+import jsinterop.base.Js;
 import org.gwtproject.dom.client.EventTarget;
 import org.gwtproject.event.logical.shared.ValueChangeEvent;
 import org.gwtproject.safehtml.shared.SafeHtml;
@@ -135,7 +135,7 @@ public class RadioButton extends CheckBox {
 
       case Event.ONCLICK:
         EventTarget target = event.getEventTarget();
-        if (Element.is(target) && labelElem.isOrHasChild(Element.as(target))) {
+        if (DOM.isElement(target) && labelElem.contains(Js.uncheckedCast(target))) {
 
           // They clicked the label. Note our pre-click value, and
           // short circuit event routing so that other click handlers

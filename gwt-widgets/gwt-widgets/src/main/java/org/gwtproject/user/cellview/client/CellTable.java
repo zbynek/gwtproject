@@ -17,16 +17,15 @@ package org.gwtproject.user.cellview.client;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import elemental2.dom.HTMLTableCellElement;
+import elemental2.dom.HTMLTableColElement;
+import elemental2.dom.HTMLTableElement;
+import elemental2.dom.HTMLTableRowElement;
+import elemental2.dom.HTMLTableSectionElement;
+import jsinterop.base.Js;
 import org.gwtproject.cell.client.Cell;
 import org.gwtproject.dom.client.BrowserEvents;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.TableCellElement;
-import org.gwtproject.dom.client.TableColElement;
-import org.gwtproject.dom.client.TableElement;
-import org.gwtproject.dom.client.TableRowElement;
-import org.gwtproject.dom.client.TableSectionElement;
-import org.gwtproject.dom.style.shared.Display;
-import org.gwtproject.dom.style.shared.TableLayout;
 import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.resources.client.ClientBundle;
 import org.gwtproject.resources.client.CssResource;
@@ -35,7 +34,7 @@ import org.gwtproject.resources.client.ImageResource;
 import org.gwtproject.resources.client.ImageResource.ImageOptions;
 import org.gwtproject.resources.client.ImageResource.RepeatStyle;
 import org.gwtproject.user.cellview.client.LoadingStateChangeEvent.LoadingState;
-import org.gwtproject.user.client.ui.DeckPanel;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.Image;
 import org.gwtproject.user.client.ui.SimplePanel;
 import org.gwtproject.user.client.ui.Widget;
@@ -407,17 +406,17 @@ public class CellTable<T> extends AbstractCellTable<T>
     return (loadingImg == null) ? null : new Image(loadingImg);
   }
 
-  final TableColElement colgroup;
+  final HTMLTableColElement colgroup;
   private final SimplePanel emptyTableWidgetContainer = new SimplePanel();
   private final SimplePanel loadingIndicatorContainer = new SimplePanel();
 
   private final Style style;
-  private final TableElement table;
-  private TableSectionElement tbody;
-  private final TableSectionElement tbodyLoading;
-  private final TableCellElement tbodyLoadingCell;
-  private TableSectionElement tfoot;
-  private TableSectionElement thead;
+  private final HTMLTableElement table;
+  private HTMLTableSectionElement tbody;
+  private final HTMLTableSectionElement tbodyLoading;
+  private final HTMLTableCellElement tbodyLoadingCell;
+  private HTMLTableSectionElement tfoot;
+  private HTMLTableSectionElement thead;
   private boolean colGroupEnabled = true;
   private boolean removeColumnsOnHide = false;
 
@@ -510,7 +509,7 @@ public class CellTable<T> extends AbstractCellTable<T>
    * @param enableColGroup enable colgroup element. This is used when the table is using fixed
    *     layout and when column style is added. Ignoring this element will boost rendering
    *     performance. Note that when colgroup is disabled, {@link #setColumnWidth}, {@link
-   *     setTableLayoutFixed} and {@link addColumnStyleName} are no longer supported
+   *     } and {@link } are no longer supported
    * @param attachLoadingPanel attaching the table section that contains the empty table widget and
    *     the loading indicator. Attaching this to the table significantly improve the rendering
    *     performance in webkit based browsers but also introduces significantly larger latency in
@@ -525,7 +524,7 @@ public class CellTable<T> extends AbstractCellTable<T>
       boolean enableColGroup,
       boolean attachLoadingPanel) {
     super(
-        Document.get().createTableElement(),
+            DOM.createTable(),
         pageSize,
         new ResourcesAdapter(resources),
         keyProvider);
@@ -533,35 +532,35 @@ public class CellTable<T> extends AbstractCellTable<T>
     this.style.ensureInjected();
     this.colGroupEnabled = enableColGroup;
 
-    table = getElement().cast();
-    table.setCellSpacing(0);
+    table = Js.uncheckedCast(getElement());
+    table.cellSpacing = "0";
     if (enableColGroup) {
-      colgroup = Document.get().createColGroupElement();
+      colgroup = DOM.createColGroup();
       table.appendChild(colgroup);
     } else {
       colgroup = null;
     }
-    thead = table.createTHead();
+    thead = Js.uncheckedCast(table.createTHead());
     // Some browsers create a tbody automatically, others do not.
-    if (table.getTBodies().getLength() > 0) {
-      tbody = table.getTBodies().getItem(0);
+    if (table.tBodies.length > 0) {
+      tbody = table.tBodies.getAt(0);
     } else {
-      tbody = Document.get().createTBodyElement();
+      tbody = DOM.createTBody();
       table.appendChild(tbody);
     }
-    tbodyLoading = Document.get().createTBodyElement();
+    tbodyLoading = DOM.createTBody();
     if (attachLoadingPanel) {
       table.appendChild(tbodyLoading);
     }
-    tfoot = table.createTFoot();
+    tfoot = Js.uncheckedCast(table.createTFoot());
 
     // Attach the messages panel.
     {
-      tbodyLoadingCell = Document.get().createTDElement();
-      TableRowElement tr = Document.get().createTRElement();
+      tbodyLoadingCell = DOM.createTD();
+      HTMLTableRowElement tr = DOM.createTR();
       tbodyLoading.appendChild(tr);
       tr.appendChild(tbodyLoadingCell);
-      tbodyLoadingCell.setAlign("center");
+      tbodyLoadingCell.align = "center";
       loadingIndicatorContainer.setStyleName(style.cellTableLoading());
     }
 
@@ -578,7 +577,7 @@ public class CellTable<T> extends AbstractCellTable<T>
   @Override
   public void addColumnStyleName(int index, String styleName) {
     assertColumnGroupEnabled("Cannot add column style when colgroup is disabled");
-    ensureTableColElement(index).addClassName(styleName);
+    ensureTableColElement(index).classList.add(styleName);
   }
 
   /**
@@ -587,7 +586,7 @@ public class CellTable<T> extends AbstractCellTable<T>
    * @return an int representing the body height
    */
   public int getBodyHeight() {
-    return tbody.getClientHeight();
+    return tbody.clientHeight;
   }
 
   /**
@@ -596,7 +595,7 @@ public class CellTable<T> extends AbstractCellTable<T>
    * @return an int representing the header height
    */
   public int getHeaderHeight() {
-    return thead.getClientHeight();
+    return thead.clientHeight;
   }
 
   /**
@@ -604,32 +603,32 @@ public class CellTable<T> extends AbstractCellTable<T>
    * attachLoadingPanel is set to false in the constructor, this section may not be attached to any
    * element.
    */
-  public TableSectionElement getTableLoadingSection() {
+  public HTMLTableSectionElement getTableLoadingSection() {
     return tbodyLoading;
   }
 
   @Override
-  public void onTableBodyChange(TableSectionElement newTBody) {
+  public void onTableBodyChange(HTMLTableSectionElement newTBody) {
     tbody = newTBody;
   }
 
   @Override
-  public void onTableFootChange(TableSectionElement newTFoot) {
+  public void onTableFootChange(HTMLTableSectionElement newTFoot) {
     tfoot = newTFoot;
   }
 
   @Override
-  public void onTableHeadChange(TableSectionElement newTHead) {
+  public void onTableHeadChange(HTMLTableSectionElement newTHead) {
     thead = newTHead;
   }
 
   @Override
   public void removeColumnStyleName(int index, String styleName) {
     assertColumnGroupEnabled("Cannot remove column style when colgroup is disabled");
-    if (index >= colgroup.getChildCount()) {
+    if (index >= colgroup.childElementCount) {
       return;
     }
-    ensureTableColElement(index).removeClassName(styleName);
+    ensureTableColElement(index).classList.remove(styleName);
   }
 
   /**
@@ -703,9 +702,9 @@ public class CellTable<T> extends AbstractCellTable<T>
       throw new IllegalStateException("Cannot set table to fixed layout when colgroup is disabled");
     }
     if (isFixed) {
-      table.getStyle().setTableLayout(TableLayout.FIXED);
+      table.style.tableLayout = "fixed";
     } else {
-      table.getStyle().clearTableLayout();
+      table.style.tableLayout = null;
     }
   }
 
@@ -742,9 +741,9 @@ public class CellTable<T> extends AbstractCellTable<T>
     // is not invoked first.
     if (colGroupEnabled) {
       if (width == null) {
-        ensureTableColElement(column).getStyle().clearWidth();
+        ensureTableColElement(column).style.width = null;
       } else {
-        ensureTableColElement(column).getStyle().setProperty("width", width);
+        ensureTableColElement(column).style.setProperty("width", width);
       }
     }
   }
@@ -755,17 +754,17 @@ public class CellTable<T> extends AbstractCellTable<T>
   }
 
   @Override
-  protected TableSectionElement getTableBodyElement() {
+  protected HTMLTableSectionElement getTableBodyElement() {
     return tbody;
   }
 
   @Override
-  protected TableSectionElement getTableFootElement() {
+  protected HTMLTableSectionElement getTableFootElement() {
     return tfoot;
   }
 
   @Override
-  protected TableSectionElement getTableHeadElement() {
+  protected HTMLTableSectionElement getTableHeadElement() {
     return thead;
   }
 
@@ -786,7 +785,7 @@ public class CellTable<T> extends AbstractCellTable<T>
     }
 
     // Adjust the colspan of the messages panel container.
-    tbodyLoadingCell.setColSpan(Math.max(1, getRealColumnCount()));
+    tbodyLoadingCell.colSpan = Math.max(1, getRealColumnCount());
 
     // Show the correct container.
     showOrHide(getChildContainer(), message == null);
@@ -805,17 +804,17 @@ public class CellTable<T> extends AbstractCellTable<T>
      * the colgroup that are no longer in the table according to the removeCOlumnsOnHide flag.
      */
     if (colGroupEnabled) {
-      int colCount = colgroup.getChildCount();
+      int colCount = colgroup.childElementCount;
       int lastColumn = getRealColumnCount();
       for (int i = 0; i < lastColumn; i++) {
-        ensureTableColElement(i).getStyle().clearDisplay();
+        ensureTableColElement(i).style.display = null;
       }
       for (int i = colCount - 1; i >= lastColumn; i--) {
         if (removeColumnsOnHide) {
-          colgroup.removeChild(colgroup.getChild(i));
+          colgroup.removeChild(colgroup.childNodes.getAt(i));
         } else {
           doSetColumnWidth(i, "0px");
-          ensureTableColElement(i).getStyle().setDisplay(Display.NONE);
+          ensureTableColElement(i).style.display = "none";
         }
       }
     }
@@ -847,11 +846,11 @@ public class CellTable<T> extends AbstractCellTable<T>
    * @param index the column index
    * @return the {@link TableColElement}
    */
-  private TableColElement ensureTableColElement(int index) {
+  private HTMLTableColElement ensureTableColElement(int index) {
     // Ensure that we have enough columns.
-    for (int i = colgroup.getChildCount(); i <= index; i++) {
-      colgroup.appendChild(Document.get().createColElement());
+    for (int i = colgroup.childNodes.length; i <= index; i++) {
+      colgroup.appendChild(DOM.createCol());
     }
-    return colgroup.getChild(index).cast();
+    return Js.uncheckedCast(colgroup.childNodes.getAt(index));
   }
 }

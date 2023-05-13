@@ -18,8 +18,9 @@ package org.gwtproject.cell.client;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import elemental2.dom.HTMLElement;
 import org.gwtproject.dom.client.BrowserEvents;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.event.dom.client.KeyCodes;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
@@ -96,7 +97,7 @@ public abstract class AbstractCell<C> implements Cell<C> {
    * Returns false. Subclasses that support editing should override this method to return the
    * current editing status.
    */
-  public boolean isEditing(Context context, Element parent, C value) {
+  public boolean isEditing(Context context, HTMLElement parent, C value) {
     return false;
   }
 
@@ -107,7 +108,7 @@ public abstract class AbstractCell<C> implements Cell<C> {
    * the cell expects into the constructor.
    */
   public void onBrowserEvent(
-      Context context, Element parent, C value, NativeEvent event, ValueUpdater<C> valueUpdater) {
+          Context context, HTMLElement parent, C value, NativeEvent event, ValueUpdater<C> valueUpdater) {
     String eventType = event.getType();
     // Special case the ENTER key for a unified user experience.
     if (BrowserEvents.KEYDOWN.equals(eventType) && event.getKeyCode() == KeyCodes.KEY_ENTER) {
@@ -123,14 +124,14 @@ public abstract class AbstractCell<C> implements Cell<C> {
    * <p>This method is a no-op and returns false. If your cell is editable or can be focused by the
    * user, override this method to reset focus when the containing widget is refreshed.
    */
-  public boolean resetFocus(Context context, Element parent, C value) {
+  public boolean resetFocus(Context context, HTMLElement parent, C value) {
     return false;
   }
 
-  public void setValue(Context context, Element parent, C value) {
+  public void setValue(Context context, HTMLElement parent, C value) {
     SafeHtmlBuilder sb = new SafeHtmlBuilder();
     render(context, value, sb);
-    parent.setInnerSafeHtml(sb.toSafeHtml());
+    parent.innerHTML = sb.toSafeHtml().asString();
   }
 
   /**
@@ -146,7 +147,7 @@ public abstract class AbstractCell<C> implements Cell<C> {
    * @param valueUpdater a {@link ValueUpdater}, or null if not specified
    */
   protected void onEnterKeyDown(
-      Context context, Element parent, C value, NativeEvent event, ValueUpdater<C> valueUpdater) {}
+      Context context, HTMLElement parent, C value, NativeEvent event, ValueUpdater<C> valueUpdater) {}
 
   /**
    * Initialize the cell.

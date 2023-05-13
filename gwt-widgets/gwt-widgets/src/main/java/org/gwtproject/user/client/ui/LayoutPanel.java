@@ -15,13 +15,13 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
+import elemental2.dom.HTMLElement;
 import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.layout.client.Layout;
 import org.gwtproject.layout.client.Layout.Alignment;
 import org.gwtproject.layout.client.Layout.AnimationCallback;
 import org.gwtproject.layout.client.Layout.Layer;
+import org.gwtproject.user.client.DOM;
 
 /**
  * A panel that lays its children out in arbitrary {@link Layer layers} using the {@link Layout}
@@ -101,7 +101,7 @@ public class LayoutPanel extends ComplexPanel
 
   /** Creates an empty layout panel. */
   public LayoutPanel() {
-    setElement(Document.get().createDivElement());
+    setElement(DOM.createDiv());
     layout = new Layout(getElement());
     layoutCmd = new LayoutCommand(layout);
   }
@@ -143,7 +143,7 @@ public class LayoutPanel extends ComplexPanel
    * @param child
    * @return the widget's container element
    */
-  public Element getWidgetContainerElement(Widget child) {
+  public HTMLElement getWidgetContainerElement(Widget child) {
     assertIsChild(child);
     return getLayer(child).getContainerElement();
   }

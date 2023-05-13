@@ -18,6 +18,9 @@ package org.gwtproject.user.cellview.client;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLTableRowElement;
 import org.gwtproject.cell.client.Cell.Context;
 import org.gwtproject.cell.client.HasCell;
 import org.gwtproject.dom.builder.shared.ElementBuilderBase;
@@ -25,10 +28,8 @@ import org.gwtproject.dom.builder.shared.HtmlBuilderFactory;
 import org.gwtproject.dom.builder.shared.HtmlTableSectionBuilder;
 import org.gwtproject.dom.builder.shared.TableRowBuilder;
 import org.gwtproject.dom.builder.shared.TableSectionBuilder;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.TableRowElement;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
+import org.gwtproject.user.client.DOM;
 
 /**
  * Builder used to construct a CellTable.
@@ -108,7 +109,7 @@ public abstract class AbstractCellTableBuilder<T> implements CellTableBuilder<T>
    * @return the immediate column containing the element
    */
   @Override
-  public final HasCell<T, ?> getColumn(Context context, T rowValue, Element elem) {
+  public final HasCell<T, ?> getColumn(Context context, T rowValue, HTMLElement elem) {
     return getColumn(elem);
   }
 
@@ -119,31 +120,31 @@ public abstract class AbstractCellTableBuilder<T> implements CellTableBuilder<T>
   }
 
   /**
-   * Get the index of the row value from the associated {@link TableRowElement}.
+   * Get the index of the row value from the associated {@link HTMLTableRowElement}.
    *
    * @param row the row element
    * @return the row value index
    */
   @Override
-  public final int getRowValueIndex(TableRowElement row) {
+  public final int getRowValueIndex(HTMLTableRowElement row) {
     try {
       return Integer.parseInt(row.getAttribute(ROW_ATTRIBUTE));
     } catch (NumberFormatException e) {
       // The attribute doesn't exist. Maybe the user is overriding
       // renderRowValues().
-      return row.getSectionRowIndex() + cellTable.getPageStart();
+      return row.sectionRowIndex + cellTable.getPageStart();
     }
   }
 
   /**
-   * Get the index of the subrow value from the associated {@link TableRowElement}. The sub row
+   * Get the index of the subrow value from the associated {@link HTMLTableRowElement}. The sub row
    * value starts at 0 for the first row that represents a row value.
    *
    * @param row the row element
    * @return the subrow value index, or 0 if not found
    */
   @Override
-  public final int getSubrowValueIndex(TableRowElement row) {
+  public final int getSubrowValueIndex(HTMLTableRowElement row) {
     try {
       return Integer.parseInt(row.getAttribute(SUBROW_ATTRIBUTE));
     } catch (NumberFormatException e) {
@@ -155,12 +156,12 @@ public abstract class AbstractCellTableBuilder<T> implements CellTableBuilder<T>
 
   /**
    * Return if an element contains a cell. This may be faster to execute than {@link
-   * #getColumn(Element)}.
+   * #getColumn(HTMLElement)}.
    *
    * @param elem the element of interest
    */
   @Override
-  public final boolean isColumn(Element elem) {
+  public final boolean isColumn(HTMLElement elem) {
     return getCellId(elem) != null;
   }
 
@@ -177,7 +178,7 @@ public abstract class AbstractCellTableBuilder<T> implements CellTableBuilder<T>
     // Generate a unique ID for the cell.
     String cellId = cellToIdMap.get(column);
     if (cellId == null) {
-      cellId = "cell-" + Document.get().createUniqueId();
+      cellId = "cell-" + DOM.createUniqueId();
       idToCellMap.put(cellId, column);
       cellToIdMap.put(column, cellId);
     }
@@ -287,7 +288,7 @@ public abstract class AbstractCellTableBuilder<T> implements CellTableBuilder<T>
    * @param elem the element to check
    * @return the cellId if a cell parent, null if not
    */
-  private String getCellId(Element elem) {
+  private String getCellId(HTMLElement elem) {
     if (elem == null) {
       return null;
     }
@@ -301,7 +302,7 @@ public abstract class AbstractCellTableBuilder<T> implements CellTableBuilder<T>
    * @param elem the elm that the column contains
    * @return the column containing the element.
    */
-  private HasCell<T, ?> getColumn(Element elem) {
+  private HasCell<T, ?> getColumn(HTMLElement elem) {
     String cellId = getCellId(elem);
     return (cellId == null) ? null : idToCellMap.get(cellId);
   }

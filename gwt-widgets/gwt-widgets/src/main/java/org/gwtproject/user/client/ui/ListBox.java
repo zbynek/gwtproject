@@ -15,14 +15,16 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.OptionElement;
-import org.gwtproject.dom.client.SelectElement;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLOptionElement;
+import elemental2.dom.HTMLSelectElement;
+import jsinterop.base.Js;
 import org.gwtproject.event.dom.client.ChangeEvent;
 import org.gwtproject.event.dom.client.ChangeHandler;
 import org.gwtproject.event.dom.client.HasChangeHandlers;
 import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.user.client.DOM;
 
 /**
  * A widget that presents a list of choices to the user, either as a list box or as a drop-down
@@ -89,9 +91,9 @@ public class ListBox extends FocusWidget
    * @param element the element to be wrapped
    * @return list box
    */
-  public static ListBox wrap(Element element) {
+  public static ListBox wrap(HTMLElement element) {
     // Assert that the element is attached.
-    assert Document.get().getBody().isOrHasChild(element);
+    assert DomGlobal.document.body.contains(element);
 
     ListBox listBox = new ListBox(element);
 
@@ -104,7 +106,7 @@ public class ListBox extends FocusWidget
 
   /** Creates an empty list box in single selection mode. */
   public ListBox() {
-    super(Document.get().createSelectElement());
+    super(DOM.createSelect());
     setStyleName("gwt-ListBox");
   }
 
@@ -126,9 +128,9 @@ public class ListBox extends FocusWidget
    *
    * @param element the element to be used
    */
-  protected ListBox(Element element) {
+  protected ListBox(HTMLElement element) {
     super(element);
-    SelectElement.as(element);
+    assertTagName("select");
   }
 
   public HandlerRegistration addChangeHandler(ChangeHandler handler) {
@@ -152,7 +154,7 @@ public class ListBox extends FocusWidget
    * Adds an item to the list box, specifying an initial value for the item.
    *
    * @param item the text of the item to be added
-   * @param value the item's value, to be submitted if it is part of a {@link FormPanel}; cannot be
+   * @param value the item's value
    *     <code>null</code>
    */
   public void addItem(String item, String value) {
@@ -162,7 +164,7 @@ public class ListBox extends FocusWidget
 
   /** Removes all items from the list box. */
   public void clear() {
-    getSelectElement().clear();
+    getSelectElement().options.length = 0;
   }
 
   /**
@@ -171,7 +173,7 @@ public class ListBox extends FocusWidget
    * @return the number of items
    */
   public int getItemCount() {
-    return getSelectElement().getOptions().getLength();
+    return getSelectElement().options.getLength();
   }
 
   /**
@@ -183,7 +185,7 @@ public class ListBox extends FocusWidget
    */
   public String getItemText(int index) {
     checkIndex(index);
-    return getOptionText(getSelectElement().getOptions().getItem(index));
+    return getOptionText(getSelectElement().options.getAt(index));
   }
 
   /**
@@ -198,7 +200,7 @@ public class ListBox extends FocusWidget
   }
 
   public String getName() {
-    return getSelectElement().getName();
+    return getSelectElement().name;
   }
 
   /**
@@ -208,7 +210,7 @@ public class ListBox extends FocusWidget
    * @return the selected index, or <code>-1</code> if none is selected
    */
   public int getSelectedIndex() {
-    return getSelectElement().getSelectedIndex();
+    return getSelectElement().selectedIndex;
   }
 
   /**
@@ -220,7 +222,7 @@ public class ListBox extends FocusWidget
    */
   public String getValue(int index) {
     checkIndex(index);
-    return getSelectElement().getOptions().getItem(index).getValue();
+    return getSelectElement().options.getAt(index).value;
   }
 
   /**
@@ -241,7 +243,7 @@ public class ListBox extends FocusWidget
    * @return the visible item count
    */
   public int getVisibleItemCount() {
-    return getSelectElement().getSize();
+    return getSelectElement().size;
   }
 
   /**
@@ -264,23 +266,23 @@ public class ListBox extends FocusWidget
    * item will be appended to the end of the list.
    *
    * @param item the text of the item to be inserted
-   * @param value the item's value, to be submitted if it is part of a {@link FormPanel}.
+   * @param value the item's value, to be submitted
    * @param index the index at which to insert it
    */
   public void insertItem(String item, String value, int index) {
-    SelectElement select = getSelectElement();
-    OptionElement option = Document.get().createOptionElement();
+    HTMLSelectElement select = getSelectElement();
+    HTMLOptionElement option = DOM.createOption();
     setOptionText(option, item);
-    option.setValue(value);
+    option.value = value;
 
-    int itemCount = select.getLength();
+    int itemCount = select.options.length;
     if (index < 0 || index > itemCount) {
       index = itemCount;
     }
     if (index == itemCount) {
       select.add(option, null);
     } else {
-      OptionElement before = select.getOptions().getItem(index);
+      HTMLOptionElement before = select.options.getAt(index);
       select.add(option, before);
     }
   }
@@ -294,7 +296,7 @@ public class ListBox extends FocusWidget
    */
   public boolean isItemSelected(int index) {
     checkIndex(index);
-    return getSelectElement().getOptions().getItem(index).isSelected();
+    return getSelectElement().options.getAt(index).selected;
   }
 
   /**
@@ -303,7 +305,7 @@ public class ListBox extends FocusWidget
    * @return <code>true</code> if multiple selection is allowed
    */
   public boolean isMultipleSelect() {
-    return getSelectElement().isMultiple();
+    return getSelectElement().multiple;
   }
 
   /**
@@ -329,7 +331,7 @@ public class ListBox extends FocusWidget
    */
   public void setItemSelected(int index, boolean selected) {
     checkIndex(index);
-    getSelectElement().getOptions().getItem(index).setSelected(selected);
+    getSelectElement().options.getAt(index).selected = selected;
   }
 
   /**
@@ -344,7 +346,7 @@ public class ListBox extends FocusWidget
     if (text == null) {
       throw new NullPointerException("Cannot set an option to have null text");
     }
-    setOptionText(getSelectElement().getOptions().getItem(index), text);
+    setOptionText(getSelectElement().options.getAt(index), text);
   }
 
   /**
@@ -354,11 +356,11 @@ public class ListBox extends FocusWidget
    * @param multiple <code>true</code> to allow multiple selections
    */
   public void setMultipleSelect(boolean multiple) {
-    getSelectElement().setMultiple(multiple);
+    getSelectElement().multiple = multiple;
   }
 
   public void setName(String name) {
-    getSelectElement().setName(name);
+    getSelectElement().name = name;
   }
 
   /**
@@ -374,13 +376,13 @@ public class ListBox extends FocusWidget
    * @param index the index of the item to be selected
    */
   public void setSelectedIndex(int index) {
-    getSelectElement().setSelectedIndex(index);
+    getSelectElement().selectedIndex = index;
   }
 
   /**
    * Sets the value associated with the item at a given index. This value can be used for any
    * purpose, but is also what is passed to the server when the list box is submitted as part of a
-   * {@link FormPanel}.
+   *.
    *
    * @param index the index of the item to be set
    * @param value the item's new value; cannot be <code>null</code>
@@ -388,7 +390,7 @@ public class ListBox extends FocusWidget
    */
   public void setValue(int index, String value) {
     checkIndex(index);
-    getSelectElement().getOptions().getItem(index).setValue(value);
+    getSelectElement().options.getAt(index).value = value;
   }
 
   /**
@@ -398,7 +400,7 @@ public class ListBox extends FocusWidget
    * @param visibleItems the visible item count
    */
   public void setVisibleItemCount(int visibleItems) {
-    getSelectElement().setSize(visibleItems);
+    getSelectElement().size = visibleItems;
   }
 
   /**
@@ -409,8 +411,8 @@ public class ListBox extends FocusWidget
    * @param option an option element
    * @return the element's text
    */
-  protected String getOptionText(OptionElement option) {
-    String text = option.getText();
+  protected String getOptionText(HTMLOptionElement option) {
+    String text = option.textContent;
     if (option.hasAttribute(BIDI_ATTR_NAME) && text.length() > 1) {
       text = text.substring(1, text.length() - 1);
     }
@@ -433,7 +435,7 @@ public class ListBox extends FocusWidget
     // Set the id of each option
     int numItems = getItemCount();
     for (int i = 0; i < numItems; i++) {
-      ensureDebugId(getSelectElement().getOptions().getItem(i), baseID, "item" + i);
+      ensureDebugId(getSelectElement().options.getAt(i), baseID, "item" + i);
     }
   }
 
@@ -446,8 +448,8 @@ public class ListBox extends FocusWidget
    * @param option an option element
    * @param text text to be set to the element
    */
-  protected void setOptionText(OptionElement option, String text) {
-    option.setText(text);
+  protected void setOptionText(HTMLOptionElement option, String text) {
+    option.textContent = text;
     option.removeAttribute(BIDI_ATTR_NAME);
   }
 
@@ -457,7 +459,7 @@ public class ListBox extends FocusWidget
     }
   }
 
-  private SelectElement getSelectElement() {
-    return getElement().cast();
+  private HTMLSelectElement getSelectElement() {
+    return Js.uncheckedCast(getElement());
   }
 }

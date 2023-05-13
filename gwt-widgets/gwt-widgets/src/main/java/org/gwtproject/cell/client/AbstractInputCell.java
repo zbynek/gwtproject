@@ -17,8 +17,11 @@ package org.gwtproject.cell.client;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
+import jsinterop.base.Js;
 import org.gwtproject.dom.client.BrowserEvents;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.NativeEvent;
 
 /**
@@ -49,7 +52,7 @@ public abstract class AbstractInputCell<C, V> extends AbstractEditableCell<C, V>
   /**
    * Get the events consumed by the input cell.
    *
-   * @param userEvents the events consumed by the subclass
+   * @param consumedEvents the events consumed by the subclass
    * @return the events
    */
   private static Set<String> getConsumedEventsImpl(String... consumedEvents) {
@@ -84,22 +87,22 @@ public abstract class AbstractInputCell<C, V> extends AbstractEditableCell<C, V>
   }
 
   @Override
-  public boolean isEditing(Cell.Context context, Element parent, C value) {
+  public boolean isEditing(Cell.Context context, HTMLElement parent, C value) {
     return focusedKey != null && focusedKey.equals(context.getKey());
   }
 
   @Override
   public void onBrowserEvent(
       Cell.Context context,
-      Element parent,
+      HTMLElement parent,
       C value,
       NativeEvent event,
       ValueUpdater<C> valueUpdater) {
     super.onBrowserEvent(context, parent, value, event, valueUpdater);
 
     // Ignore events that don't target the input.
-    Element target = event.getEventTarget().cast();
-    if (!getInputElement(parent).isOrHasChild(target)) {
+    HTMLElement target = Js.uncheckedCast(event.getEventTarget());
+    if (!getInputElement(parent).contains(target)) {
       return;
     }
 
@@ -112,7 +115,7 @@ public abstract class AbstractInputCell<C, V> extends AbstractEditableCell<C, V>
   }
 
   @Override
-  public boolean resetFocus(Cell.Context context, Element parent, C value) {
+  public boolean resetFocus(Cell.Context context, HTMLElement parent, C value) {
     if (isEditing(context, parent, value)) {
       getInputElement(parent).focus();
       return true;
@@ -128,7 +131,7 @@ public abstract class AbstractInputCell<C, V> extends AbstractEditableCell<C, V>
    * @param key the unique key associated with the row object
    * @param valueUpdater the value update to fire
    */
-  protected void finishEditing(Element parent, C value, Object key, ValueUpdater<C> valueUpdater) {
+  protected void finishEditing(HTMLElement parent, C value, Object key, ValueUpdater<C> valueUpdater) {
     focusedKey = null;
     getInputElement(parent).blur();
   }
@@ -139,21 +142,21 @@ public abstract class AbstractInputCell<C, V> extends AbstractEditableCell<C, V>
    * @param parent the cell parent element
    * @return the input element
    */
-  protected Element getInputElement(Element parent) {
-    return parent.getFirstChildElement();
+  protected HTMLInputElement getInputElement(HTMLElement parent) {
+    return Js.uncheckedCast(parent.firstElementChild);
   }
 
   @Override
   protected void onEnterKeyDown(
       Cell.Context context,
-      Element parent,
+      HTMLElement parent,
       C value,
       NativeEvent event,
       ValueUpdater<C> valueUpdater) {
-    Element input = getInputElement(parent);
-    Element target = event.getEventTarget().cast();
+    HTMLElement input = getInputElement(parent);
+    HTMLElement target = Js.uncheckedCast(event.getEventTarget());
     Object key = context.getKey();
-    if (getInputElement(parent).isOrHasChild(target)) {
+    if (getInputElement(parent).contains(target)) {
       finishEditing(parent, value, key, valueUpdater);
     } else {
       focusedKey = key;

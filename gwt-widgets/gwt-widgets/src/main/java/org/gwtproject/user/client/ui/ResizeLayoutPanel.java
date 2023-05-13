@@ -15,17 +15,14 @@
  */
 package org.gwtproject.user.client.ui;
 
+import elemental2.dom.CSSProperties;
+import elemental2.dom.HTMLElement;
 import jsinterop.annotations.JsFunction;
 import jsinterop.base.JsPropertyMap;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.core.client.Scheduler.ScheduledCommand;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.EventTarget;
-import org.gwtproject.dom.style.shared.Overflow;
-import org.gwtproject.dom.style.shared.Position;
 import org.gwtproject.dom.style.shared.Unit;
-import org.gwtproject.dom.style.shared.Visibility;
 import org.gwtproject.event.logical.shared.HasResizeHandlers;
 import org.gwtproject.event.logical.shared.ResizeEvent;
 import org.gwtproject.event.logical.shared.ResizeHandler;
@@ -52,7 +49,7 @@ public class ResizeLayoutPanel extends SimplePanel implements ProvidesResize, Ha
     }
 
     boolean isAttached;
-    Element parent;
+    HTMLElement parent;
     private Delegate delegate;
 
     /**
@@ -61,7 +58,7 @@ public class ResizeLayoutPanel extends SimplePanel implements ProvidesResize, Ha
      * @param elem the element to listen for resize
      * @param delegate the {@link Delegate} to inform when resize occurs
      */
-    public void init(Element elem, Delegate delegate) {
+    public void init(HTMLElement elem, Delegate delegate) {
       this.parent = elem;
       this.delegate = delegate;
     }
@@ -91,24 +88,24 @@ public class ResizeLayoutPanel extends SimplePanel implements ProvidesResize, Ha
      */
     private static final String MIN_SIZE = "20px";
 
-    private Element collapsible;
-    private Element collapsibleInner;
-    private Element expandable;
-    private Element expandableInner;
+    private HTMLElement collapsible;
+    private HTMLElement collapsibleInner;
+    private HTMLElement expandable;
+    private HTMLElement expandableInner;
     private int lastOffsetHeight = -1;
     private int lastOffsetWidth = -1;
     private boolean resettingScrollables;
 
     @Override
-    public void init(Element elem, Delegate delegate) {
+    public void init(HTMLElement elem, Delegate delegate) {
       super.init(elem, delegate);
 
       /*
        * Set the minimum dimensions to ensure that scrollbars are rendered and
        * fire onscroll events.
        */
-      elem.getStyle().setProperty("minWidth", MIN_SIZE);
-      elem.getStyle().setProperty("minHeight", MIN_SIZE);
+      elem.style.setProperty("minWidth", MIN_SIZE);
+      elem.style.setProperty("minHeight", MIN_SIZE);
 
       /*
        * Detect expansion. In order to detect an increase in the size of the
@@ -118,15 +115,15 @@ public class ResizeLayoutPanel extends SimplePanel implements ProvidesResize, Ha
        * to their maximum. When the outer div expands, scrollLeft/scrollTop
        * automatically becomes a smaller number and trigger an onscroll event.
        */
-      expandable = Document.get().createDivElement().cast();
-      expandable.getStyle().setVisibility(Visibility.HIDDEN);
-      expandable.getStyle().setPosition(Position.ABSOLUTE);
-      expandable.getStyle().setHeight(100.0, Unit.PCT);
-      expandable.getStyle().setWidth(100.0, Unit.PCT);
-      expandable.getStyle().setOverflow(Overflow.SCROLL);
-      expandable.getStyle().setZIndex(-1);
+      expandable = DOM.createDiv();
+      expandable.style.visibility = "hidden";
+      expandable.style.position = "absolute";
+      expandable.style.height = CSSProperties.HeightUnionType.of("100%");
+      expandable.style.width = CSSProperties.WidthUnionType.of("100%");
+      expandable.style.overflow = "scroll";
+      expandable.style.zIndex = CSSProperties.ZIndexUnionType.of(-1);
       elem.appendChild(expandable);
-      expandableInner = Document.get().createDivElement().cast();
+      expandableInner = DOM.createDiv();
       expandable.appendChild(expandableInner);
       DOM.sinkEvents(expandable, Event.ONSCROLL);
 
@@ -139,17 +136,17 @@ public class ResizeLayoutPanel extends SimplePanel implements ProvidesResize, Ha
        * div loses, so the scrollTop/scrollLeft decrease and we get an onscroll
        * event.
        */
-      collapsible = Document.get().createDivElement().cast();
-      collapsible.getStyle().setVisibility(Visibility.HIDDEN);
-      collapsible.getStyle().setPosition(Position.ABSOLUTE);
-      collapsible.getStyle().setHeight(100.0, Unit.PCT);
-      collapsible.getStyle().setWidth(100.0, Unit.PCT);
-      collapsible.getStyle().setOverflow(Overflow.SCROLL);
-      collapsible.getStyle().setZIndex(-1);
+      collapsible = DOM.createDiv();
+      collapsible.style.visibility = "hidden";
+      collapsible.style.position = "absolute";
+      collapsible.style.height = CSSProperties.HeightUnionType.of("100%");
+      collapsible.style.width = CSSProperties.WidthUnionType.of("100%");
+      collapsible.style.overflow = "scroll";
+      collapsible.style.zIndex = CSSProperties.ZIndexUnionType.of(-1);
       elem.appendChild(collapsible);
-      collapsibleInner = Document.get().createDivElement().cast();
-      collapsibleInner.getStyle().setWidth(200, Unit.PCT);
-      collapsibleInner.getStyle().setHeight(200, Unit.PCT);
+      collapsibleInner = DOM.createDiv();
+      collapsibleInner.style.width = CSSProperties.WidthUnionType.of("200%");
+      collapsibleInner.style.height = CSSProperties.HeightUnionType.of("200%");;
       collapsible.appendChild(collapsibleInner);
       DOM.sinkEvents(collapsible, Event.ONSCROLL);
     }
@@ -176,10 +173,10 @@ public class ResizeLayoutPanel extends SimplePanel implements ProvidesResize, Ha
     public void onBrowserEvent(Event event) {
       if (!resettingScrollables && Event.ONSCROLL == DOM.eventGetType(event)) {
         EventTarget eventTarget = event.getEventTarget();
-        if (!Element.is(eventTarget)) {
+        if (!DOM.isElement(eventTarget)) {
           return;
         }
-        Element target = eventTarget.cast();
+        HTMLElement target = eventTarget.cast();
         if (target == collapsible || target == expandable) {
           handleResize();
         }
@@ -222,18 +219,18 @@ public class ResizeLayoutPanel extends SimplePanel implements ProvidesResize, Ha
        * small, so we need to set the dimensions of the inner div to a value
        * greater than the offsetWidth/Height.
        */
-      int offsetHeight = parent.getOffsetHeight();
-      int offsetWidth = parent.getOffsetWidth();
+      int offsetHeight = parent.offsetHeight;
+      int offsetWidth = parent.offsetWidth;
       int height = offsetHeight + 100;
       int width = offsetWidth + 100;
-      expandableInner.getStyle().setHeight(height, Unit.PX);
-      expandableInner.getStyle().setWidth(width, Unit.PX);
-      expandable.setScrollTop(height);
-      expandable.setScrollLeft(width);
+      expandableInner.style.height = CSSProperties.HeightUnionType.of(height + "px");
+      expandableInner.style.width = CSSProperties.WidthUnionType.of(width + "px");
+      expandable.scrollTop = height;
+      expandable.scrollLeft = width;
 
       // Reset collapsible element.
-      collapsible.setScrollTop(collapsible.getScrollHeight() + 100);
-      collapsible.setScrollLeft(collapsible.getScrollWidth() + 100);
+      collapsible.scrollTop = collapsible.scrollHeight + 100;
+      collapsible.scrollLeft = collapsible.scrollWidth + 100;
 
       if (lastOffsetHeight != offsetHeight || lastOffsetWidth != offsetWidth) {
         lastOffsetHeight = offsetHeight;
@@ -251,7 +248,7 @@ public class ResizeLayoutPanel extends SimplePanel implements ProvidesResize, Ha
   static class ImplTrident extends Impl {
 
     @Override
-    public void init(Element elem, Delegate delegate) {
+    public void init(HTMLElement elem, Delegate delegate) {
       super.init(elem, delegate);
       initResizeEventListener(elem);
     }
@@ -272,7 +269,7 @@ public class ResizeLayoutPanel extends SimplePanel implements ProvidesResize, Ha
      * Initialize the onresize listener. This method doesn't create a memory leak because we don't
      * set a back reference to the Impl class until we attach to the DOM.
      */
-    private void initResizeEventListener(Element elem) {
+    private void initResizeEventListener(HTMLElement elem) {
       Fn func =
           () -> {
             if (((JsPropertyMap) elem).has("__resizeImpl")) {
@@ -283,7 +280,7 @@ public class ResizeLayoutPanel extends SimplePanel implements ProvidesResize, Ha
     }
 
     /** Set the event listener that handles resize events. */
-    private void setResizeEventListener(Element elem, Impl listener) {
+    private void setResizeEventListener(HTMLElement elem, Impl listener) {
       ((JsPropertyMap) elem).set("__resizeImpl", listener);
     }
   }

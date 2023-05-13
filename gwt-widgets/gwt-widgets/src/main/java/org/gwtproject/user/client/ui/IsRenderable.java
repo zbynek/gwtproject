@@ -15,7 +15,7 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Element;
+import elemental2.dom.HTMLElement;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 
@@ -32,7 +32,7 @@ public interface IsRenderable {
    * Replace the previous contents of the receiver with the given element, presumed to have been
    * created and stamped via a previous call to {@link #render}.
    */
-  void claimElement(Element element);
+  void claimElement(HTMLElement element);
 
   /**
    * Perform any initialization needed when the widget is not attached to the document. Assumed to

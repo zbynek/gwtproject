@@ -17,8 +17,11 @@ package org.gwtproject.user.client.ui;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
+
+import elemental2.dom.CSSProperties;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
@@ -35,6 +38,7 @@ import org.gwtproject.resources.client.CommonResources;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
 import org.gwtproject.safehtml.shared.annotations.SuppressIsSafeHtmlCastCheck;
+import org.gwtproject.user.client.DOM;
 
 /**
  * A panel that represents a tabbed set of pages, each of which contains another widget. Its child
@@ -66,11 +70,6 @@ import org.gwtproject.safehtml.shared.annotations.SuppressIsSafeHtmlCastCheck;
  * {@example com.google.gwt.examples.TabLayoutPanelExample}
  *
  * <h3>Use in UiBinder Templates</h3>
- *
- * <p>A TabLayoutPanel element in a {@link org.gwtproject.uibinder.client.UiBinder UiBinder}
- * template must have a <code>barHeight</code> attribute with a double value, and may have a <code>
- * barUnit</code> attribute with a {@link Unit Style.Unit} value. <code>barUnit</code> defaults to
- * PX.
  *
  * <p>The children of a TabLayoutPanel element are laid out in &lt;g:tab> elements. Each tab can
  * have one widget child and one of two types of header elements. A &lt;g:header> element can hold
@@ -104,18 +103,18 @@ public class TabLayoutPanel extends ResizeComposite
         HasSelectionHandlers<Integer> {
 
   private class Tab extends SimplePanel {
-    private Element inner;
+    private HTMLElement inner;
     private boolean replacingWidget;
 
     public Tab(Widget child) {
-      super(Document.get().createDivElement());
-      getElement().appendChild(inner = Document.get().createDivElement());
+      super(DOM.createDiv());
+      getElement().appendChild(inner = Js.uncheckedCast(DomGlobal.document.createElement("div")));
 
       setWidget(child);
       setStyleName(TAB_STYLE);
-      inner.setClassName(TAB_INNER_STYLE);
+      inner.className = TAB_INNER_STYLE;
 
-      getElement().addClassName(CommonResources.getInlineBlockStyle());
+      getElement().classList.add(CommonResources.getInlineBlockStyle());
     }
 
     public HandlerRegistration addClickHandler(ClickHandler handler) {
@@ -157,8 +156,8 @@ public class TabLayoutPanel extends ResizeComposite
     }
 
     @Override
-    protected Element getContainerElement() {
-      return inner.cast();
+    protected HTMLElement getContainerElement() {
+      return inner;
     }
   }
 
@@ -247,7 +246,8 @@ public class TabLayoutPanel extends ResizeComposite
 
     // Make the tab bar extremely wide so that tabs themselves never wrap.
     // (Its layout container is overflow:hidden)
-    tabBar.getElement().getStyle().setWidth(BIG_ENOUGH_TO_NOT_WRAP, Unit.PX);
+    tabBar.getElement().style.width = CSSProperties.WidthUnionType.of(
+            BIG_ENOUGH_TO_NOT_WRAP + "px");
 
     tabBar.setStyleName("gwt-TabLayoutPanelTabs");
     setStyleName("gwt-TabLayoutPanel");

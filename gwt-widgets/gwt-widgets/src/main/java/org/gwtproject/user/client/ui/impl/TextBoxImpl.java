@@ -15,58 +15,47 @@
  */
 package org.gwtproject.user.client.ui.impl;
 
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.gwtproject.dom.client.Element;
 
 /** Implementation class used by {@link org.gwtproject.user.client.ui.TextBox}. */
 public class TextBoxImpl {
 
-  public int getCursorPos(Element elem) {
-    JsPropertyMap jsObject = Js.asPropertyMap(elem);
-    if (jsObject.has("selectionStart")) {
-      try {
-        return Integer.valueOf(jsObject.get("selectionStart").toString());
-      } catch (Exception e) {
-
-      }
+  public int getCursorPos(HTMLElement elem) {
+    HTMLInputElement jsObject = Js.uncheckedCast(elem);
+    if (Js.asPropertyMap(jsObject).has("selectionStart")) {
+      return jsObject.selectionStart;
     }
     return 0;
   }
 
-  public int getSelectionLength(Element elem) {
+  public int getSelectionLength(HTMLElement elem) {
     JsPropertyMap jsObject = Js.asPropertyMap(elem);
+    HTMLInputElement asInput = Js.uncheckedCast(elem);
     if (jsObject.has("selectionEnd") && jsObject.has("selectionStart")) {
-      try {
-        int selectionEnd = Integer.valueOf(jsObject.get("selectionEnd").toString());
-        int selectionStart = Integer.valueOf(jsObject.get("selectionStart").toString());
+        int selectionEnd = asInput.selectionEnd;
+        int selectionStart = asInput.selectionStart;
         return selectionEnd - selectionStart;
-      } catch (Exception e) {
-
-      }
     }
     return 0;
   }
 
-  public int getTextAreaCursorPos(Element elem) {
+  public int getTextAreaCursorPos(HTMLElement elem) {
     return getCursorPos(elem);
   }
 
-  public int getTextAreaSelectionLength(Element elem) {
+  public int getTextAreaSelectionLength(HTMLElement elem) {
     return getSelectionLength(elem);
   }
 
-  public void setSelectionRange(Element elem, int pos, int length) {
+  public void setSelectionRange(HTMLElement elem, int pos, int length) {
     try {
       Js.<HTMLInputElement>uncheckedCast(elem).setSelectionRange(pos, pos + length);
     } catch (Exception e) {
     }
   }
 
-  @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-  public static class HTMLInputElement {
-    public native void setSelectionRange(int pos, int i);
-  }
+
 }

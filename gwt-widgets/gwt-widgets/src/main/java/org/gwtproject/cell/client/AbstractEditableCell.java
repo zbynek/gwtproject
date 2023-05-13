@@ -18,7 +18,8 @@ package org.gwtproject.cell.client;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.gwtproject.dom.client.Element;
+
+import elemental2.dom.HTMLElement;
 
 /**
  * A default implementation of the {@link org.gwtproject.cell.client.Cell} interface used for
@@ -90,7 +91,7 @@ public abstract class AbstractEditableCell<C, V>
    * @return true if the cell is in edit mode
    */
   @Override
-  public abstract boolean isEditing(Context context, Element parent, C value);
+  public abstract boolean isEditing(Context context, HTMLElement parent, C value);
 
   /**
    * Associate view data with the specified key. If the key is null, the view data will be ignored.

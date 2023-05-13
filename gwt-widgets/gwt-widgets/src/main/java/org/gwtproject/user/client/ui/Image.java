@@ -16,14 +16,14 @@
 package org.gwtproject.user.client.ui;
 
 import java.util.HashMap;
+
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLImageElement;
 import jsinterop.base.Js;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.core.client.Scheduler.ScheduledCommand;
 import org.gwtproject.dom.client.BrowserEvents;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.ImageElement;
-import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.event.dom.client.DoubleClickEvent;
@@ -98,7 +98,7 @@ import org.gwtproject.user.client.ui.impl.ClippedImageImpl;
  * depending on the mode that the image is in. These differences are detailed in the documentation
  * for each method.
  *
- * <p>If an image transitions between clipped mode and unclipped mode, any {@link Element}-specific
+ * <p>If an image transitions between clipped mode and unclipped mode, any {@link HTMLElement}-specific
  * attributes added by the user (including style attributes, style names, and style modifiers),
  * except for event listeners, will be lost.
  *
@@ -140,7 +140,7 @@ public class Image extends Widget
    * This map is used to store prefetched images. If a reference is not kept to the prefetched image
    * objects, they can get garbage collected, which sometimes keeps them from getting fully fetched.
    */
-  private static HashMap<String, Element> prefetchImages = new HashMap<String, Element>();
+  private static HashMap<String, HTMLElement> prefetchImages = new HashMap<String, HTMLElement>();
 
   State state;
 
@@ -237,9 +237,9 @@ public class Image extends Widget
    *
    * @param element the element to be used
    */
-  protected Image(Element element) {
-    ImageElement.as(element);
+  protected Image(HTMLElement element) {
     setElement(element);
+    assertTagName("img");
     changeState(new UnclippedState(element));
   }
 
@@ -249,8 +249,8 @@ public class Image extends Widget
    * @param url the URL of the image to be prefetched
    */
   public static void prefetch(String url) {
-    ImageElement img = Document.get().createImageElement();
-    img.setSrc(url);
+    HTMLImageElement img = DOM.createImg();
+    img.src = url;
     prefetchImages.put(url, img);
   }
 
@@ -271,9 +271,9 @@ public class Image extends Widget
    *
    * @param element the element to be wrapped
    */
-  public static Image wrap(Element element) {
+  public static Image wrap(HTMLElement element) {
     // Assert that the element is attached.
-    assert Document.get().getBody().isOrHasChild(element);
+    assert DomGlobal.document.body.contains(element);
 
     Image image = new Image(element);
 
@@ -386,7 +386,7 @@ public class Image extends Widget
    * @return the alternate text for the image
    */
   public String getAltText() {
-    return state.getImageElement(this).getAlt();
+    return state.getImageElement(this).alt;
   }
 
   /**
@@ -395,7 +395,7 @@ public class Image extends Widget
    * @param altText the alternate text to set to
    */
   public void setAltText(String altText) {
-    state.getImageElement(this).setAlt(altText);
+    state.getImageElement(this).alt = altText;
   }
 
   /**
@@ -572,7 +572,7 @@ public class Image extends Widget
   /** Clear the unhandled event. */
   private void clearUnhandledEvent() {
     if (state != null) {
-      state.getImageElement(this).setPropertyString(UNHANDLED_EVENT_ATTR, "");
+      Js.asPropertyMap(state.getImageElement(this)).set(UNHANDLED_EVENT_ATTR, "");
     }
   }
 
@@ -613,8 +613,8 @@ public class Image extends Widget
     }
 
     @Override
-    public ImageElement getImageElement(Image image) {
-      return impl.getImgElement(image).cast();
+    public HTMLImageElement getImageElement(Image image) {
+      return Js.uncheckedCast(impl.getImgElement(image));
     }
 
     @Override
@@ -707,7 +707,7 @@ public class Image extends Widget
 
     public abstract int getHeight(Image image);
 
-    public abstract ImageElement getImageElement(Image image);
+    public abstract HTMLImageElement getImageElement(Image image);
 
     public abstract int getOriginLeft();
 
@@ -726,7 +726,7 @@ public class Image extends Widget
     public void onLoad(Image image) {
       // If an onload event fired while the image wasn't attached, we need to
       // synthesize one now.
-      String unhandledEvent = getImageElement(image).getPropertyString(UNHANDLED_EVENT_ATTR);
+      String unhandledEvent = (String) Js.asPropertyMap(getImageElement(image)).get(UNHANDLED_EVENT_ATTR);
       if (BrowserEvents.LOAD.equals(unhandledEvent)) {
         fireSyntheticLoadEvent(image);
       }
@@ -782,11 +782,11 @@ public class Image extends Widget
                * the widget is attached.
                */
               if (!image.isAttached()) {
-                getImageElement(image).setPropertyString(UNHANDLED_EVENT_ATTR, BrowserEvents.LOAD);
+                Js.asPropertyMap(getImageElement(image)).set(UNHANDLED_EVENT_ATTR, BrowserEvents.LOAD);
                 return;
               }
 
-              NativeEvent evt = Document.get().createLoadEvent();
+              elemental2.dom.Event evt = DOM.createLoadEvent().cast();
               getImageElement(image).dispatchEvent(evt);
             }
           };
@@ -800,7 +800,7 @@ public class Image extends Widget
   /** Implementation of behaviors associated with the unclipped state of an image. */
   private static class UnclippedState extends State {
 
-    UnclippedState(Element element) {
+    UnclippedState(HTMLElement element) {
       // This case is relatively unusual, in that we swapped a clipped image
       // out, so does not need to be efficient.
       Event.sinkEvents(
@@ -816,7 +816,7 @@ public class Image extends Widget
     }
 
     UnclippedState(Image image) {
-      image.replaceElement(Document.get().createImageElement());
+      image.replaceElement(DOM.createImg());
       // We are working around an IE race condition that can make the image
       // incorrectly cache itself if the load event is assigned at the same time
       // as the image is added to the dom.
@@ -841,18 +841,18 @@ public class Image extends Widget
 
     UnclippedState(Image image, SafeUri url, int width, int height) {
       this(image, url);
-      getImageElement(image).setWidth(width);
-      getImageElement(image).setHeight(height);
+      getImageElement(image).width = width;
+      getImageElement(image).height = height;
     }
 
     @Override
     public int getHeight(Image image) {
-      return getImageElement(image).getHeight();
+      return getImageElement(image).height;
     }
 
     @Override
-    public ImageElement getImageElement(Image image) {
-      return image.getElement().cast();
+    public HTMLImageElement getImageElement(Image image) {
+      return Js.uncheckedCast(image.getElement());
     }
 
     @Override
@@ -867,25 +867,25 @@ public class Image extends Widget
 
     @Override
     public SafeUri getUrl(Image image) {
-      return UriUtils.unsafeCastFromUntrustedString(getImageElement(image).getSrc());
+      return UriUtils.unsafeCastFromUntrustedString(getImageElement(image).src);
     }
 
     @Override
     public int getWidth(Image image) {
-      return getImageElement(image).getWidth();
+      return getImageElement(image).width;
     }
 
     @Override
     public void setUrl(Image image, SafeUri url) {
       image.clearUnhandledEvent();
-      getImageElement(image).setSrc(url.asString());
+      getImageElement(image).src = url.asString();
     }
 
     @Override
     public void setUrl(Image image, SafeUri url, int width, int height) {
       setUrl(image, url);
-      getImageElement(image).setWidth(width);
-      getImageElement(image).setHeight(height);
+      getImageElement(image).width = width;
+      getImageElement(image).height = height;
     }
 
     @Override

@@ -15,17 +15,18 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.InputElement;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
+import jsinterop.base.Js;
 import org.gwtproject.event.dom.client.ChangeEvent;
 import org.gwtproject.event.dom.client.ChangeHandler;
 import org.gwtproject.event.dom.client.HasChangeHandlers;
 import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.user.client.DOM;
 
 /**
- * A widget that wraps the HTML &lt;input type='file'&gt; element. This widget must be used with
- * {@link FormPanel} if it is to be submitted to a server.
+ * A widget that wraps the HTML &lt;input type='file'&gt; element.
  *
  * <p>
  *
@@ -54,9 +55,9 @@ public class FileUpload extends FocusWidget implements HasName, HasChangeHandler
    *
    * @param element the element to be wrapped
    */
-  public static FileUpload wrap(Element element) {
+  public static FileUpload wrap(HTMLElement element) {
     // Assert that the element is attached.
-    assert Document.get().getBody().isOrHasChild(element);
+    assert DomGlobal.document.body.contains(element);
 
     FileUpload fileUpload = new FileUpload(element);
 
@@ -69,7 +70,7 @@ public class FileUpload extends FocusWidget implements HasName, HasChangeHandler
 
   /** Constructs a new file upload widget. */
   public FileUpload() {
-    this(Document.get().createFileInputElement());
+    this(DOM.createInput("file"));
     setStyleName("gwt-FileUpload");
   }
 
@@ -79,9 +80,10 @@ public class FileUpload extends FocusWidget implements HasName, HasChangeHandler
    *
    * @param element the element to be used
    */
-  protected FileUpload(Element element) {
-    assert InputElement.as(element).getType().equalsIgnoreCase("file");
+  protected FileUpload(HTMLElement element) {
     setElement(element);
+    assertTagName("input");
+    assert getElement().getAttribute("type").equalsIgnoreCase("file");
   }
 
   public HandlerRegistration addChangeHandler(ChangeHandler handler) {
@@ -95,11 +97,11 @@ public class FileUpload extends FocusWidget implements HasName, HasChangeHandler
    * @return the widget's filename
    */
   public String getFilename() {
-    return getInputElement().getValue();
+    return getInputElement().value;
   }
 
   public String getName() {
-    return getInputElement().getName();
+    return getInputElement().name;
   }
 
   /**
@@ -108,7 +110,7 @@ public class FileUpload extends FocusWidget implements HasName, HasChangeHandler
    * @return <code>true</code> if the widget is enabled
    */
   public boolean isEnabled() {
-    return !getElement().getPropertyBoolean("disabled");
+    return Js.isFalsy(Js.asPropertyMap(getElement()).get("disabled"));
   }
 
   /**
@@ -117,15 +119,15 @@ public class FileUpload extends FocusWidget implements HasName, HasChangeHandler
    * @param enabled <code>true</code> to enable the widget, <code>false</code> to disable it
    */
   public void setEnabled(boolean enabled) {
-    getElement().setPropertyBoolean("disabled", !enabled);
+    Js.asPropertyMap(getElement()).set("disabled", !enabled);
   }
 
   public void setName(String name) {
-    getInputElement().setName(name);
+    getInputElement().name = name;
   }
 
-  private InputElement getInputElement() {
-    return getElement().cast();
+  private HTMLInputElement getInputElement() {
+    return Js.uncheckedCast(getElement());
   }
 
   /**

@@ -15,6 +15,8 @@
  */
 package org.gwtproject.user.client.ui;
 
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.event.dom.client.HasAllKeyHandlers;
@@ -203,8 +205,8 @@ public class TabBar extends Composite
     first.setHeight("100%");
     panel.setCellHeight(first, "100%");
     panel.setCellWidth(rest, "100%");
-    setStyleName(first.getElement().getParentElement(), "gwt-TabBarFirst-wrapper");
-    setStyleName(rest.getElement().getParentElement(), "gwt-TabBarRest-wrapper");
+    setStyleName(Js.<HTMLElement>uncheckedCast(first.getElement().parentElement), "gwt-TabBarFirst-wrapper");
+    setStyleName(Js.<HTMLElement>uncheckedCast(rest.getElement().parentElement), "gwt-TabBarRest-wrapper");
   }
 
   @Override
@@ -311,7 +313,7 @@ public class TabBar extends Composite
       return ((Label) widget).getText();
     } else {
       // This will be a focusable panel holding a user-supplied widget.
-      return focusablePanel.getElement().getParentElement().getInnerHTML();
+      return focusablePanel.getElement().parentElement.innerHTML;
     }
   }
 
@@ -455,7 +457,7 @@ public class TabBar extends Composite
     delPanel.setEnabled(enabled);
     setStyleName(delPanel.getElement(), "gwt-TabBarItem-disabled", !enabled);
     setStyleName(
-        delPanel.getElement().getParentElement(), "gwt-TabBarItem-wrapper-disabled", !enabled);
+        Js.uncheckedCast(delPanel.getElement().parentElement), "gwt-TabBarItem-wrapper-disabled", !enabled);
   }
 
   /**

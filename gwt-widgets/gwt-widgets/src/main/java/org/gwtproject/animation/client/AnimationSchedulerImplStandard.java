@@ -16,9 +16,9 @@
 package org.gwtproject.animation.client;
 
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
 import org.gwtproject.core.client.Duration;
-import org.gwtproject.dom.client.Element;
 
 /**
  * {@link AnimationScheduler} implementation that uses standard {@code requestAnimationFrame} API.
@@ -26,7 +26,7 @@ import org.gwtproject.dom.client.Element;
 class AnimationSchedulerImplStandard extends AnimationScheduler {
 
   @Override
-  public AnimationHandle requestAnimationFrame(AnimationCallback callback, Element element) {
+  public AnimationHandle requestAnimationFrame(AnimationCallback callback, HTMLElement element) {
     final int id = requestImplNew(callback, element);
     return new AnimationHandle() {
       @Override
@@ -36,7 +36,7 @@ class AnimationSchedulerImplStandard extends AnimationScheduler {
     };
   }
 
-  private static int requestImplNew(AnimationCallback cb, Element element) {
+  private static int requestImplNew(AnimationCallback cb, HTMLElement element) {
     return DomGlobal.requestAnimationFrame(
         p0 -> cb.execute(Duration.currentTimeMillis()), Js.cast(element));
   }

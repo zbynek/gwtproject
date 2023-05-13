@@ -15,13 +15,13 @@
  */
 package org.gwtproject.user.client.ui;
 
-import java.util.Arrays;
 import java.util.Locale;
-import java.util.stream.Collectors;
+
+import elemental2.dom.DOMTokenList;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.Node;
+import jsinterop.base.Js;
 import org.gwtproject.core.client.JavaScriptObject;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.Node;
-import org.gwtproject.dom.style.shared.Display;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
 
@@ -74,11 +74,7 @@ import org.gwtproject.user.client.Event;
  * of the widget itself. See {@link #addStyleName(String)} for details.
  *
  * <h3>Use in UiBinder Templates</h3>
- *
- * <p>Setter methods that follow JavaBean property conventions are exposed as attributes in {@link
- * org.gwtproject.uibinder.client.UiBinder UiBinder} templates. For example, because UiObject
- * implements {@link #setWidth(String)} you can set the width of any widget like so:
- *
+
  * <pre>
  * &lt;g:Label width='15em'>Hello there&lt;/g:Label></pre>
  *
@@ -142,7 +138,7 @@ public abstract class UIObject implements HasVisibility {
   private static JavaScriptObject numberRegex;
 
   private static DebugIdImpl debugIdImpl = new DebugIdImpl();
-  private Element element;
+  private HTMLElement element;
 
   /**
    * Ensure that elem has an ID property set, which allows it to integrate with third-party
@@ -154,23 +150,23 @@ public abstract class UIObject implements HasVisibility {
    * <pre class="code">
    * &lt;inherits name="org.gwtproject.user.Debug"/&gt;</pre>
    *
-   * @param elem the target {@link Element}
+   * @param elem the target {@link HTMLElement}
    * @param id the ID to set on the element
    */
-  public static void ensureDebugId(Element elem, String id) {
+  public static void ensureDebugId(HTMLElement elem, String id) {
     ensureDebugId(elem, "", id);
   }
 
   /**
    * Returns whether the given element is visible in a way consistent with {@link
-   * #setVisible(Element, boolean)}.
+   * #setVisible(HTMLElement, boolean)}.
    *
    * <p>Warning: implemented with a heuristic. The value returned takes into account only the
    * "display" style, ignoring CSS and Aria roles, thus may not accurately reflect whether the
    * element is actually visible in the browser.
    */
-  public static boolean isVisible(Element elem) {
-    return !elem.getStyle().getDisplay().equals("none");
+  public static boolean isVisible(HTMLElement elem) {
+    return !elem.style.display.equals("none");
   }
 
   /**
@@ -182,11 +178,11 @@ public abstract class UIObject implements HasVisibility {
    * "display" style is set to "none" via CSS style sheets, the element remains invisible after a
    * call to {@code setVisible(elem, true)}.
    */
-  public static void setVisible(Element elem, boolean visible) {
+  public static void setVisible(HTMLElement elem, boolean visible) {
     if (visible) {
-      elem.getStyle().clearDisplay();
+      elem.style.display = null;
     } else {
-      elem.getStyle().setDisplay(Display.NONE);
+      elem.style.display = "none";
     }
 
     if (visible) {
@@ -204,7 +200,7 @@ public abstract class UIObject implements HasVisibility {
    * @param baseID the base ID used by the main element
    * @param id the id to append to the base debug id
    */
-  protected static void ensureDebugId(Element elem, String baseID, String id) {
+  protected static void ensureDebugId(HTMLElement elem, String baseID, String id) {
     debugIdImpl.ensureDebugId(elem, baseID, id);
   }
 
@@ -214,8 +210,8 @@ public abstract class UIObject implements HasVisibility {
    * @param elem the element whose style is to be retrieved
    * @return the objects's space-separated style names
    */
-  protected static String getStyleName(Element elem) {
-    return elem.getClassName();
+  protected static String getStyleName(HTMLElement elem) {
+    return elem.className;
   }
 
   /**
@@ -224,7 +220,7 @@ public abstract class UIObject implements HasVisibility {
    * @param elem the element whose primary style name is to be retrieved
    * @return the element's primary style name
    */
-  protected static String getStylePrimaryName(Element elem) {
+  protected static String getStylePrimaryName(HTMLElement elem) {
     String fullClassName = getStyleName(elem);
 
     // The primary style name is always the first token of the full CSS class
@@ -243,8 +239,8 @@ public abstract class UIObject implements HasVisibility {
    * @param elem the element whose style is to be modified
    * @param styleName the new style name
    */
-  protected static void setStyleName(Element elem, String styleName) {
-    elem.setClassName(styleName);
+  protected static void setStyleName(HTMLElement elem, String styleName) {
+    elem.className = styleName;
   }
 
   /**
@@ -257,7 +253,7 @@ public abstract class UIObject implements HasVisibility {
    * @param style the secondary style name to be added or removed
    * @param add <code>true</code> to add the given style, <code>false</code> to remove it
    */
-  protected static void setStyleName(Element elem, String style, boolean add) {
+  protected static void setStyleName(HTMLElement elem, String style, boolean add) {
     if (elem == null) {
       throw new RuntimeException(NULL_HANDLE_MSG);
     }
@@ -268,9 +264,9 @@ public abstract class UIObject implements HasVisibility {
     }
 
     if (add) {
-      elem.addClassName(style);
+      elem.classList.add(style);
     } else {
-      elem.removeClassName(style);
+      elem.classList.remove(style);
     }
   }
 
@@ -279,9 +275,9 @@ public abstract class UIObject implements HasVisibility {
    *
    * @param elem the element whose style is to be reset
    * @param style the new primary style name
-   * @see #setStyleName(Element, String, boolean)
+   * @see #setStyleName(HTMLElement, String, boolean)
    */
-  protected static void setStylePrimaryName(Element elem, String style) {
+  protected static void setStylePrimaryName(HTMLElement elem, String style) {
     if (elem == null) {
       throw new RuntimeException(NULL_HANDLE_MSG);
     }
@@ -297,23 +293,22 @@ public abstract class UIObject implements HasVisibility {
   }
 
   /** Replaces all instances of the primary style name with newPrimaryStyleName. */
-  private static void updatePrimaryAndDependentStyleNames(Element elem, String newPrimaryStyle) {
-    String[] classes = (elem.getClassName().isEmpty() ? "" : elem.getClassName()).split("\\s+");
+  private static void updatePrimaryAndDependentStyleNames(HTMLElement elem, String newPrimaryStyle) {
+    DOMTokenList classes = elem.classList;
     if (classes.length == 0) {
       return;
     }
-    String oldPrimaryStyle = classes[0];
+    String oldPrimaryStyle = classes.getAt(0);
     int oldPrimaryStyleLen = oldPrimaryStyle.length();
-    classes[0] = newPrimaryStyle;
+    classes.replace(oldPrimaryStyle, newPrimaryStyle);
     for (int i = 1, n = classes.length; i < n; i++) {
-      String name = classes[i];
+      String name = classes.getAt(i);
       if (name.length() > oldPrimaryStyleLen
           && name.charAt(oldPrimaryStyleLen) == '-'
           && name.indexOf(oldPrimaryStyle) == 0) {
-        classes[i] = newPrimaryStyle + name.substring(oldPrimaryStyleLen);
+        classes.replace(name, newPrimaryStyle + name.substring(oldPrimaryStyleLen));
       }
     }
-    elem.setClassName(Arrays.stream(classes).collect(Collectors.joining(" ")));
   }
 
   /**
@@ -441,7 +436,7 @@ public abstract class UIObject implements HasVisibility {
    * @return the object's absolute left position
    */
   public int getAbsoluteLeft() {
-    return getElement().getAbsoluteLeft();
+    return DOM.getAbsoluteLeft(getElement());
   }
 
   /**
@@ -451,7 +446,7 @@ public abstract class UIObject implements HasVisibility {
    * @return the object's absolute top position
    */
   public int getAbsoluteTop() {
-    return getElement().getAbsoluteTop();
+    return DOM.getAbsoluteTop(getElement());
   }
 
   /**
@@ -459,11 +454,11 @@ public abstract class UIObject implements HasVisibility {
    *
    * <p>This method should not be overridden. It is non-final solely to support legacy code that
    * depends upon overriding it. If it is overridden, the subclass implementation must not return a
-   * different element than was previously set using {@link #setElement(Element)}.
+   * different element than was previously set using {@link #setElement(HTMLElement)}.
    *
    * @return the object's browser element
    */
-  public Element getElement() {
+  public HTMLElement getElement() {
     assert (element != null) : MISSING_ELEMENT_ERROR;
     return element;
   }
@@ -474,7 +469,7 @@ public abstract class UIObject implements HasVisibility {
    *
    * @param elem the object's element
    */
-  protected final void setElement(Element elem) {
+  protected final void setElement(HTMLElement elem) {
     this.element = elem;
   }
 
@@ -485,7 +480,7 @@ public abstract class UIObject implements HasVisibility {
    * @return the object's offset height
    */
   public int getOffsetHeight() {
-    return getElement().getPropertyInt("offsetHeight");
+    return getElement().offsetHeight;
   }
 
   /**
@@ -495,7 +490,7 @@ public abstract class UIObject implements HasVisibility {
    * @return the object's offset width
    */
   public int getOffsetWidth() {
-    return getElement().getPropertyInt("offsetWidth");
+    return getElement().offsetWidth;
   }
 
   /**
@@ -550,7 +545,7 @@ public abstract class UIObject implements HasVisibility {
    * @return the object's title
    */
   public String getTitle() {
-    return getElement().getPropertyString("title");
+    return getElement().title;
   }
 
   /**
@@ -581,7 +576,7 @@ public abstract class UIObject implements HasVisibility {
    * Removes a dependent style name by specifying the style name's suffix.
    *
    * @param styleSuffix the suffix of the dependent style to be removed
-   * @see #setStylePrimaryName(Element, String)
+   * @see #setStylePrimaryName(HTMLElement, String)
    * @see #addStyleDependentName(String)
    * @see #setStyleDependentName(String, boolean)
    */
@@ -612,7 +607,7 @@ public abstract class UIObject implements HasVisibility {
     // it won't accept negative numbers in length measurements
     assert extractLengthValue(height.trim().toLowerCase(Locale.ROOT)) >= 0
         : "CSS heights should not be negative";
-    getElement().getStyle().setProperty("height", height);
+    getElement().style.setProperty("height", height);
   }
 
   /**
@@ -653,7 +648,7 @@ public abstract class UIObject implements HasVisibility {
    *
    * @param styleSuffix the suffix of the dependent style to be added or removed
    * @param add <code>true</code> to add the given style, <code>false</code> to remove it
-   * @see #setStylePrimaryName(Element, String)
+   * @see #setStylePrimaryName(HTMLElement, String)
    * @see #addStyleDependentName(String)
    * @see #setStyleName(String, boolean)
    * @see #removeStyleDependentName(String)
@@ -686,7 +681,7 @@ public abstract class UIObject implements HasVisibility {
     // it won't accept negative numbers in length measurements
     assert extractLengthValue(width.trim().toLowerCase(Locale.ROOT)) >= 0
         : "CSS widths should not be negative";
-    getElement().getStyle().setProperty("width", width);
+    getElement().style.setProperty("width", width);
   }
 
   /**
@@ -722,7 +717,7 @@ public abstract class UIObject implements HasVisibility {
     if (element == null) {
       return "(null handle)";
     }
-    return getElement().getString();
+    return getElement().outerHTML;
   }
 
   /**
@@ -743,7 +738,7 @@ public abstract class UIObject implements HasVisibility {
    *
    * @return the element to which style names will be applied
    */
-  protected Element getStyleElement() {
+  protected HTMLElement getStyleElement() {
     return getElement();
   }
 
@@ -751,7 +746,7 @@ public abstract class UIObject implements HasVisibility {
    * Called when the user sets the id using the {@link #ensureDebugId(String)} method. Subclasses of
    * {@link UIObject} can override this method to add IDs to their sub elements. If a subclass does
    * override this method, it should list the IDs (relative to the base ID), that will be applied to
-   * each sub {@link Element} with a short description. For example:
+   * each sub {@link HTMLElement} with a short description. For example:
    *
    * <ul>
    *   <li>-mysubelement = Applies to my sub element.
@@ -781,8 +776,8 @@ public abstract class UIObject implements HasVisibility {
    * <p>The receiver must:
    *
    * <ul>
-   *   <li>create a real {@link Element} to replace its {@link PotentialElement}
-   *   <li>call {@link #setElement(Element)} with the new Element
+   *   <li>create a real {@link HTMLElement} to replace its {@link PotentialElement}
+   *   <li>call {@link #setElement(HTMLElement)} with the new Element
    *   <li>and return the new Element
    * </ul>
    *
@@ -791,12 +786,12 @@ public abstract class UIObject implements HasVisibility {
    *
    * <p>Note that this method is normally called only on the top element of an IsRenderable tree.
    * Children instead will receive {@link IsRenderable#render} and {@link
-   * IsRenderable#claimElement(Element)}.
+   * IsRenderable#claimElement(HTMLElement)}.
    *
    * @see PotentialElement
    * @see IsRenderable
    */
-  protected Element resolvePotentialElement() {
+  protected HTMLElement resolvePotentialElement() {
     throw new UnsupportedOperationException("resolvePotentialElement");
   }
 
@@ -808,7 +803,7 @@ public abstract class UIObject implements HasVisibility {
    *
    * @param elem the object's new element
    */
-  void replaceElement(Element elem) {
+  void replaceElement(HTMLElement elem) {
     if (element != null) {
       // replace this.element in its parent with elem.
       replaceNode(element, elem);
@@ -833,8 +828,8 @@ public abstract class UIObject implements HasVisibility {
     }
   }
 
-  private void replaceNode(Element node, Element newNode) {
-    Node p = node.getParentNode();
+  private void replaceNode(HTMLElement node, HTMLElement newNode) {
+    Node p = node.parentNode;
     if (p == null) {
       return;
     }
@@ -851,6 +846,10 @@ public abstract class UIObject implements HasVisibility {
 
     @SuppressWarnings("unused")
     // parameters
-    public void ensureDebugId(Element elem, String baseID, String id) {}
+    public void ensureDebugId(HTMLElement elem, String baseID, String id) {}
+  }
+
+  public void assertTagName(String tagName) {
+    assert tagName.equalsIgnoreCase(element.tagName);
   }
 }

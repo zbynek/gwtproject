@@ -15,7 +15,7 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Element;
+import elemental2.dom.HTMLElement;
 import org.gwtproject.user.client.DOM;
 
 /**
@@ -26,20 +26,20 @@ import org.gwtproject.user.client.DOM;
 public class HorizontalPanel extends CellPanel implements HasAlignment, InsertPanel.ForIsWidget {
 
   private HorizontalAlignmentConstant horzAlign = ALIGN_DEFAULT;
-  private Element tableRow;
+  private HTMLElement tableRow;
   private VerticalAlignmentConstant vertAlign = ALIGN_TOP;
   /** Creates an empty horizontal panel. */
   public HorizontalPanel() {
     tableRow = DOM.createTR();
     DOM.appendChild(getBody(), tableRow);
 
-    getTable().setPropertyString("cellSpacing", "0");
-    getTable().setPropertyString("cellPadding", "0");
+    getTable().cellSpacing = "0";
+    getTable().cellPadding = "0";
   }
 
   @Override
   public void add(Widget w) {
-    Element td = createAlignedTd();
+    HTMLElement td = createAlignedTd();
     DOM.appendChild(tableRow, td);
     add(w, td);
   }
@@ -67,7 +67,7 @@ public class HorizontalPanel extends CellPanel implements HasAlignment, InsertPa
      * we insert first and remove second, which means we DON'T need to adjust
      * the index.
      */
-    Element td = createAlignedTd();
+    HTMLElement td = createAlignedTd();
     DOM.insertChild(tableRow, td, beforeIndex);
     insert(w, td, beforeIndex, false);
   }
@@ -76,7 +76,7 @@ public class HorizontalPanel extends CellPanel implements HasAlignment, InsertPa
   public boolean remove(Widget w) {
     // Get the TD to be removed, before calling super.remove(), because
     // super.remove() will detach the child widget's element from its parent.
-    Element td = DOM.getParent(w.getElement());
+    HTMLElement td = DOM.getParent(w.getElement());
     boolean removed = super.remove(w);
     if (removed) {
       tableRow.removeChild(td);
@@ -122,8 +122,8 @@ public class HorizontalPanel extends CellPanel implements HasAlignment, InsertPa
     }
   }
 
-  private Element createAlignedTd() {
-    Element td = DOM.createTD();
+  private HTMLElement createAlignedTd() {
+    HTMLElement td = DOM.createTD();
     setCellHorizontalAlignment(td, horzAlign);
     setCellVerticalAlignment(td, vertAlign);
     return td;

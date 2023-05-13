@@ -15,15 +15,17 @@
  */
 package org.gwtproject.cell.client;
 
-import static org.gwtproject.dom.client.BrowserEvents.CLICK;
-import static org.gwtproject.dom.client.BrowserEvents.KEYDOWN;
-
-import org.gwtproject.dom.client.Element;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.gwtproject.dom.client.EventTarget;
 import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
+import org.gwtproject.user.client.DOM;
+
+import static org.gwtproject.dom.client.BrowserEvents.CLICK;
+import static org.gwtproject.dom.client.BrowserEvents.KEYDOWN;
 
 /**
  * A cell that renders a button and takes a delegate to perform actions on mouseUp.
@@ -79,17 +81,17 @@ public class ActionCell<C> extends AbstractCell<C> {
   @Override
   public void onBrowserEvent(
       Cell.Context context,
-      Element parent,
+      HTMLElement parent,
       C value,
       NativeEvent event,
       org.gwtproject.cell.client.ValueUpdater<C> valueUpdater) {
     super.onBrowserEvent(context, parent, value, event, valueUpdater);
     if (CLICK.equals(event.getType())) {
       EventTarget eventTarget = event.getEventTarget();
-      if (!Element.is(eventTarget)) {
+      if (!DOM.isElement(eventTarget)) {
         return;
       }
-      if (parent.getFirstChildElement().isOrHasChild(Element.as(eventTarget))) {
+      if (parent.firstElementChild.contains(Js.uncheckedCast(eventTarget))) {
         // Ignore clicks that occur outside of the main element.
         onEnterKeyDown(context, parent, value, event, valueUpdater);
       }
@@ -104,7 +106,7 @@ public class ActionCell<C> extends AbstractCell<C> {
   @Override
   protected void onEnterKeyDown(
       Cell.Context context,
-      Element parent,
+      HTMLElement parent,
       C value,
       NativeEvent event,
       org.gwtproject.cell.client.ValueUpdater<C> valueUpdater) {

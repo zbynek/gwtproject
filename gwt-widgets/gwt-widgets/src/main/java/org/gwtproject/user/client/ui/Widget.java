@@ -15,8 +15,8 @@
  */
 package org.gwtproject.user.client.ui;
 
+import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.event.dom.client.DomEvent;
 
 import org.gwtproject.event.logical.shared.AttachEvent;
@@ -207,13 +207,13 @@ public class Widget extends UIObject implements EventListener, HasAttachHandlers
       case Event.ONMOUSEOUT:
         // Only fire the mouse out event if it's leaving this
         // widget.
-        Element related = Js.uncheckedCast(event.getRelatedEventTarget());
-        if (related != null && getElement().isOrHasChild(related)) {
+        HTMLElement related = Js.uncheckedCast(event.getRelatedEventTarget());
+        if (related != null && getElement().contains(related)) {
           return;
         }
         break;
     }
-    DomEvent.fireNativeEvent(event, this, this.getElement());
+    DomEvent.fireNativeEvent(event, this, Js.uncheckedCast(this.getElement()));
   }
 
   /**
@@ -426,7 +426,7 @@ public class Widget extends UIObject implements EventListener, HasAttachHandlers
   }
 
   @Override
-  void replaceElement(Element elem) {
+  void replaceElement(HTMLElement elem) {
     if (isAttached()) {
       // Remove old event listener to avoid leaking. onDetach will not do this
       // for us, because it is only called when the widget itself is detached

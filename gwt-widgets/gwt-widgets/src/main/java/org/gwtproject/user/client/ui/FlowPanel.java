@@ -15,8 +15,9 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.DivElement;
-import org.gwtproject.dom.client.Document;
+import elemental2.dom.DomGlobal;
+import jsinterop.base.Js;
+import org.gwtproject.user.client.DOM;
 
 /**
  * A panel that formats its child widgets using the default HTML layout behavior.
@@ -26,12 +27,12 @@ import org.gwtproject.dom.client.Document;
 public class FlowPanel extends ComplexPanel implements InsertPanel.ForIsWidget {
   /** Creates an empty flow panel. */
   public FlowPanel() {
-    this(DivElement.TAG);
+    this("div");
   }
 
   /** Creates an empty flow panel with a custom tag. */
   public FlowPanel(String tag) {
-    setElement(Document.get().createElement(tag));
+    setElement(Js.uncheckedCast(DomGlobal.document.createElement(tag)));
   }
 
   /**
@@ -49,7 +50,7 @@ public class FlowPanel extends ComplexPanel implements InsertPanel.ForIsWidget {
     try {
       doLogicalClear();
     } finally {
-      getElement().removeAllChildren();
+      DOM.removeAllChildren(getElement());
     }
   }
 

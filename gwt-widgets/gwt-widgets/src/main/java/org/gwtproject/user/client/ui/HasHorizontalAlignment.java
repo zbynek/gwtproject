@@ -15,8 +15,6 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.style.shared.TextAlign;
-
 /**
  * Characteristic interface which indicates that a widget can be aligned horizontally.
  *
@@ -82,19 +80,19 @@ public interface HasHorizontalAlignment {
 
   /** Specifies that the widget's contents should be aligned in the center. */
   HorizontalAlignmentConstant ALIGN_CENTER =
-      new HorizontalAlignmentConstant(TextAlign.CENTER.getCssName());
+      new HorizontalAlignmentConstant("center");
 
   /** Specifies that the widget's contents should be aligned as justify. */
   HorizontalAlignmentConstant ALIGN_JUSTIFY =
-      new HorizontalAlignmentConstant(TextAlign.JUSTIFY.getCssName());
+      new HorizontalAlignmentConstant("justify");
 
   /** Specifies that the widget's contents should be aligned to the left. */
   HorizontalAlignmentConstant ALIGN_LEFT =
-      new HorizontalAlignmentConstant(TextAlign.LEFT.getCssName());
+      new HorizontalAlignmentConstant("left");
 
   /** Specifies that the widget's contents should be aligned to the right. */
   HorizontalAlignmentConstant ALIGN_RIGHT =
-      new HorizontalAlignmentConstant(TextAlign.RIGHT.getCssName());
+      new HorizontalAlignmentConstant("right");
 
   /**
    * In a RTL layout, specifies that the widget's contents should be aligned to the right. In a LTR

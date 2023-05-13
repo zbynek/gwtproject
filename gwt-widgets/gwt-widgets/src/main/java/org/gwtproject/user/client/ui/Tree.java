@@ -20,8 +20,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.event.dom.client.BlurEvent;
 import org.gwtproject.event.dom.client.BlurHandler;
 import org.gwtproject.event.dom.client.FocusEvent;
@@ -149,8 +150,8 @@ public class Tree extends Widget
     }
   }
 
-  static boolean shouldTreeDelegateFocusToElement(Element elem) {
-    String name = elem.getNodeName();
+  static boolean shouldTreeDelegateFocusToElement(HTMLElement elem) {
+    String name = elem.nodeName;
     return name.equals("SELECT")
         || name.equals("INPUT")
         || name.equals("TEXTAREA")
@@ -164,7 +165,7 @@ public class Tree extends Widget
 
   private TreeItem curSelection;
 
-  private Element focusable;
+  private HTMLElement focusable;
 
   private ImageAdapter images;
 
@@ -510,12 +511,12 @@ public class Tree extends Widget
     switch (eventType) {
       case Event.ONCLICK:
         {
-          Element e = DOM.eventGetTarget(event);
+          HTMLElement e = DOM.eventGetTarget(event);
           if (shouldTreeDelegateFocusToElement(e)) {
             // The click event should have given focus to this element already.
             // Avoid moving focus back up to the tree (so that focusable widgets
             // attached to TreeItems can receive keyboard events).
-          } else if ((curSelection != null) && curSelection.getContentElem().isOrHasChild(e)) {
+          } else if ((curSelection != null) && curSelection.getContentElem().contains(e)) {
             setFocus(true);
           }
           break;
@@ -552,7 +553,7 @@ public class Tree extends Widget
       case Event.ONKEYUP:
         {
           if (event.getKeyCode() == KeyCodes.KEY_TAB) {
-            ArrayList<Element> chain = new ArrayList<Element>();
+            ArrayList<HTMLElement> chain = new ArrayList<>();
             collectElementChain(chain, getElement(), DOM.eventGetTarget(event));
             TreeItem item = findItemByChain(chain, 0, root);
             if (item != getSelectedItem()) {
@@ -828,7 +829,7 @@ public class Tree extends Widget
     if (useLeafImages || treeItem.isFullNode()) {
       showImage(treeItem, images.treeLeaf());
     } else {
-      treeItem.getElement().getStyle().setProperty("paddingLeft", indentValue);
+      treeItem.getElement().style.setProperty("paddingLeft", indentValue);
     }
   }
 
@@ -842,7 +843,7 @@ public class Tree extends Widget
   }
 
   /** Collects parents going up the element tree, terminated at the tree root. */
-  private void collectElementChain(ArrayList<Element> chain, Element hRoot, Element hElem) {
+  private void collectElementChain(ArrayList<HTMLElement> chain, HTMLElement hRoot, HTMLElement hElem) {
     if ((hElem == null) || (hElem == hRoot)) {
       return;
     }
@@ -851,16 +852,16 @@ public class Tree extends Widget
     chain.add(hElem);
   }
 
-  private boolean elementClicked(Element hElem) {
-    ArrayList<Element> chain = new ArrayList<Element>();
+  private boolean elementClicked(HTMLElement hElem) {
+    ArrayList<HTMLElement> chain = new ArrayList<>();
     collectElementChain(chain, getElement(), hElem);
 
     TreeItem item = findItemByChain(chain, 0, root);
     if (item != null && item != root) {
-      if (item.getChildCount() > 0 && item.getImageElement().isOrHasChild(hElem)) {
+      if (item.getChildCount() > 0 && item.getImageElement().contains(hElem)) {
         item.setState(!item.getState(), true);
         return true;
-      } else if (item.getElement().isOrHasChild(hElem)) {
+      } else if (item.getElement().contains(hElem)) {
         onSelection(item, true, !shouldTreeDelegateFocusToElement(hElem));
         return true;
       }
@@ -876,12 +877,12 @@ public class Tree extends Widget
     return findDeepestOpenChild(item.getChild(item.getChildCount() - 1));
   }
 
-  private TreeItem findItemByChain(ArrayList<Element> chain, int idx, TreeItem root) {
+  private TreeItem findItemByChain(ArrayList<HTMLElement> chain, int idx, TreeItem root) {
     if (idx == chain.size()) {
       return root;
     }
 
-    Element hCurElem = chain.get(idx);
+    HTMLElement hCurElem = chain.get(idx);
     for (int i = 0, n = root.getChildCount(); i < n; ++i) {
       TreeItem child = root.getChild(i);
       if (child.getElement() == hCurElem) {
@@ -919,19 +920,19 @@ public class Tree extends Widget
     setImages(images, useLeafImages);
     setElement(DOM.createDiv());
 
-    getElement().getStyle().setProperty("position", "relative");
+    getElement().style.setProperty("position", "relative");
 
     // Fix rendering problem with relatively-positioned elements and their
     // children by
     // forcing the element that is positioned relatively to 'have layout'
-    getElement().getStyle().setProperty("zoom", "1");
+    getElement().style.setProperty("zoom", "1");
 
     focusable = FocusPanel.impl.createFocusable();
-    focusable.getStyle().setProperty("fontSize", "0");
-    focusable.getStyle().setProperty("position", "absolute");
+    focusable.style.setProperty("fontSize", "0");
+    focusable.style.setProperty("position", "absolute");
 
     // Hide focus outline in Mozilla/Webkit
-    focusable.getStyle().setProperty("outline", "0px");
+    focusable.style.setProperty("outline", "0px");
 
     // Hide focus outline in IE 6/7
     focusable.setAttribute("hideFocus", "true");
@@ -1027,14 +1028,14 @@ public class Tree extends Widget
       if (scrollOnSelectEnabled) {
         // Get the location and size of the given item's content element relative
         // to the tree.
-        Element selectedElem = curSelection.getContentElem();
+        HTMLElement selectedElem = curSelection.getContentElem();
         int containerLeft = getAbsoluteLeft();
         int containerTop = getAbsoluteTop();
 
-        int left = selectedElem.getAbsoluteLeft() - containerLeft;
-        int top = selectedElem.getAbsoluteTop() - containerTop;
-        int width = selectedElem.getPropertyInt("offsetWidth");
-        int height = selectedElem.getPropertyInt("offsetHeight");
+        int left = DOM.getAbsoluteLeft(selectedElem) - containerLeft;
+        int top = DOM.getAbsoluteTop(selectedElem) - containerTop;
+        int width = selectedElem.offsetWidth;
+        int height = selectedElem.offsetHeight;
 
         // If the item is not visible, quite here
         if (width == 0 || height == 0) {
@@ -1045,10 +1046,10 @@ public class Tree extends Widget
 
         // Set the focusable element's position and size to exactly underlap the
         // item's content element.
-        focusable.getStyle().setProperty("left", left + "px");
-        focusable.getStyle().setProperty("top", top + "px");
-        focusable.getStyle().setProperty("width", width + "px");
-        focusable.getStyle().setProperty("height", height + "px");
+        focusable.style.setProperty("left", left + "px");
+        focusable.style.setProperty("top", top + "px");
+        focusable.style.setProperty("width", width + "px");
+        focusable.style.setProperty("height", height + "px");
 
         // Scroll it into view.
         focusable.scrollIntoView();
@@ -1147,7 +1148,7 @@ public class Tree extends Widget
 
     if (!useLeafImages) {
       Image image = images.treeLeaf().createImage();
-      image.getElement().getStyle().setProperty("visibility", "hidden");
+      image.getElement().style.setProperty("visibility", "hidden");
       RootPanel.get().add(image);
       int size = image.getWidth() + TreeItem.IMAGE_PAD;
       image.removeFromParent();
@@ -1156,8 +1157,8 @@ public class Tree extends Widget
   }
 
   private void showImage(TreeItem treeItem, AbstractImagePrototype proto) {
-    Element holder = treeItem.getImageHolderElement();
-    Element child = DOM.getFirstChild(holder);
+    HTMLElement holder = treeItem.getImageHolderElement();
+    HTMLElement child = DOM.getFirstChild(holder);
     if (child == null) {
       // If no image element has been created yet, create one from the
       // prototype.
@@ -1170,7 +1171,7 @@ public class Tree extends Widget
 
   private void updateAriaAttributes() {
 
-    Element curSelectionContentElem = curSelection.getContentElem();
+    HTMLElement curSelectionContentElem = curSelection.getContentElem();
 
     // Set the 'aria-level' state. To do this, we need to compute the level of
     // the currently selected item.
@@ -1222,9 +1223,9 @@ public class Tree extends Widget
 
     // Update the 'aria-activedescendant' state for the focusable element to
     // match the id of the currently selected item
-    if (curSelectionContentElem.getId().isEmpty()) {
-      curSelectionContentElem.setId(DOM.createUniqueId());
+    if (curSelectionContentElem.id.isEmpty()) {
+      curSelectionContentElem.id = DOM.createUniqueId();
     }
-    focusable.setAttribute("aria-activedescendant", curSelectionContentElem.getId());
+    focusable.setAttribute("aria-activedescendant", curSelectionContentElem.id);
   }
 }
