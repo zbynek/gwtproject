@@ -15,9 +15,9 @@
  */
 package org.gwtproject.user.client.impl;
 
+import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
 import org.gwtproject.user.client.EventListener;
@@ -27,7 +27,7 @@ public abstract class DOMImpl {
 
   protected static boolean eventSystemIsInitialized;
 
-  public static EventListener getEventListener(Element elem) {
+  public static EventListener getEventListener(HTMLElement elem) {
     JsPropertyMap _this = Js.asPropertyMap(elem);
     if (_this.has("__listener")) {
       EventListener maybeListener = Js.uncheckedCast(_this.get("__listener"));
@@ -36,7 +36,7 @@ public abstract class DOMImpl {
     return null;
   }
 
-  public static void setEventListener(Element elem, EventListener listener) {
+  public static void setEventListener(HTMLElement elem, EventListener listener) {
     Js.asPropertyMap(elem).set("__listener", listener);
   }
 
@@ -65,13 +65,13 @@ public abstract class DOMImpl {
     }
   }
 
-  public abstract Element eventGetFromElement(Event evt);
+  public abstract HTMLElement eventGetFromElement(Event evt);
 
   public boolean eventGetRepeat(Event evt) {
     return Js.asPropertyMap(evt).has("repeat");
   }
 
-  public abstract Element eventGetToElement(Event evt);
+  public abstract HTMLElement eventGetToElement(Event evt);
 
   public final int eventGetTypeInt(Event evt) {
     return eventGetTypeInt(evt.getType());
@@ -144,20 +144,20 @@ public abstract class DOMImpl {
     Js.asPropertyMap(evt).set("keyCode", key);
   }
 
-  public abstract Element getChild(Element elem, int index);
+  public abstract HTMLElement getChild(HTMLElement elem, int index);
 
-  public abstract int getChildCount(Element elem);
+  public abstract int getChildCount(HTMLElement elem);
 
-  public abstract int getChildIndex(Element parent, Element child);
+  public abstract int getChildIndex(HTMLElement parent, HTMLElement child);
 
-  public int getEventsSunk(Element elem) {
+  public int getEventsSunk(HTMLElement elem) {
     if (((JsPropertyMap) elem).has("__eventBits")) {
       return Integer.valueOf(((JsPropertyMap) elem).get("__eventBits").toString());
     }
     return 0;
   }
 
-  public abstract void insertChild(Element parent, Element child, int index);
+  public abstract void insertChild(HTMLElement parent, HTMLElement child, int index);
 
   public void maybeInitializeEventSystem() {
     if (!eventSystemIsInitialized) {
@@ -166,13 +166,13 @@ public abstract class DOMImpl {
     }
   }
 
-  public abstract void releaseCapture(Element elem);
+  public abstract void releaseCapture(HTMLElement elem);
 
-  public abstract void setCapture(Element elem);
+  public abstract void setCapture(HTMLElement elem);
 
-  public abstract void sinkBitlessEvent(Element elem, String eventTypeName);
+  public abstract void sinkBitlessEvent(HTMLElement elem, String eventTypeName);
 
-  public abstract void sinkEvents(Element elem, int eventBits);
+  public abstract void sinkEvents(HTMLElement elem, int eventBits);
 
   /** Initializes the event dispatch system. */
   protected abstract void initEventSystem();

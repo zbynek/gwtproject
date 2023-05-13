@@ -15,9 +15,10 @@
  */
 package org.gwtproject.cell.client;
 
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
+import jsinterop.base.Js;
 import org.gwtproject.dom.client.BrowserEvents;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.InputElement;
 import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.safehtml.client.SafeHtmlTemplates;
 import org.gwtproject.safehtml.shared.SafeHtml;
@@ -136,16 +137,16 @@ public class TextInputCell
   @Override
   public void onBrowserEvent(
       Context context,
-      Element parent,
+      HTMLElement parent,
       String value,
       NativeEvent event,
       org.gwtproject.cell.client.ValueUpdater<String> valueUpdater) {
     super.onBrowserEvent(context, parent, value, event, valueUpdater);
 
     // Ignore events that don't target the input.
-    InputElement input = getInputElement(parent);
-    Element target = event.getEventTarget().cast();
-    if (!input.isOrHasChild(target)) {
+    HTMLInputElement input = getInputElement(parent);
+    HTMLElement target = event.getEventTarget().cast();
+    if (!input.contains(target)) {
       return;
     }
 
@@ -160,7 +161,7 @@ public class TextInputCell
         vd = new ViewData(value);
         setViewData(key, vd);
       }
-      vd.setCurrentValue(input.getValue());
+      vd.setCurrentValue(input.value);
     }
   }
 
@@ -184,11 +185,11 @@ public class TextInputCell
 
   @Override
   protected void finishEditing(
-      Element parent,
+      HTMLElement parent,
       String value,
       Object key,
       org.gwtproject.cell.client.ValueUpdater<String> valueUpdater) {
-    String newValue = getInputElement(parent).getValue();
+    String newValue = getInputElement(parent).value;
 
     // Get the view data.
     ViewData vd = getViewData(key);
@@ -209,7 +210,7 @@ public class TextInputCell
   }
 
   @Override
-  protected InputElement getInputElement(Element parent) {
-    return super.getInputElement(parent).<InputElement>cast();
+  protected HTMLInputElement getInputElement(HTMLElement parent) {
+    return Js.uncheckedCast(super.getInputElement(parent));
   }
 }

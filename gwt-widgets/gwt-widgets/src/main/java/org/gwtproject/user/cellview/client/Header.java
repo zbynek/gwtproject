@@ -15,10 +15,10 @@
  */
 package org.gwtproject.user.cellview.client;
 
+import elemental2.dom.HTMLElement;
 import org.gwtproject.cell.client.Cell;
 import org.gwtproject.cell.client.Cell.Context;
 import org.gwtproject.cell.client.ValueUpdater;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 
@@ -87,7 +87,7 @@ public abstract class Header<H> {
    * @param elem the parent Element
    * @param event the native browser event
    */
-  public void onBrowserEvent(Context context, Element elem, NativeEvent event) {
+  public void onBrowserEvent(Context context, HTMLElement elem, NativeEvent event) {
     cell.onBrowserEvent(context, elem, getValue(), event, updater);
   }
 
@@ -106,7 +106,7 @@ public abstract class Header<H> {
    *     org.gwtproject.user.cellview.client.ColumnSortEvent}). False if the {@link CellTable}
    *     should stop respond to the event.
    */
-  public boolean onPreviewColumnSortEvent(Context context, Element elem, NativeEvent event) {
+  public boolean onPreviewColumnSortEvent(Context context, HTMLElement elem, NativeEvent event) {
     return true;
   }
 
@@ -124,7 +124,7 @@ public abstract class Header<H> {
    * Set extra style names that should be applied to every cell in this header.
    *
    * <p>If you want to apply style names based on the header value, override {@link
-   * #getHeaderStyleNames(Object)} directly.
+   * #getHeaderStyleNames()} directly.
    *
    * @param styleNames the extra style names to apply in a space-separated list, or {@code null} if
    *     there are no extra styles for this cell

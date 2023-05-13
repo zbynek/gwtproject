@@ -15,7 +15,7 @@
  */
 package org.gwtproject.animation.client;
 
-import org.gwtproject.dom.client.Element;
+import elemental2.dom.HTMLElement;
 
 /**
  * This class provides task scheduling for animations. Any exceptions thrown by the command objects
@@ -44,7 +44,7 @@ public abstract class AnimationScheduler {
    * animation.
    *
    * <p>NOTE: If you are animating an element, use {@link #requestAnimationFrame(AnimationCallback,
-   * Element)} instead so the browser can optimize for the specified element.
+   * HTMLElement)} instead so the browser can optimize for the specified element.
    *
    * <p>Using this method instead of a timeout is preferred because the browser is in the best
    * position to decide how frequently to trigger the callback for an animation of the specified
@@ -53,7 +53,7 @@ public abstract class AnimationScheduler {
    *
    * @param callback the callback to fire
    * @return a handle to the requested animation frame
-   * @see #requestAnimationFrame(AnimationCallback, Element)
+   * @see #requestAnimationFrame(AnimationCallback, HTMLElement)
    */
   public AnimationHandle requestAnimationFrame(AnimationCallback callback) {
     return requestAnimationFrame(callback, null);
@@ -73,7 +73,7 @@ public abstract class AnimationScheduler {
    * @return a handle to the requested animation frame
    */
   public abstract AnimationHandle requestAnimationFrame(
-      AnimationCallback callback, Element element);
+      AnimationCallback callback, HTMLElement element);
 
   /** The callback used when an animation frame becomes available. */
   public interface AnimationCallback {
@@ -87,7 +87,7 @@ public abstract class AnimationScheduler {
 
   /**
    * A handle to the requested animation frame created by {@link
-   * #requestAnimationFrame(AnimationCallback, Element)}.
+   * #requestAnimationFrame(AnimationCallback, HTMLElement)}.
    */
   public abstract static class AnimationHandle {
     /**

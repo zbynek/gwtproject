@@ -15,11 +15,11 @@
  */
 package org.gwtproject.user.client.ui.impl;
 
+import elemental2.dom.Element;
+import elemental2.dom.Event;
+import elemental2.dom.HTMLElement;
 import jsinterop.annotations.JsFunction;
 import jsinterop.base.Js;
-import org.gwtproject.core.client.JavaScriptObject;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.safecss.shared.SafeStyles;
 import org.gwtproject.safecss.shared.SafeStylesBuilder;
@@ -28,6 +28,7 @@ import org.gwtproject.safehtml.client.SafeHtmlTemplates;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeUri;
 import org.gwtproject.safehtml.shared.UriUtils;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.Image;
 
 /**
@@ -52,33 +53,33 @@ public class ClippedImageImpl {
   private static Template template;
   private static DraggableTemplate draggableTemplate;
 
-  public void adjust(Element img, SafeUri url, int left, int top, int width, int height) {
+  public void adjust(HTMLElement img, SafeUri url, int left, int top, int width, int height) {
     String style = "url(\"" + url.asString() + "\") no-repeat " + (-left + "px ") + (-top + "px");
-    img.getStyle().setProperty("background", style);
-    img.getStyle().setPropertyPx("width", width);
-    img.getStyle().setPropertyPx("height", height);
+    img.style.setProperty("background", style);
+    img.style.setProperty("width", width + "px");
+    img.style.setProperty("height", height + "px");
   }
 
-  public Element createStructure(SafeUri url, int left, int top, int width, int height) {
-    Element tmp = Document.get().createSpanElement();
-    tmp.setInnerSafeHtml(getSafeHtml(url, left, top, width, height));
+  public HTMLElement createStructure(SafeUri url, int left, int top, int width, int height) {
+    HTMLElement tmp = DOM.createSpan();
+    tmp.innerHTML = getSafeHtml(url, left, top, width, height).asString();
 
-    Element elem = tmp.getFirstChildElement();
-    elem.setPropertyJSO("onload", createOnLoadHandlerFunction());
+    HTMLElement elem = Js.uncheckedCast(tmp.firstElementChild);
+    elem.onload = createOnLoadHandlerFunction();
     return elem;
   }
 
-  public static JavaScriptObject createOnLoadHandlerFunction() {
-    return Js.uncheckedCast(
-        new Fn() {
+  public static Element.OnloadFn createOnLoadHandlerFunction() {
+
+       return new Element.OnloadFn() {
           @Override
-          public void onInvoke() {
+          public void onInvoke(Event p0) {
             Js.asPropertyMap(this).set("__gwtLastUnhandledEvent", "load");
           }
-        });
+        };
   }
 
-  public Element getImgElement(Image image) {
+  public HTMLElement getImgElement(Image image) {
     return image.getElement();
   }
 

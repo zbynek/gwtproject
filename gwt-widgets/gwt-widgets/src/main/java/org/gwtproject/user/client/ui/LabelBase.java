@@ -15,9 +15,8 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.WhiteSpace;
+import elemental2.dom.HTMLElement;
+import org.gwtproject.user.client.DOM;
 
 /**
  * Abstract base class for all text display widgets.
@@ -43,15 +42,15 @@ public class LabelBase<T> extends Widget
   private HorizontalAlignmentConstant horzAlign;
 
   protected LabelBase(boolean inline) {
-    this(inline ? Document.get().createSpanElement() : Document.get().createDivElement(), inline);
+    this(inline ? DOM.createSpan() : DOM.createDiv(), inline);
   }
 
-  protected LabelBase(Element element) {
-    this(element, "span".equalsIgnoreCase(element.getTagName()));
+  protected LabelBase(HTMLElement element) {
+    this(element, "span".equalsIgnoreCase(element.tagName));
   }
 
-  private LabelBase(Element element, boolean isElementInline) {
-    assert (isElementInline ? "span" : "div").equalsIgnoreCase(element.getTagName());
+  private LabelBase(HTMLElement element, boolean isElementInline) {
+    assert (isElementInline ? "span" : "div").equalsIgnoreCase(element.tagName);
     setElement(element);
     directionalTextHelper = new DirectionalTextHelper(getElement(), isElementInline);
   }
@@ -65,7 +64,7 @@ public class LabelBase<T> extends Widget
   }
 
   public boolean getWordWrap() {
-    return !WhiteSpace.NOWRAP.getCssName().equals(getElement().getStyle().getWhiteSpace());
+    return !"nowrap".equals(getElement().style.whiteSpace);
   }
 
   public void setAutoHorizontalAlignment(AutoHorizontalAlignmentConstant autoAlignment) {
@@ -89,7 +88,7 @@ public class LabelBase<T> extends Widget
   }
 
   public void setWordWrap(boolean wrap) {
-    getElement().getStyle().setWhiteSpace(wrap ? WhiteSpace.NORMAL : WhiteSpace.NOWRAP);
+    getElement().style.whiteSpace = wrap ? "normal" : "nowrap";
   }
 
   /**
@@ -116,8 +115,7 @@ public class LabelBase<T> extends Widget
 
     if (align != horzAlign) {
       horzAlign = align;
-      getElement()
-          .getStyle()
+      getElement().style
           .setProperty("textAlign", horzAlign == null ? "" : horzAlign.getTextAlignString());
     }
   }

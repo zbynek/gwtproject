@@ -16,7 +16,8 @@
 package org.gwtproject.cell.client;
 
 import java.util.Set;
-import org.gwtproject.dom.client.Element;
+
+import elemental2.dom.HTMLElement;
 import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 
@@ -30,7 +31,7 @@ import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
  * in multiple Columns, the Cells will not differentiate the values coming from one Column versus
  * another.
  *
- * <p>However, some interactive Cells ({@link EditTextCell}, {@link CheckboxCell}, {@link
+ * <p>However, some interactive Cells ( {@link CheckboxCell}, {@link
  * TextInputCell}, etc...) have a stateful "pending" state, which is a map of row values/keys to the
  * end user entered pending value. For example, if an end user types a new value in a {@link
  * TextInputCell}, the {@link TextInputCell} maps the "pending value" and associates it with the
@@ -141,7 +142,7 @@ public interface Cell<C> {
   /**
    * Get the set of events that this cell consumes (see {@link
    * org.gwtproject.dom.client.BrowserEvents BrowserEvents} for useful constants). The container
-   * that uses this cell should only pass these events to {@link #onBrowserEvent(Context, Element,
+   * that uses this cell should only pass these events to {@link #onBrowserEvent(Context, HTMLElement,
    * Object, NativeEvent, ValueUpdater)} when the event occurs.
    *
    * <p>The returned value should not be modified, and may be an unmodifiable set. Changes to the
@@ -170,7 +171,7 @@ public interface Cell<C> {
    * @param value the value associated with the cell
    * @return true if the cell is in edit mode
    */
-  boolean isEditing(Context context, Element parent, C value);
+  boolean isEditing(Context context, HTMLElement parent, C value);
 
   /**
    * Handle a browser event that took place within the cell. The default implementation returns
@@ -183,11 +184,11 @@ public interface Cell<C> {
    * @param valueUpdater a {@link ValueUpdater}, or null if not specified
    */
   void onBrowserEvent(
-      Context context, Element parent, C value, NativeEvent event, ValueUpdater<C> valueUpdater);
+          Context context, HTMLElement parent, C value, NativeEvent event, ValueUpdater<C> valueUpdater);
 
   /**
    * Render a cell as HTML into a {@link SafeHtmlBuilder}, suitable for passing to {@link
-   * Element#setInnerHTML(String)} on a container element.
+   * HTMLElement#innerHTML} on a container element.
    *
    * <p>Note: If your cell contains natively focusable elements, such as buttons or input elements,
    * be sure to set the tabIndex to -1 so that they do not steal focus away from the containing
@@ -207,17 +208,17 @@ public interface Cell<C> {
    * @param value the value associated with the cell
    * @return true if focus is taken, false if not
    */
-  boolean resetFocus(Context context, Element parent, C value);
+  boolean resetFocus(Context context, HTMLElement parent, C value);
 
   /**
    * This method may be used by cell containers to set the value on a single cell directly, rather
-   * than using {@link Element#setInnerHTML(String)}. See {@link AbstractCell#setValue(Context,
-   * Element, Object)} for a default implementation that uses {@link #render(Context, Object,
+   * than using {@link HTMLElement#innerHTML}. See {@link AbstractCell#setValue(Context,
+   * HTMLElement, Object)} for a default implementation that uses {@link #render(Context, Object,
    * SafeHtmlBuilder)}.
    *
    * @param context the {@link Context} of the cell
    * @param parent the parent Element
    * @param value the value associated with the cell
    */
-  void setValue(Context context, Element parent, C value);
+  void setValue(Context context, HTMLElement parent, C value);
 }

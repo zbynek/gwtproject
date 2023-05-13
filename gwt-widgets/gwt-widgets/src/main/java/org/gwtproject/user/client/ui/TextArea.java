@@ -15,9 +15,11 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.TextAreaElement;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLTextAreaElement;
+import jsinterop.base.Js;
+import org.gwtproject.user.client.DOM;
 
 /**
  * A text box that allows multiple lines of text to be entered.
@@ -32,12 +34,6 @@ import org.gwtproject.dom.client.TextAreaElement;
  * </ul>
  *
  * <p>
- *
- * <h3>Built-in Bidi Text Support</h3>
- *
- * This widget is capable of automatically adjusting its direction according to the input text. This
- * feature is controlled by {@link #setDirectionEstimator}, and is available by default when at
- * least one of the application's locales is right-to-left.
  *
  * <p>
  *
@@ -55,9 +51,9 @@ public class TextArea extends TextBoxBase {
    *
    * @param element the element to be wrapped
    */
-  public static TextArea wrap(Element element) {
+  public static TextArea wrap(HTMLElement element) {
     // Assert that the element is attached.
-    assert Document.get().getBody().isOrHasChild(element);
+    assert DomGlobal.document.body.contains(element);
 
     TextArea textArea = new TextArea(element);
 
@@ -70,7 +66,7 @@ public class TextArea extends TextBoxBase {
 
   /** Creates an empty text area. */
   public TextArea() {
-    super(Document.get().createTextAreaElement());
+    super(DOM.createTextArea());
     setStyleName("gwt-TextArea");
   }
 
@@ -80,9 +76,9 @@ public class TextArea extends TextBoxBase {
    *
    * @param element the element to be used
    */
-  protected TextArea(Element element) {
-    super(element.<Element>cast());
-    TextAreaElement.as(element);
+  protected TextArea(HTMLElement element) {
+    super(element);
+    assertTagName("textarea");
   }
 
   /**
@@ -92,7 +88,7 @@ public class TextArea extends TextBoxBase {
    * @return the requested width, in characters
    */
   public int getCharacterWidth() {
-    return getTextAreaElement().getCols();
+    return getTextAreaElement().cols;
   }
 
   @Override
@@ -111,7 +107,7 @@ public class TextArea extends TextBoxBase {
    * @return the number of visible lines
    */
   public int getVisibleLines() {
-    return getTextAreaElement().getRows();
+    return getTextAreaElement().rows;
   }
 
   /**
@@ -121,7 +117,7 @@ public class TextArea extends TextBoxBase {
    * @param width the requested width, in characters
    */
   public void setCharacterWidth(int width) {
-    getTextAreaElement().setCols(width);
+    getTextAreaElement().cols = width;
   }
 
   /**
@@ -130,10 +126,10 @@ public class TextArea extends TextBoxBase {
    * @param lines the number of visible lines
    */
   public void setVisibleLines(int lines) {
-    getTextAreaElement().setRows(lines);
+    getTextAreaElement().rows = lines;
   }
 
-  private TextAreaElement getTextAreaElement() {
-    return getElement().cast();
+  private HTMLTextAreaElement getTextAreaElement() {
+    return Js.uncheckedCast(getElement());
   }
 }

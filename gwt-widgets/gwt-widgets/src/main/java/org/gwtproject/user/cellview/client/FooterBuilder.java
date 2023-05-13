@@ -15,18 +15,18 @@
  */
 package org.gwtproject.user.cellview.client;
 
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLTableRowElement;
 import org.gwtproject.dom.builder.shared.TableSectionBuilder;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.TableRowElement;
 
 /**
  * Builds the DOM elements for the footer section of a CellTable. It also provides queries on
  * elements in the last DOM subtree that it created.
  *
  * <p>{@link FooterBuilder} provides two optional ways to handle events, via a {@link Column}, a
- * {@link Header}, or both. If {@link #getColumn(Element)} returns a {@link Column} given the target
- * {@link Element} of an event, cell table will use it to enable features such as sorting. If {@link
- * #getHeader(Element)} returns a {@link Header}, cell table will forward the event to the {@link
+ * {@link Header}, or both. If {@link #getColumn(HTMLElement)} returns a {@link Column} given the target
+ * {@link HTMLElement} of an event, cell table will use it to enable features such as sorting. If {@link
+ * #getHeader(HTMLElement)} returns a {@link Header}, cell table will forward the event to the {@link
  * Header}. You can specify both a {@link Column} and {@link Header}.
  *
  * <p>The default implementation used by cell widgets is {@link DefaultHeaderOrFooterBuilder}.
@@ -56,7 +56,7 @@ public interface FooterBuilder<T> {
    * @param elem the element that the contains column
    * @return the immediate column contained by the element
    */
-  Column<T, ?> getColumn(Element elem);
+  Column<T, ?> getColumn(HTMLElement elem);
 
   /**
    * If you want to handle browser events using a subclass of {@link Header}, implement this method
@@ -66,23 +66,23 @@ public interface FooterBuilder<T> {
    * @param elem the element that the contains header
    * @return the immediate {@link Header} contained by the element
    */
-  Header<?> getHeader(Element elem);
+  Header<?> getHeader(HTMLElement elem);
 
   /**
-   * Get the row index from the associated {@link TableRowElement} (an TR element).
+   * Get the row index from the associated {@link HTMLTableRowElement} (an TR element).
    *
    * @param row the row element
    * @return the row value index
    */
-  int getRowIndex(TableRowElement row);
+  int getRowIndex(HTMLTableRowElement row);
 
   /**
    * Check if an element contains a {@link Column}. This method should return false if and only if
-   * {@link #getColumn(Element)} would return null.
+   * {@link #getColumn(HTMLElement)} would return null.
    *
    * @param elem the element of interest
    */
-  boolean isColumn(Element elem);
+  boolean isColumn(HTMLElement elem);
 
   /**
    * Check if an element contains a {@link Header}. This method should return false if and only if
@@ -90,5 +90,5 @@ public interface FooterBuilder<T> {
    *
    * @param elem the element of interest
    */
-  boolean isHeader(Element elem);
+  boolean isHeader(HTMLElement elem);
 }

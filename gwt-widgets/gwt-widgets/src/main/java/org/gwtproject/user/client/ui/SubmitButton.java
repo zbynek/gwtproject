@@ -15,14 +15,17 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.ButtonElement;
-import org.gwtproject.dom.client.Document;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
+import org.gwtproject.user.client.DOM;
 
 /**
- * A standard push-button widget which will automatically submit its enclosing {@link FormPanel} if
+ * A standard push-button widget which will automatically submit its enclosing form if
  * any.
  *
  * <h3>CSS Style Rules</h3>
@@ -42,12 +45,12 @@ public class SubmitButton extends Button {
    *
    * @param element the element to be wrapped
    */
-  public static Button wrap(org.gwtproject.dom.client.Element element) {
+  public static Button wrap(HTMLElement element) {
     // Assert that the element is attached.
-    assert Document.get().getBody().isOrHasChild(element);
+    assert DomGlobal.document.body.contains(element);
 
     SubmitButton button = new SubmitButton(element);
-    assert "submit".equalsIgnoreCase(button.getButtonElement().getType());
+    assert "submit".equalsIgnoreCase(button.getButtonElement().type);
 
     // Mark it attached and remember it for cleanup.
     button.onAttach();
@@ -58,7 +61,7 @@ public class SubmitButton extends Button {
 
   /** Creates a button with no caption. */
   public SubmitButton() {
-    super(Document.get().createSubmitButtonElement());
+    super(DOM.createSubmitButton());
     setStyleName("gwt-SubmitButton");
   }
 
@@ -108,8 +111,8 @@ public class SubmitButton extends Button {
    *
    * @param element the element to be used
    */
-  protected SubmitButton(org.gwtproject.dom.client.Element element) {
+  protected SubmitButton(HTMLElement element) {
     super(element);
-    assert "submit".equalsIgnoreCase(element.<ButtonElement>cast().getType());
+    assert "submit".equalsIgnoreCase(Js.<HTMLButtonElement>uncheckedCast(element).type);
   }
 }

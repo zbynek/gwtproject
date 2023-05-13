@@ -15,13 +15,12 @@
  */
 package org.gwtproject.user.client.ui;
 
+import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 import org.gwtproject.core.client.Duration;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.core.client.Scheduler.ScheduledCommand;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.Position;
 import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
@@ -55,7 +54,7 @@ public class SplitLayoutPanel extends DockLayoutPanel {
   class HSplitter extends Splitter {
     public HSplitter(Widget target, boolean reverse) {
       super(target, reverse);
-      getElement().getStyle().setPropertyPx("width", splitterSize);
+      getElement().style.setProperty("width", splitterSize + "px");
       setStyleName("gwt-SplitLayoutPanel-HDragger");
     }
 
@@ -104,7 +103,7 @@ public class SplitLayoutPanel extends DockLayoutPanel {
       this.target = target;
       this.reverse = reverse;
 
-      setElement(Document.get().createDivElement());
+      setElement(DOM.createDiv());
       sinkEvents(Event.ONMOUSEDOWN | Event.ONMOUSEUP | Event.ONMOUSEMOVE | Event.ONDBLCLICK);
     }
 
@@ -118,11 +117,11 @@ public class SplitLayoutPanel extends DockLayoutPanel {
            * Resize glassElem to take up the entire scrollable window area,
            * which is the greater of the scroll size and the client size.
            */
-          int width = Math.max(DomGlobal.document.documentElement.clientWidth, Document.get().getScrollWidth());
-          int height = Math.max(DomGlobal.document.documentElement.clientHeight, Document.get().getScrollHeight());
-          glassElem.getStyle().setHeight(height, Unit.PX);
-          glassElem.getStyle().setWidth(width, Unit.PX);
-          Document.get().getBody().appendChild(glassElem);
+          int width = Math.max(DomGlobal.document.documentElement.clientWidth, DomGlobal.document.documentElement.scrollWidth);
+          int height = Math.max(DomGlobal.document.documentElement.clientHeight, DomGlobal.document.documentElement.scrollHeight);
+          glassElem.style.height = CSSProperties.HeightUnionType.of(height + "px");
+          glassElem.style.width = CSSProperties.WidthUnionType.of(width + "px");
+          DomGlobal.document.body.appendChild(glassElem);
 
           offset = getEventPosition(event) - getAbsolutePosition();
           Event.setCapture(getElement());
@@ -132,7 +131,7 @@ public class SplitLayoutPanel extends DockLayoutPanel {
         case Event.ONMOUSEUP:
           mouseDown = false;
 
-          glassElem.removeFromParent();
+          glassElem.remove();
 
           // Handle double-clicks.
           // Fake them since the double-click event aren't fired.
@@ -262,7 +261,7 @@ public class SplitLayoutPanel extends DockLayoutPanel {
   class VSplitter extends Splitter {
     public VSplitter(Widget target, boolean reverse) {
       super(target, reverse);
-      getElement().getStyle().setPropertyPx("height", splitterSize);
+      getElement().style.setProperty("height", splitterSize + "px");
       setStyleName("gwt-SplitLayoutPanel-VDragger");
     }
 
@@ -296,7 +295,7 @@ public class SplitLayoutPanel extends DockLayoutPanel {
   private static final int DOUBLE_CLICK_TIMEOUT = 500;
 
   /** The element that masks the screen so we can catch mouse events over iframes. */
-  private static Element glassElem = null;
+  private static HTMLElement glassElem = null;
 
   private final int splitterSize;
 
@@ -316,19 +315,19 @@ public class SplitLayoutPanel extends DockLayoutPanel {
     setStyleName("gwt-SplitLayoutPanel");
 
     if (glassElem == null) {
-      glassElem = Document.get().createDivElement();
-      glassElem.getStyle().setPosition(Position.ABSOLUTE);
-      glassElem.getStyle().setTop(0, Unit.PX);
-      glassElem.getStyle().setLeft(0, Unit.PX);
-      glassElem.getStyle().setMargin(0, Unit.PX);
-      glassElem.getStyle().setPadding(0, Unit.PX);
-      glassElem.getStyle().setBorderWidth(0, Unit.PX);
+      glassElem = DOM.createDiv();
+      glassElem.style.position = "absolute";
+      glassElem.style.top = "0";
+      glassElem.style.left = "0";
+      glassElem.style.margin = CSSProperties.MarginUnionType.of("0");
+      glassElem.style.padding = CSSProperties.PaddingUnionType.of("0");
+      glassElem.style.borderWidth = CSSProperties.BorderWidthUnionType.of("0");
 
       // We need to set the background color or mouse events will go right
       // through the glassElem. If the SplitPanel contains an iframe, the
       // iframe will capture the event and the slider will stop moving.
-      glassElem.getStyle().setProperty("background", "white");
-      glassElem.getStyle().setOpacity(0.0);
+      glassElem.style.setProperty("background", "white");
+      glassElem.style.opacity = CSSProperties.OpacityUnionType.of(0.0);
     }
   }
 

@@ -19,9 +19,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.gwtproject.dom.client.BodyElement;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
+
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
 
 /**
@@ -43,8 +45,8 @@ public class RootPanel extends AbsolutePanel {
     protected void setWidgetPositionImpl(Widget w, int left, int top) {
       // Account for the difference between absolute position and the
       // body's positioning context.
-      left -= Document.get().getBodyOffsetLeft();
-      top -= Document.get().getBodyOffsetTop();
+      left -= DomGlobal.document.documentElement.clientLeft;
+      top -= DomGlobal.document.documentElement.clientTop;
 
       super.setWidgetPositionImpl(w, left, top);
     }
@@ -93,7 +95,7 @@ public class RootPanel extends AbsolutePanel {
    * <p>This method must be called for all widgets that have no parent widgets. These are most
    * commonly {@link RootPanel RootPanels}, but can also be any widget used to wrap an existing
    * element on the page. Failing to do this may cause these widgets to leak memory. This method is
-   * called automatically by widgets' wrap methods (e.g. {@link Button#wrap(Element)}).
+   * called automatically by widgets' wrap methods (e.g. {@link Button#wrap(HTMLElement)}).
    *
    * <p>This method may <em>not</em> be called on any widget whose element is contained in another
    * widget. This is to ensure that the DOM and Widget hierarchies cannot get into an inconsistent
@@ -135,10 +137,10 @@ public class RootPanel extends AbsolutePanel {
     RootPanel rp = rootPanels.get(id);
 
     // Find the element that this RootPanel will wrap.
-    Element elem = null;
+    elemental2.dom.Element elem = null;
     if (id != null) {
       // Return null if the id is specified, but no element is found.
-      if (null == (elem = Document.get().getElementById(id))) {
+      if (null == (elem = DomGlobal.document.getElementById(id))) {
         return null;
       }
     }
@@ -159,7 +161,7 @@ public class RootPanel extends AbsolutePanel {
       rp = new DefaultRootPanel();
     } else {
       // Otherwise, wrap the existing element.
-      rp = new RootPanel(elem);
+      rp = new RootPanel(Js.uncheckedCast(elem));
     }
 
     rootPanels.put(id, rp);
@@ -172,8 +174,8 @@ public class RootPanel extends AbsolutePanel {
    *
    * @return the document's body element
    */
-  public static Element getBodyElement() {
-    return Document.get().getBody();
+  public static HTMLElement getBodyElement() {
+    return DomGlobal.document.body;
   }
 
   /**
@@ -209,8 +211,8 @@ public class RootPanel extends AbsolutePanel {
    *
    * @return the document's root element
    */
-  private static Element getRootElement() {
-    return Document.get().getDocumentElement();
+  private static HTMLElement getRootElement() {
+    return DomGlobal.document.documentElement;
   }
 
   /*
@@ -218,23 +220,23 @@ public class RootPanel extends AbsolutePanel {
    * belongs to a widget. This is not terribly efficient, and is thus only used
    * in an assertion.
    */
-  private static boolean isElementChildOfWidget(Element element) {
+  private static boolean isElementChildOfWidget(HTMLElement element) {
     // Walk up the DOM hierarchy, looking for any widget with an event listener
     // set. Though it is not dependable in the general case that a widget will
     // have set its element's event listener at all times, it *is* dependable
     // if the widget is attached. Which it will be in this case.
-    element = element.getParentElement();
-    BodyElement body = Document.get().getBody();
+    element = Js.uncheckedCast(element.parentElement);
+    HTMLElement body = DomGlobal.document.body;
     while ((element != null) && (body != element)) {
       if (Event.getEventListener(element) != null) {
         return true;
       }
-      element = element.getParentElement().cast();
+      element = Js.uncheckedCast(element.parentElement);
     }
     return false;
   }
 
-  private RootPanel(Element elem) {
+  private RootPanel(HTMLElement elem) {
     super(elem);
 
     onAttach();
@@ -257,7 +259,7 @@ public class RootPanel extends AbsolutePanel {
     clear();
 
     if (clearDom) {
-      getElement().removeAllChildren();
+      DOM.removeAllChildren(getElement());
     }
   }
 }

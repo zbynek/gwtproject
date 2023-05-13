@@ -15,9 +15,10 @@
  */
 package org.gwtproject.cell.client;
 
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
+import jsinterop.base.Js;
 import org.gwtproject.dom.client.BrowserEvents;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.InputElement;
 import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.event.dom.client.KeyCodes;
 import org.gwtproject.safehtml.shared.SafeHtml;
@@ -80,7 +81,7 @@ public class CheckboxCell extends AbstractEditableCell<Boolean, Boolean> {
   }
 
   @Override
-  public boolean isEditing(Context context, Element parent, Boolean value) {
+  public boolean isEditing(Context context, HTMLElement parent, Boolean value) {
     // A checkbox is never in "edit mode". There is no intermediate state
     // between checked and unchecked.
     return false;
@@ -89,7 +90,7 @@ public class CheckboxCell extends AbstractEditableCell<Boolean, Boolean> {
   @Override
   public void onBrowserEvent(
       Context context,
-      Element parent,
+      HTMLElement parent,
       Boolean value,
       NativeEvent event,
       ValueUpdater<Boolean> valueUpdater) {
@@ -98,8 +99,8 @@ public class CheckboxCell extends AbstractEditableCell<Boolean, Boolean> {
     boolean enterPressed =
         BrowserEvents.KEYDOWN.equals(type) && event.getKeyCode() == KeyCodes.KEY_ENTER;
     if (BrowserEvents.CHANGE.equals(type) || enterPressed) {
-      InputElement input = parent.getFirstChild().cast();
-      Boolean isChecked = input.isChecked();
+      HTMLInputElement input = Js.uncheckedCast(parent.firstChild);
+      Boolean isChecked = input.checked;
 
       /*
        * Toggle the value if the enter key was pressed and the cell handles
@@ -110,7 +111,7 @@ public class CheckboxCell extends AbstractEditableCell<Boolean, Boolean> {
        */
       if (enterPressed && (handlesSelection() || !dependsOnSelection())) {
         isChecked = !isChecked;
-        input.setChecked(isChecked);
+        input.checked = isChecked;
       }
 
       /*

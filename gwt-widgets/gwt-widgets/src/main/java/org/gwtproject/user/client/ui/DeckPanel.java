@@ -15,8 +15,9 @@
  */
 package org.gwtproject.user.client.ui;
 
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.gwtproject.animation.client.Animation;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.DOM;
 
 /**
@@ -31,10 +32,10 @@ public class DeckPanel extends ComplexPanel implements HasAnimation, InsertPanel
   /** An {@link Animation} used to slide in the new content. */
   private static class SlideAnimation extends Animation {
     /** The {@link Element} holding the {@link Widget} with a lower index. */
-    private Element container1 = null;
+    private HTMLElement container1 = null;
 
     /** The {@link Element} holding the {@link Widget} with a higher index. */
-    private Element container2 = null;
+    private HTMLElement container2 = null;
 
     /** A boolean indicating whether container1 is growing or shrinking. */
     private boolean growing = false;
@@ -60,7 +61,7 @@ public class DeckPanel extends ComplexPanel implements HasAnimation, InsertPanel
       cancel();
 
       // Get the container and index of the new widget
-      Element newContainer = getContainer(newWidget);
+      HTMLElement newContainer = getContainer(newWidget);
       int newIndex = DOM.getChildIndex(DOM.getParent(newContainer), newContainer);
 
       // If we aren't showing anything, don't bother with the animation
@@ -72,7 +73,7 @@ public class DeckPanel extends ComplexPanel implements HasAnimation, InsertPanel
       this.oldWidget = oldWidget;
 
       // Get the container and index of the old widget
-      Element oldContainer = getContainer(oldWidget);
+      HTMLElement oldContainer = getContainer(oldWidget);
       int oldIndex = DOM.getChildIndex(DOM.getParent(oldContainer), oldContainer);
 
       // Figure out whether to grow or shrink the container
@@ -89,16 +90,16 @@ public class DeckPanel extends ComplexPanel implements HasAnimation, InsertPanel
       // Start the animation
       if (animate) {
         // Figure out if the deck panel has a fixed height
-        Element deckElem = container1.getParentElement();
-        int deckHeight = deckElem.getOffsetHeight();
+        HTMLElement deckElem = Js.uncheckedCast(container1.parentElement);
+        int deckHeight = deckElem.offsetHeight;
         if (growing) {
-          fixedHeight = container2.getOffsetHeight();
-          container2.getStyle().setPropertyPx("height", Math.max(1, fixedHeight - 1));
+          fixedHeight = container2.offsetHeight;
+          container2.style.setProperty("height", Math.max(1, fixedHeight - 1) + "px");
         } else {
-          fixedHeight = container1.getOffsetHeight();
-          container1.getStyle().setPropertyPx("height", Math.max(1, fixedHeight - 1));
+          fixedHeight = container1.offsetHeight;
+          container1.style.setProperty("height", Math.max(1, fixedHeight - 1) + "px");
         }
-        if (deckElem.getOffsetHeight() != deckHeight) {
+        if (deckElem.offsetHeight != deckHeight) {
           fixedHeight = -1;
         }
 
@@ -119,18 +120,18 @@ public class DeckPanel extends ComplexPanel implements HasAnimation, InsertPanel
     @Override
     protected void onComplete() {
       if (growing) {
-        container1.getStyle().setProperty("height", "100%");
+        container1.style.setProperty("height", "100%");
         UIObject.setVisible(container1, true);
         UIObject.setVisible(container2, false);
-        container2.getStyle().setProperty("height", "100%");
+        container2.style.setProperty("height", "100%");
       } else {
         UIObject.setVisible(container1, false);
-        container1.getStyle().setProperty("height", "100%");
-        container2.getStyle().setProperty("height", "100%");
+        container1.style.setProperty("height", "100%");
+        container2.style.setProperty("height", "100%");
         UIObject.setVisible(container2, true);
       }
-      container1.getStyle().setProperty("overflow", "visible");
-      container2.getStyle().setProperty("overflow", "visible");
+      container1.style.setProperty("overflow", "visible");
+      container2.style.setProperty("overflow", "visible");
       container1 = null;
       container2 = null;
       hideOldWidget();
@@ -139,8 +140,8 @@ public class DeckPanel extends ComplexPanel implements HasAnimation, InsertPanel
     @Override
     protected void onStart() {
       // Start the animation
-      container1.getStyle().setProperty("overflow", "hidden");
-      container2.getStyle().setProperty("overflow", "hidden");
+      container1.style.setProperty("overflow", "hidden");
+      container2.style.setProperty("overflow", "hidden");
       onUpdate(0.0);
       UIObject.setVisible(container1, true);
       UIObject.setVisible(container2, true);
@@ -156,8 +157,8 @@ public class DeckPanel extends ComplexPanel implements HasAnimation, InsertPanel
       int height1;
       int height2;
       if (fixedHeight == -1) {
-        height1 = (int) (progress * container1.getPropertyInt("scrollHeight"));
-        height2 = (int) ((1.0 - progress) * container2.getPropertyInt("scrollHeight"));
+        height1 = (int) (progress * container1.scrollHeight);
+        height2 = (int) ((1.0 - progress) * container2.scrollHeight);
       } else {
         height1 = (int) (progress * fixedHeight);
         height2 = fixedHeight - height1;
@@ -172,8 +173,8 @@ public class DeckPanel extends ComplexPanel implements HasAnimation, InsertPanel
         height2 = 1;
         height1 = Math.max(1, height1 - 1);
       }
-      container1.getStyle().setProperty("height", height1 + "px");
-      container2.getStyle().setProperty("height", height2 + "px");
+      container1.style.setProperty("height", height1 + "px");
+      container2.style.setProperty("height", height2 + "px");
     }
 
     /** Hide the old widget when the animation completes. */
@@ -205,7 +206,7 @@ public class DeckPanel extends ComplexPanel implements HasAnimation, InsertPanel
    * @param w the {@link Widget}
    * @return the container {@link Element}
    */
-  private static Element getContainer(Widget w) {
+  private static HTMLElement getContainer(Widget w) {
     return DOM.getParent(w.getElement());
   }
 
@@ -220,7 +221,7 @@ public class DeckPanel extends ComplexPanel implements HasAnimation, InsertPanel
 
   @Override
   public void add(Widget w) {
-    Element container = createWidgetContainer();
+    HTMLElement container = createWidgetContainer();
     DOM.appendChild(getElement(), container);
 
     // The order of these methods is very important. In order to preserve
@@ -250,7 +251,7 @@ public class DeckPanel extends ComplexPanel implements HasAnimation, InsertPanel
   }
 
   public void insert(Widget w, int beforeIndex) {
-    Element container = createWidgetContainer();
+    HTMLElement container = createWidgetContainer();
     DOM.insertChild(getElement(), container, beforeIndex);
 
     // See add(Widget) for important comments
@@ -264,7 +265,7 @@ public class DeckPanel extends ComplexPanel implements HasAnimation, InsertPanel
 
   @Override
   public boolean remove(Widget w) {
-    Element container = getContainer(w);
+    HTMLElement container = getContainer(w);
     boolean removed = super.remove(w);
     if (removed) {
       resetChildWidget(w);
@@ -301,26 +302,26 @@ public class DeckPanel extends ComplexPanel implements HasAnimation, InsertPanel
   }
 
   /** Setup the container around the widget. */
-  private Element createWidgetContainer() {
-    Element container = DOM.createDiv();
-    container.getStyle().setProperty("width", "100%");
-    container.getStyle().setProperty("height", "0px");
-    container.getStyle().setProperty("padding", "0px");
-    container.getStyle().setProperty("margin", "0px");
+  private HTMLElement createWidgetContainer() {
+    HTMLElement container = DOM.createDiv();
+    container.style.setProperty("width", "100%");
+    container.style.setProperty("height", "0px");
+    container.style.setProperty("padding", "0px");
+    container.style.setProperty("margin", "0px");
     return container;
   }
 
   /** Setup the container around the widget. */
-  private void finishWidgetInitialization(Element container, Widget w) {
+  private void finishWidgetInitialization(HTMLElement container, Widget w) {
     UIObject.setVisible(container, false);
-    container.getStyle().setProperty("height", "100%");
+    container.style.setProperty("height", "100%");
 
     // Set 100% by default.
-    Element element = w.getElement();
-    if (element.getStyle().getProperty("width").equals("")) {
+    HTMLElement element = w.getElement();
+    if (element.style.width.asString().equals("")) {
       w.setWidth("100%");
     }
-    if (element.getStyle().getProperty("height").equals("")) {
+    if (element.style.height.asString().equals("")) {
       w.setHeight("100%");
     }
 

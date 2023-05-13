@@ -15,12 +15,15 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.ButtonElement;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
+import elemental2.core.Function;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
+import org.gwtproject.user.client.DOM;
 
 /**
  * A standard push-button widget.
@@ -50,9 +53,9 @@ public class Button extends ButtonBase {
    *
    * @param element the element to be wrapped
    */
-  public static Button wrap(Element element) {
+  public static Button wrap(HTMLElement element) {
     // Assert that the element is attached.
-    assert Document.get().getBody().isOrHasChild(element);
+    assert DomGlobal.document.body.contains(element);
 
     Button button = new Button(element);
 
@@ -65,7 +68,7 @@ public class Button extends ButtonBase {
 
   /** Creates a button with no caption. */
   public Button() {
-    super(Document.get().createPushButtonElement());
+    super(DOM.createButton());
     setStyleName("gwt-Button");
   }
 
@@ -115,22 +118,23 @@ public class Button extends ButtonBase {
    *
    * @param element the element to be used
    */
-  protected Button(Element element) {
-    super(element.<Element>cast());
-    ButtonElement.as(element);
+  protected Button(HTMLElement element) {
+    super(element);
+    assertTagName("button");
   }
 
   /** Programmatic equivalent of the user clicking the button. */
   public void click() {
-    getButtonElement().click();
+    Function clickF = Js.uncheckedCast(Js.asPropertyMap(getElement()).get("click"));
+    clickF.call(getElement());
   }
 
   /**
    * Get the underlying button element.
    *
-   * @return the {@link ButtonElement}
+   * @return the {@link HTMLButtonElement}
    */
-  protected ButtonElement getButtonElement() {
-    return getElement().cast();
+  protected HTMLButtonElement getButtonElement() {
+    return Js.uncheckedCast(getElement());
   }
 }

@@ -15,8 +15,8 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.event.dom.client.DoubleClickEvent;
@@ -103,9 +103,9 @@ public class Label extends LabelBase<String>
    *
    * @param element the element to be wrapped
    */
-  public static Label wrap(Element element) {
+  public static Label wrap(HTMLElement element) {
     // Assert that the element is attached.
-    assert Document.get().getBody().isOrHasChild(element);
+    assert DomGlobal.document.body.contains(element);
 
     Label label = new Label(element);
 
@@ -149,7 +149,7 @@ public class Label extends LabelBase<String>
    *
    * @param element the element to be used
    */
-  protected Label(Element element) {
+  protected Label(HTMLElement element) {
     super(element);
   }
 

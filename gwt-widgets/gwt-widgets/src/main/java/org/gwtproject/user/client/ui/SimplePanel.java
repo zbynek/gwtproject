@@ -17,7 +17,8 @@ package org.gwtproject.user.client.ui;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import org.gwtproject.dom.client.Element;
+
+import elemental2.dom.HTMLElement;
 import org.gwtproject.user.client.DOM;
 
 /** Base class for panels that contain only one widget. */
@@ -45,7 +46,7 @@ public class SimplePanel extends Panel implements HasOneWidget {
    *
    * @param elem the browser element to use
    */
-  protected SimplePanel(Element elem) {
+  protected SimplePanel(HTMLElement elem) {
     setElement(elem);
   }
 
@@ -160,12 +161,12 @@ public class SimplePanel extends Panel implements HasOneWidget {
    * for the panel's child widget. This can be useful when you want to create a simple panel that
    * decorates its contents.
    *
-   * <p>Note that this method continues to return the {@link Element} class defined in the <code>
+   * <p>Note that this method continues to return the {@link HTMLElement} class defined in the <code>
    * User</code> module to maintain backwards compatibility.
    *
    * @return the element to be used as the panel's container
    */
-  protected Element getContainerElement() {
+  protected HTMLElement getContainerElement() {
     return getElement();
   }
 }

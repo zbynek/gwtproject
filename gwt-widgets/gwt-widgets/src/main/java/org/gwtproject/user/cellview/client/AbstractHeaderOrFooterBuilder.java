@@ -17,6 +17,9 @@ package org.gwtproject.user.cellview.client;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLTableRowElement;
 import org.gwtproject.cell.client.Cell.Context;
 import org.gwtproject.dom.builder.shared.DivBuilder;
 import org.gwtproject.dom.builder.shared.ElementBuilderBase;
@@ -25,15 +28,12 @@ import org.gwtproject.dom.builder.shared.HtmlTableSectionBuilder;
 import org.gwtproject.dom.builder.shared.StylesBuilder;
 import org.gwtproject.dom.builder.shared.TableRowBuilder;
 import org.gwtproject.dom.builder.shared.TableSectionBuilder;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.TableRowElement;
-import org.gwtproject.dom.style.shared.Position;
 import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.resources.client.ImageResource;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.AbstractImagePrototype;
 
 /**
@@ -148,19 +148,19 @@ public abstract class AbstractHeaderOrFooterBuilder<T>
   }
 
   @Override
-  public Column<T, ?> getColumn(Element elem) {
+  public Column<T, ?> getColumn(HTMLElement elem) {
     String cellId = getColumnId(elem);
     return (cellId == null) ? null : idToColumnMap.get(cellId);
   }
 
   @Override
-  public Header<?> getHeader(Element elem) {
+  public Header<?> getHeader(HTMLElement elem) {
     String headerId = getHeaderId(elem);
     return (headerId == null) ? null : idToHeaderMap.getValue(headerId);
   }
 
   @Override
-  public int getRowIndex(TableRowElement row) {
+  public int getRowIndex(HTMLTableRowElement row) {
     return Integer.parseInt(row.getAttribute(ROW_ATTRIBUTE));
   }
 
@@ -174,12 +174,12 @@ public abstract class AbstractHeaderOrFooterBuilder<T>
   }
 
   @Override
-  public boolean isColumn(Element elem) {
+  public boolean isColumn(HTMLElement elem) {
     return getColumnId(elem) != null;
   }
 
   @Override
-  public boolean isHeader(Element elem) {
+  public boolean isHeader(HTMLElement elem) {
     return getHeaderId(elem) != null;
   }
 
@@ -218,7 +218,7 @@ public abstract class AbstractHeaderOrFooterBuilder<T>
    * @param column the column to associate
    */
   protected final void enableColumnHandlers(ElementBuilderBase<?> builder, Column<T, ?> column) {
-    String columnId = "column-" + Document.get().createUniqueId();
+    String columnId = "column-" + DOM.createUniqueId();
     idToColumnMap.put(columnId, column);
     builder.attribute(COLUMN_ATTRIBUTE, columnId);
   }
@@ -253,7 +253,7 @@ public abstract class AbstractHeaderOrFooterBuilder<T>
     // Generate a unique ID for the header.
     String headerId = idToHeaderMap.getKey(header);
     if (headerId == null) {
-      headerId = "header-" + Document.get().createUniqueId();
+      headerId = "header-" + DOM.createUniqueId();
       idToHeaderMap.put(headerId, header);
     }
     out.attribute(HEADER_ATTRIBUTE, headerId);
@@ -292,7 +292,7 @@ public abstract class AbstractHeaderOrFooterBuilder<T>
       int halfHeight = isSortAscending ? sortAscIconHalfHeight : sortDescIconHalfHeight;
       DivBuilder outerDiv = out.startDiv();
       StylesBuilder style =
-          outerDiv.style().position(Position.RELATIVE).trustedProperty("zoom", "1");
+          outerDiv.style().trustedProperty("position", "relative").trustedProperty("zoom", "1");
       if (posRight) {
         style.paddingRight(iconWidth, Unit.PX);
       } else {
@@ -305,7 +305,7 @@ public abstract class AbstractHeaderOrFooterBuilder<T>
       style =
           outerDiv
               .style()
-              .position(Position.ABSOLUTE)
+              .trustedProperty("position", "absolute")
               .top(50.0, Unit.PCT)
               .lineHeight(0.0, Unit.PX)
               .marginTop(-halfHeight, Unit.PX);
@@ -388,11 +388,11 @@ public abstract class AbstractHeaderOrFooterBuilder<T>
    * @param elem the element to check
    * @return the id if a header parent, null if not
    */
-  private String getColumnId(Element elem) {
+  private String getColumnId(HTMLElement elem) {
     return getElementAttribute(elem, COLUMN_ATTRIBUTE);
   }
 
-  private String getElementAttribute(Element elem, String attribute) {
+  private String getElementAttribute(HTMLElement elem, String attribute) {
     if (elem == null) {
       return null;
     }
@@ -406,7 +406,7 @@ public abstract class AbstractHeaderOrFooterBuilder<T>
    * @param elem the element to check
    * @return the id if a header parent, null if not
    */
-  private String getHeaderId(Element elem) {
+  private String getHeaderId(HTMLElement elem) {
     return getElementAttribute(elem, HEADER_ATTRIBUTE);
   }
 

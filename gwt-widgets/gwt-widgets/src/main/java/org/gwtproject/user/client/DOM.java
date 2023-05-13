@@ -16,14 +16,26 @@
 package org.gwtproject.user.client;
 
 import elemental2.dom.DomGlobal;
+import elemental2.dom.EventInit;
+import elemental2.dom.EventTarget;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLCanvasElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLImageElement;
+import elemental2.dom.HTMLInputElement;
+import elemental2.dom.HTMLOptionElement;
+import elemental2.dom.HTMLSelectElement;
+import elemental2.dom.HTMLTableCellElement;
+import elemental2.dom.HTMLTableColElement;
+import elemental2.dom.HTMLTableElement;
+import elemental2.dom.HTMLTableRowElement;
+import elemental2.dom.HTMLTableSectionElement;
+import elemental2.dom.MouseEvent;
+import elemental2.dom.MouseEventInit;
+import elemental2.dom.Node;
 import jsinterop.base.Js;
-import org.gwtproject.core.client.JavaScriptObject;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.ImageElement;
-import org.gwtproject.dom.client.OptionElement;
-import org.gwtproject.dom.client.SelectElement;
-import org.gwtproject.dom.client.Style;
+import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.event.logical.shared.ResizeEvent;
 import org.gwtproject.event.logical.shared.ResizeHandler;
 import org.gwtproject.event.shared.HandlerRegistration;
@@ -34,7 +46,7 @@ import org.gwtproject.user.client.ui.PotentialElement;
 
 /**
  * This class provides a set of static methods that allow you to manipulate the browser's Document
- * Object Model (DOM). It contains methods for manipulating both {@link Element elements} and {@link
+ * Object Model (DOM). It contains methods for manipulating both {@link HTMLElement elements} and {@link
  * Event events}.
  */
 public class DOM {
@@ -42,7 +54,8 @@ public class DOM {
   // The current event being fired
   private static Event currentEvent = null;
   static final DOMImpl impl = new DOMImplStandardBase();
-  private static Element sCaptureElem;
+  private static HTMLElement sCaptureElem;
+  private static double gwtUid = 0.0;
 
   /**
    * Appends one element to another's list of children.
@@ -51,9 +64,9 @@ public class DOM {
    *
    * @param parent the parent element
    * @param child its new child
-   * @see PotentialElement#resolve(Element)
+   * @see PotentialElement#resolve(HTMLElement)
    */
-  public static void appendChild(Element parent, Element child) {
+  public static void appendChild(HTMLElement parent, HTMLElement child) {
     assert !isPotential(parent) : "Cannot append to a PotentialElement";
 
     // If child isn't a PotentialElement, resolve() returns
@@ -67,8 +80,8 @@ public class DOM {
    * @param elem the element to be cloned
    * @param deep should children be cloned as well?
    */
-  public static Element clone(Element elem, boolean deep) {
-    return elem.cloneNode(deep).cast();
+  public static HTMLElement clone(HTMLElement elem, boolean deep) {
+    return Js.uncheckedCast(elem.cloneNode(deep));
   }
 
   /**
@@ -81,7 +94,7 @@ public class DOM {
    * @deprecated Use identity comparison.
    */
   @Deprecated
-  public static boolean compare(Element elem1, Element elem2) {
+  public static boolean compare(HTMLElement elem1, HTMLElement elem2) {
     return elem1 == elem2;
   }
 
@@ -90,8 +103,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createAnchor() {
-    return Document.get().createAnchorElement().cast();
+  public static HTMLElement createAnchor() {
+    return createElement("a");
   }
 
   /**
@@ -100,8 +113,61 @@ public class DOM {
    * @return the newly-created element
    */
   @SuppressWarnings("deprecation")
-  public static Element createButton() {
-    return Document.get().createPushButtonElement();
+  public static HTMLElement createButton() {
+    HTMLButtonElement btn = createElement("button");
+    btn.type = "button";
+    return btn;
+  }
+
+  public static HTMLElement createSubmitButton() {
+    HTMLButtonElement btn = createElement("button");
+    btn.type = "submit";
+    return btn;
+  }
+
+  public static NativeEvent createHtmlEvent(String type, boolean canBubble, boolean cancelable) {
+    EventInit details = EventInit.create();
+    details.setBubbles(canBubble);
+    details.setCancelable(cancelable);
+    elemental2.dom.Event evt = new elemental2.dom.Event(type, details);
+    return Js.uncheckedCast(evt);
+  }
+
+  public static MouseEvent createClickEvent(int detail, int screenX, int screenY, int clientX, int clientY, boolean ctrlKey, boolean altKey, boolean shiftKey, boolean metaKey) {
+    return createMouseEvent("click", true, true, detail, screenX, screenY, clientX, clientY, ctrlKey, altKey, shiftKey, metaKey, 1, (HTMLElement)null);
+  }
+
+  public static MouseEvent createMouseEvent(String type, boolean canBubble, boolean cancelable, int detail,
+          int screenX, int screenY, int clientX, int clientY, boolean ctrlKey, boolean altKey, boolean shiftKey,
+          boolean metaKey, int button, HTMLElement relatedTarget) {
+    byte button1;
+    if (button == 1) {
+      button1 = 0;
+    } else if (button == 4) {
+      button1 = 1;
+    } else {
+      button1 = 2;
+    }
+
+    MouseEventInit init = MouseEventInit.create();
+    init.setButton(button1);
+    init.setBubbles(canBubble);
+    init.setCancelable(cancelable);
+    init.setDetail(detail);
+    init.setScreenX((double)screenX);
+    init.setScreenY((double)screenY);
+    init.setClientX((double)clientX);
+    init.setClientY((double)clientY);
+    init.setCtrlKey(ctrlKey);
+    init.setAltKey(altKey);
+    init.setShiftKey(shiftKey);
+    init.setMetaKey(metaKey);
+    init.setRelatedTarget(Js.uncheckedCast(relatedTarget));
+    return new MouseEvent(type, init);
+  }
+
+  public static NativeEvent createLoadEvent() {
+    return createHtmlEvent("load", false, false);
   }
 
   /**
@@ -109,8 +175,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createCaption() {
-    return Document.get().createCaptionElement().cast();
+  public static HTMLElement createCaption() {
+    return createElement("caption");
   }
 
   /**
@@ -118,8 +184,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createCol() {
-    return Document.get().createColElement().cast();
+  public static HTMLElement createCol() {
+    return createElement("col");
   }
 
   /**
@@ -127,8 +193,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createColGroup() {
-    return Document.get().createColGroupElement().cast();
+  public static HTMLTableColElement createColGroup() {
+    return createElement("colgroup");
   }
 
   /**
@@ -136,8 +202,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createDiv() {
-    return Document.get().createDivElement().cast();
+  public static HTMLDivElement createDiv() {
+    return createElement("div");
   }
 
   /**
@@ -146,8 +212,8 @@ public class DOM {
    * @param tagName the HTML tag of the element to be created
    * @return the newly-created element
    */
-  public static Element createElement(String tagName) {
-    return Document.get().createElement(tagName).cast();
+  public static <T extends HTMLElement> T createElement(String tagName) {
+    return Js.uncheckedCast(DomGlobal.document.createElement(tagName));
   }
 
   /**
@@ -155,8 +221,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createFieldSet() {
-    return Document.get().createFieldSetElement().cast();
+  public static HTMLElement createFieldSet() {
+    return createElement("fieldset");
   }
 
   /**
@@ -164,8 +230,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createForm() {
-    return Document.get().createFormElement().cast();
+  public static HTMLElement createForm() {
+    return createElement("form");
   }
 
   /**
@@ -173,8 +239,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createIFrame() {
-    return Document.get().createIFrameElement().cast();
+  public static HTMLElement createIFrame() {
+    return createElement("iframe");
   }
 
   /**
@@ -182,8 +248,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createImg() {
-    return Document.get().createImageElement().cast();
+  public static HTMLImageElement createImg() {
+    return createElement("img");
   }
 
   /**
@@ -191,8 +257,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createInputCheck() {
-    return Document.get().createCheckInputElement().cast();
+  public static HTMLElement createInputCheck() {
+    return createInput("check");
   }
 
   /**
@@ -200,8 +266,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createInputPassword() {
-    return Document.get().createPasswordInputElement().cast();
+  public static HTMLElement createInputPassword() {
+    return createInput("password");
   }
 
   /**
@@ -210,8 +276,8 @@ public class DOM {
    * @param name the name of the group with which this radio button will be associated
    * @return the newly-created element
    */
-  public static Element createInputRadio(String name) {
-    return Document.get().createRadioInputElement(name).cast();
+  public static HTMLElement createInputRadio(String name) {
+    return createInput("radio");
   }
 
   /**
@@ -219,8 +285,14 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createInputText() {
-    return Document.get().createTextInputElement().cast();
+  public static HTMLElement createInputText() {
+    return createInput("text");
+  }
+
+  public static HTMLInputElement createInput(String type) {
+    HTMLInputElement input = createElement("input");
+    input.type = type;
+    return input;
   }
 
   /**
@@ -228,8 +300,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createLabel() {
-    return Document.get().createLabelElement().cast();
+  public static HTMLElement createLabel() {
+    return createElement("label");
   }
 
   /**
@@ -237,8 +309,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createLegend() {
-    return Document.get().createLegendElement().cast();
+  public static HTMLElement createLegend() {
+    return createElement("legend");
   }
 
   /**
@@ -246,19 +318,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createOption() {
-    return Document.get().createOptionElement().cast();
-  }
-
-  /**
-   * Creates an HTML OPTIONS element.
-   *
-   * @return the newly-created element
-   * @deprecated there is no "options" element; use {@link #createOption()} instead
-   */
-  @Deprecated
-  public static Element createOptions() {
-    return Document.get().createElement("options").cast();
+  public static HTMLOptionElement createOption() {
+    return createElement("option");
   }
 
   /**
@@ -270,8 +331,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createSelect() {
-    return Document.get().createSelectElement().cast();
+  public static HTMLSelectElement createSelect() {
+    return createElement("select");
   }
 
   /**
@@ -280,10 +341,10 @@ public class DOM {
    * @param multiple true if multiple selection of options is allowed
    * @return the newly-created element
    */
-  public static Element createSelect(boolean multiple) {
-    SelectElement selectElement = Document.get().createSelectElement();
-    selectElement.setMultiple(multiple);
-    return selectElement.cast();
+  public static HTMLElement createSelect(boolean multiple) {
+    HTMLSelectElement selectElement = createSelect();
+    selectElement.multiple = multiple;
+    return selectElement;
   }
 
   /**
@@ -291,8 +352,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createSpan() {
-    return Document.get().createSpanElement().cast();
+  public static HTMLElement createSpan() {
+    return createElement("span");
   }
 
   /**
@@ -300,8 +361,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createTable() {
-    return Document.get().createTableElement().cast();
+  public static HTMLTableElement createTable() {
+    return createElement("table");
   }
 
   /**
@@ -309,8 +370,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createTBody() {
-    return Document.get().createTBodyElement().cast();
+  public static HTMLTableSectionElement createTBody() {
+    return createElement("tbody");
   }
 
   /**
@@ -318,8 +379,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createTD() {
-    return Document.get().createTDElement().cast();
+  public static HTMLTableCellElement createTD() {
+    return createElement("td");
   }
 
   /**
@@ -327,8 +388,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createTextArea() {
-    return Document.get().createTextAreaElement().cast();
+  public static HTMLElement createTextArea() {
+    return createElement("textarea");
   }
 
   /**
@@ -336,8 +397,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createTFoot() {
-    return Document.get().createTFootElement().cast();
+  public static HTMLElement createTFoot() {
+    return createElement("tfoot");
   }
 
   /**
@@ -345,8 +406,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createTH() {
-    return Document.get().createTHElement().cast();
+  public static HTMLElement createTH() {
+    return createElement("th");
   }
 
   /**
@@ -354,8 +415,8 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createTHead() {
-    return Document.get().createTHeadElement().cast();
+  public static HTMLElement createTHead() {
+    return createElement("thead");
   }
 
   /**
@@ -363,8 +424,12 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static Element createTR() {
-    return Document.get().createTRElement().cast();
+  public static HTMLTableRowElement createTR() {
+    return createElement("tr");
+  }
+
+  public static HTMLCanvasElement createCanvas() {
+    return createElement("canvas");
   }
 
   /**
@@ -373,7 +438,7 @@ public class DOM {
    * @return a unique DOM id
    */
   public static String createUniqueId() {
-    return Document.get().createUniqueId();
+    return "gwt-uid-" + gwtUid++;
   }
 
   /**
@@ -467,7 +532,7 @@ public class DOM {
    * @return the event's current target element
    * @see DOM#eventGetTarget(Event)
    */
-  public static Element eventGetCurrentTarget(Event evt) {
+  public static HTMLElement eventGetCurrentTarget(Event evt) {
     return evt.getCurrentEventTarget().cast();
   }
 
@@ -478,7 +543,7 @@ public class DOM {
    * @param evt the event to be tested
    * @return the element from which the mouse pointer was moved
    */
-  public static Element eventGetFromElement(Event evt) {
+  public static HTMLElement eventGetFromElement(Event evt) {
     return impl.eventGetFromElement(evt);
   }
 
@@ -582,7 +647,7 @@ public class DOM {
    * @param evt the event to be tested
    * @return the target element
    */
-  public static Element eventGetTarget(Event evt) {
+  public static HTMLElement eventGetTarget(Event evt) {
     return evt.getEventTarget().cast();
   }
 
@@ -593,7 +658,7 @@ public class DOM {
    * @param evt the event to be tested
    * @return the element to which the mouse pointer was moved
    */
-  public static Element eventGetToElement(Event evt) {
+  public static HTMLElement eventGetToElement(Event evt) {
     return impl.eventGetToElement(evt);
   }
 
@@ -655,29 +720,6 @@ public class DOM {
     return evt.getString();
   }
 
-  /**
-   * Gets an element's absolute left coordinate in the document's coordinate system.
-   *
-   * @param elem the element to be measured
-   * @return the element's absolute left coordinate
-   * @deprecated Use {@link Element#getAbsoluteLeft()} instead.
-   */
-  @Deprecated
-  public static int getAbsoluteLeft(Element elem) {
-    return elem.getAbsoluteLeft();
-  }
-
-  /**
-   * Gets an element's absolute top coordinate in the document's coordinate system.
-   *
-   * @param elem the element to be measured
-   * @return the element's absolute top coordinate
-   * @deprecated Use {@link Element#getAbsoluteTop()} instead.
-   */
-  @Deprecated
-  public static int getAbsoluteTop(Element elem) {
-    return elem.getAbsoluteTop();
-  }
 
   /**
    * Gets any named property from an element, as a string.
@@ -685,11 +727,11 @@ public class DOM {
    * @param elem the element whose property is to be retrieved
    * @param attr the name of the property
    * @return the property's value
-   * @deprecated Use the more appropriately named {@link Element#getPropertyString(String)} instead.
+   * @deprecated Use the more appropriately named {@link HTMLElement#getAttribute(String)}  instead.
    */
   @Deprecated
-  public static String getAttribute(Element elem, String attr) {
-    return elem.getPropertyString(attr);
+  public static String getAttribute(HTMLElement elem, String attr) {
+    return (String) Js.asPropertyMap(elem).get(attr);
   }
 
   /**
@@ -698,12 +740,12 @@ public class DOM {
    * @param elem the element whose property is to be set
    * @param attr the name of the property to be set
    * @return the property's value as a boolean
-   * @deprecated Use the more appropriately named {@link Element#getPropertyBoolean(String)}
+   * @deprecated Use the more appropriately named {@link HTMLElement#getAttribute(String)}
    *     instead.
    */
   @Deprecated
-  public static boolean getBooleanAttribute(Element elem, String attr) {
-    return elem.getPropertyBoolean(attr);
+  public static boolean getBooleanAttribute(HTMLElement elem, String attr) {
+    return (Boolean) Js.asPropertyMap(elem).get(attr);
   }
 
   /**
@@ -711,7 +753,7 @@ public class DOM {
    *
    * @return a handle to the capture element, or <code>null</code> if none exists
    */
-  public static Element getCaptureElement() {
+  public static HTMLElement getCaptureElement() {
     return sCaptureElem;
   }
 
@@ -722,7 +764,7 @@ public class DOM {
    * @param index the index of the child element
    * @return the n-th child element
    */
-  public static Element getChild(Element parent, int index) {
+  public static HTMLElement getChild(HTMLElement parent, int index) {
     return impl.getChild(parent, index);
   }
 
@@ -732,7 +774,7 @@ public class DOM {
    * @param parent the element whose children are to be counted
    * @return the number of children
    */
-  public static int getChildCount(Element parent) {
+  public static int getChildCount(HTMLElement parent) {
     return impl.getChildCount(parent);
   }
 
@@ -744,7 +786,7 @@ public class DOM {
    * @return the child's index within its parent, or <code>-1</code> if it is not a child of the
    *     given parent
    */
-  public static int getChildIndex(Element parent, Element child) {
+  public static int getChildIndex(HTMLElement parent, HTMLElement child) {
     return impl.getChildIndex(parent, child);
   }
 
@@ -754,10 +796,10 @@ public class DOM {
    * @param elem the element whose property is to be retrieved
    * @param attr the name of the attribute
    * @return the value of the attribute
-   * @deprecated Use {@link Element#getAttribute(String)} instead.
+   * @deprecated Use {@link HTMLElement#getAttribute(String)} instead.
    */
   @Deprecated
-  public static String getElementAttribute(Element elem, String attr) {
+  public static String getElementAttribute(HTMLElement elem, String attr) {
     return elem.getAttribute(attr);
   }
 
@@ -767,8 +809,8 @@ public class DOM {
    * @param id the id whose associated element is to be retrieved
    * @return the associated element, or <code>null</code> if none is found
    */
-  public static Element getElementById(String id) {
-    return Document.get().getElementById(id);
+  public static HTMLElement getElementById(String id) {
+    return Js.uncheckedCast(DomGlobal.document.getElementById(id));
   }
 
   /**
@@ -777,11 +819,11 @@ public class DOM {
    * @param elem the element whose property is to be retrieved
    * @param prop the name of the property
    * @return the property's value as a boolean
-   * @deprecated Use {@link Element#getPropertyBoolean(String)} instead.
+   * @deprecated Use {@link HTMLElement#getAttribute(String)} instead.
    */
   @Deprecated
-  public static boolean getElementPropertyBoolean(Element elem, String prop) {
-    return elem.getPropertyBoolean(prop);
+  public static boolean getElementPropertyBoolean(HTMLElement elem, String prop) {
+    return (Boolean) Js.asPropertyMap(elem).get(prop);
   }
 
   /**
@@ -790,11 +832,11 @@ public class DOM {
    * @param elem the element whose property is to be retrieved
    * @param prop the name of the property
    * @return the property's value as an int
-   * @deprecated Use {@link Element#getPropertyInt(String)} instead.
+   * @deprecated Use {@link HTMLElement#getAttribute(String)} instead.
    */
   @Deprecated
-  public static int getElementPropertyInt(Element elem, String prop) {
-    return elem.getPropertyInt(prop);
+  public static int getElementPropertyInt(HTMLElement elem, String prop) {
+    return (Integer) Js.asPropertyMap(elem).get(prop);
   }
 
   /**
@@ -804,7 +846,7 @@ public class DOM {
    * @param elem the element whose listener is to be set
    * @return the element's event listener
    */
-  public static EventListener getEventListener(Element elem) {
+  public static EventListener getEventListener(HTMLElement elem) {
     return DOMImpl.getEventListener(elem);
   }
 
@@ -815,7 +857,7 @@ public class DOM {
    * @return a bitfield describing the events sunk on this element (its possible values are
    *     described in {@link Event})
    */
-  public static int getEventsSunk(Element elem) {
+  public static int getEventsSunk(HTMLElement elem) {
     return impl.getEventsSunk(elem);
   }
 
@@ -825,19 +867,19 @@ public class DOM {
    * @param elem the element whose child is to be retrieved
    * @return the child element
    */
-  public static Element getFirstChild(Element elem) {
-    return elem.getFirstChildElement();
+  public static HTMLElement getFirstChild(HTMLElement elem) {
+    return Js.uncheckedCast(elem.firstChild);
   }
 
   /**
-   * Gets the src attribute of an img element. This method is paired with {@link #setImgSrc(Element,
+   * Gets the src attribute of an img element. This method is paired with {@link #setImgSrc(HTMLElement,
    * String)} so that it always returns the correct url.
    *
    * @param img a non-null img whose src attribute is to be read.
    * @return the src url of the img
    */
-  public static String getImgSrc(Element img) {
-    return img.<ImageElement>cast().getSrc();
+  public static String getImgSrc(HTMLElement img) {
+    return Js.<HTMLImageElement>uncheckedCast(img).src;
   }
 
   /**
@@ -845,11 +887,11 @@ public class DOM {
    *
    * @param elem the element whose HTML is to be retrieved
    * @return the HTML representation of the element's children
-   * @deprecated Use {@link Element#getInnerHTML()} instead.
+   * @deprecated Use {@link HTMLElement#innerHTML} instead.
    */
   @Deprecated
-  public static String getInnerHTML(Element elem) {
-    return elem.getInnerHTML();
+  public static String getInnerHTML(HTMLElement elem) {
+    return elem.innerHTML;
   }
 
   /**
@@ -858,11 +900,11 @@ public class DOM {
    *
    * @param elem the element whose inner text is to be retrieved
    * @return the text inside this element
-   * @deprecated Use {@link Element#getInnerText()} instead.
+   * @deprecated Use {@link HTMLElement#textContent} instead.
    */
   @Deprecated
-  public static String getInnerText(Element elem) {
-    return elem.getInnerText();
+  public static String getInnerText(HTMLElement elem) {
+    return elem.textContent;
   }
 
   /**
@@ -871,11 +913,11 @@ public class DOM {
    * @param elem the element whose property is to be retrieved
    * @param attr the name of the property to be retrieved
    * @return the property's value as an integer
-   * @deprecated Use the more appropriately named {@link Element#getPropertyInt(String)} instead.
+   * @deprecated Use the more appropriately named {@link HTMLElement#getAttribute(String)} instead.
    */
   @Deprecated
-  public static int getIntAttribute(Element elem, String attr) {
-    return elem.getPropertyInt(attr);
+  public static int getIntAttribute(HTMLElement elem, String attr) {
+    return Js.asInt(Js.asPropertyMap(elem).get(attr));
   }
 
   /**
@@ -885,9 +927,9 @@ public class DOM {
    * @param attr the name of the attribute to be retrieved
    * @return the style attribute's value as an integer
    */
-  public static int getIntStyleAttribute(Element elem, String attr) {
-    String val = elem.getStyle().getProperty(attr);
-    return val != null ? Integer.valueOf(val) : 0;
+  public static int getIntStyleAttribute(HTMLElement elem, String attr) {
+    String val = elem.style.getPropertyValue(attr);
+    return val != null ? Integer.parseInt(val) : 0;
   }
 
   /**
@@ -896,8 +938,8 @@ public class DOM {
    * @param elem the element whose sibling is to be retrieved
    * @return the sibling element
    */
-  public static Element getNextSibling(Element elem) {
-    return elem.getNextSibling().cast();
+  public static HTMLElement getNextSibling(HTMLElement elem) {
+    return Js.uncheckedCast(elem.nextSibling);
   }
 
   /**
@@ -906,8 +948,8 @@ public class DOM {
    * @param elem the element whose parent is to be retrieved
    * @return the parent element
    */
-  public static Element getParent(Element elem) {
-    return elem.getParentElement();
+  public static HTMLElement getParent(HTMLElement elem) {
+    return Js.uncheckedCast(elem.parentElement);
   }
 
   /**
@@ -916,11 +958,11 @@ public class DOM {
    * @param elem the element whose style attribute is to be retrieved
    * @param attr the name of the style attribute to be retrieved
    * @return the style attribute's value
-   * @deprecated Use {@link Element#getStyle()} and {@link Style#getProperty(String)} instead.
+   * @deprecated Use {@link elemental2.dom.CSSStyleDeclaration}.
    */
   @Deprecated
-  public static String getStyleAttribute(Element elem, String attr) {
-    return elem.getStyle().getProperty(attr);
+  public static String getStyleAttribute(HTMLElement elem, String attr) {
+    return elem.style.getPropertyValue(attr);
   }
 
   /**
@@ -932,9 +974,9 @@ public class DOM {
    * @param child the child element to add to <code>parent</code>
    * @param before an existing child element of <code>parent</code> before which <code>child</code>
    *     will be inserted
-   * @see PotentialElement#resolve(Element)
+   * @see PotentialElement#resolve(HTMLElement)
    */
-  public static void insertBefore(Element parent, Element child, Element before) {
+  public static void insertBefore(HTMLElement parent, HTMLElement child, HTMLElement before) {
     assert !isPotential(parent) : "Cannot insert into a PotentialElement";
 
     // If child isn't a PotentialElement, resolve() returns
@@ -951,9 +993,9 @@ public class DOM {
    * @param child the child element to add to <code>parent</code>
    * @param index the index before which the child will be inserted (any value greater than the
    *     number of existing children will cause the child to be appended)
-   * @see PotentialElement#resolve(Element)
+   * @see PotentialElement#resolve(HTMLElement)
    */
-  public static void insertChild(Element parent, Element child, int index) {
+  public static void insertChild(HTMLElement parent, HTMLElement child, int index) {
     assert !isPotential(parent) : "Cannot insert into a PotentialElement";
 
     // If child isn't a PotentialElement, resolve() returns
@@ -972,23 +1014,23 @@ public class DOM {
    *     be <code>null</code>
    * @param index the index at which to insert the child
    */
-  public static void insertListItem(Element selectElem, String item, String value, int index) {
+  public static void insertListItem(HTMLElement selectElem, String item, String value, int index) {
     assert !isPotential(selectElem) : "Cannot insert into a PotentialElement";
 
-    SelectElement select = selectElem.cast();
-    OptionElement option = Document.get().createOptionElement();
-    option.setText(item);
-    option.setValue(value);
+    HTMLSelectElement select = Js.uncheckedCast(selectElem);
+    HTMLOptionElement option = createOption();
+    option.textContent = item;
+    option.value = value;
 
-    if ((index == -1) || (index == select.getLength())) {
+    if ((index == -1) || (index == select.length)) {
       select.add(option, null);
     } else {
-      OptionElement before = select.getOptions().getItem(index);
+      HTMLOptionElement before = select.options.getAt(index);
       select.add(option, before);
     }
   }
 
-  public static boolean isPotential(JavaScriptObject o) {
+  public static boolean isPotential(Object o) {
     try {
       return (o != null) && Js.asPropertyMap(o).has("__gwt_resolve");
     } catch (Exception e) {
@@ -997,9 +1039,9 @@ public class DOM {
     return false;
   }
 
-  private static Element resolve(Element maybePotential) {
+  private static HTMLElement resolve(HTMLElement maybePotential) {
     if ((Js.asPropertyMap(maybePotential).has("__gwt_resolve"))) {
-      return (Element) Js.asPropertyMap(maybePotential).get("__gwt_resolve");
+      return (HTMLElement) Js.asPropertyMap(maybePotential).get("__gwt_resolve");
     } else {
       return maybePotential;
     }
@@ -1010,9 +1052,9 @@ public class DOM {
    * the element does not currently have mouse/touch/gesture capture.
    *
    * @param elem the element to release capture
-   * @see #setCapture(Element)
+   * @see #setCapture(HTMLElement)
    */
-  public static void releaseCapture(Element elem) {
+  public static void releaseCapture(HTMLElement elem) {
     if ((sCaptureElem != null) && elem == sCaptureElem) {
       sCaptureElem = null;
     }
@@ -1024,10 +1066,10 @@ public class DOM {
    *
    * @param elem the element whose attribute is to be removed
    * @param attr the name of the element to remove
-   * @deprecated Use {@link Element#removeAttribute(String)} instead.
+   * @deprecated Use {@link HTMLElement#removeAttribute(String)} instead.
    */
   @Deprecated
-  public static void removeElementAttribute(Element elem, String attr) {
+  public static void removeElementAttribute(HTMLElement elem, String attr) {
     elem.removeAttribute(attr);
   }
 
@@ -1039,10 +1081,10 @@ public class DOM {
    * adjusts each scroll position by the minimum amount necessary.
    *
    * @param elem the element to be made visible
-   * @deprecated Use {@link Element#scrollIntoView()} instead.
+   * @deprecated Use {@link HTMLElement#scrollIntoView()} instead.
    */
   @Deprecated
-  public static void scrollIntoView(Element elem) {
+  public static void scrollIntoView(HTMLElement elem) {
     elem.scrollIntoView();
   }
 
@@ -1052,12 +1094,12 @@ public class DOM {
    * @param elem the element whose property is to be set
    * @param attr the name of the property to be set
    * @param value the new property value
-   * @deprecated Use the more appropriately named {@link Element#setPropertyString(String, String)}
+   * @deprecated Use the more appropriately named {@link HTMLElement#setAttribute(String, String)}
    *     instead.
    */
   @Deprecated
-  public static void setAttribute(Element elem, String attr, String value) {
-    elem.setPropertyString(attr, value);
+  public static void setAttribute(HTMLElement elem, String attr, String value) {
+    Js.asPropertyMap(elem).set(attr, value);
   }
 
   /**
@@ -1066,21 +1108,21 @@ public class DOM {
    * @param elem the element whose property is to be set
    * @param attr the name of the property to be set
    * @param value the property's new boolean value
-   * @deprecated Use the more appropriately named {@link Element#setPropertyBoolean(String,
+   * @deprecated Use the more appropriately named {@link HTMLElement#setAttribute(String,
    *     boolean)} instead.
    */
   @Deprecated
-  public static void setBooleanAttribute(Element elem, String attr, boolean value) {
-    elem.setPropertyBoolean(attr, value);
+  public static void setBooleanAttribute(HTMLElement elem, String attr, boolean value) {
+    Js.asPropertyMap(elem).set(attr, value);
   }
 
   /**
    * Sets mouse/touch/gesture capture on the given element. This element will directly receive all
-   * mouse events until {@link #releaseCapture(Element)} is called on it.
+   * mouse events until {@link #releaseCapture(HTMLElement)} is called on it.
    *
    * @param elem the element on which to set mouse/touch/gesture capture
    */
-  public static void setCapture(Element elem) {
+  public static void setCapture(HTMLElement elem) {
     sCaptureElem = elem;
     impl.setCapture(elem);
   }
@@ -1091,10 +1133,10 @@ public class DOM {
    * @param elem element whose attribute is to be set
    * @param attr the name of the attribute
    * @param value the value to which the attribute should be set
-   * @deprecated Use {@link Element#setAttribute(String, String)} instead.
+   * @deprecated Use {@link HTMLElement#setAttribute(String, String)} instead.
    */
   @Deprecated
-  public static void setElementAttribute(Element elem, String attr, String value) {
+  public static void setElementAttribute(HTMLElement elem, String attr, String value) {
     elem.setAttribute(attr, value);
   }
 
@@ -1104,11 +1146,11 @@ public class DOM {
    * @param elem the element whose property is to be set
    * @param prop the name of the property to be set
    * @param value the new property value
-   * @deprecated Use {@link Element#setPropertyString(String, String)} instead.
+   * @deprecated Use {@link HTMLElement#setAttribute(String, String)} instead.
    */
   @Deprecated
-  public static void setElementProperty(Element elem, String prop, String value) {
-    elem.setPropertyString(prop, value);
+  public static void setElementProperty(HTMLElement elem, String prop, String value) {
+    Js.asPropertyMap(elem).set(prop, value);
   }
 
   /**
@@ -1117,11 +1159,11 @@ public class DOM {
    * @param elem the element whose property is to be set
    * @param prop the name of the property to be set
    * @param value the new property value as a boolean
-   * @deprecated Use {@link Element#setPropertyBoolean(String, boolean)} instead.
+   * @deprecated Use {@link HTMLElement#setAttribute(String, boolean)} instead.
    */
   @Deprecated
-  public static void setElementPropertyBoolean(Element elem, String prop, boolean value) {
-    elem.setPropertyBoolean(prop, value);
+  public static void setElementPropertyBoolean(HTMLElement elem, String prop, boolean value) {
+    Js.asPropertyMap(elem).set(prop, value);
   }
 
   /**
@@ -1130,11 +1172,11 @@ public class DOM {
    * @param elem the element whose property is to be set
    * @param prop the name of the property to be set
    * @param value the new property value as an int
-   * @deprecated Use {@link Element#setPropertyInt(String, int)} instead.
+   * @deprecated Use {@link HTMLElement#setAttribute(String, double)} instead.
    */
   @Deprecated
-  public static void setElementPropertyInt(Element elem, String prop, int value) {
-    elem.setPropertyInt(prop, value);
+  public static void setElementPropertyInt(HTMLElement elem, String prop, int value) {
+    Js.asPropertyMap(elem).set(prop, (double) value);
   }
 
   /**
@@ -1144,8 +1186,8 @@ public class DOM {
    * @param elem the element whose listener is to be set
    * @param listener the listener to receive {@link Event events}
    */
-  public static void setEventListener(Element elem, EventListener listener) {
-    DOMImpl.setEventListener(elem, listener);
+  public static void setEventListener(HTMLElement elem, EventListener listener) {
+    DOMImpl.setEventListener(Js.uncheckedCast(elem), listener);
   }
 
   /**
@@ -1155,8 +1197,8 @@ public class DOM {
    * @param img a non-null img whose src attribute will be set.
    * @param src a non-null url for the img
    */
-  public static void setImgSrc(Element img, String src) {
-    img.<ImageElement>cast().setSrc(src);
+  public static void setImgSrc(HTMLElement img, String src) {
+    Js.<HTMLImageElement>uncheckedCast(img).src = src;
   }
 
   /**
@@ -1164,11 +1206,11 @@ public class DOM {
    *
    * @param elem the element whose inner HTML is to be set
    * @param html the new html
-   * @deprecated Use {@link Element#setInnerHTML(String)} instead.
+   * @deprecated Use {@link HTMLElement#innerHTML} instead.
    */
   @Deprecated
-  public static void setInnerHTML(Element elem, @IsSafeHtml String html) {
-    elem.setInnerHTML(html);
+  public static void setInnerHTML(HTMLElement elem, @IsSafeHtml String html) {
+    elem.innerHTML = html;
   }
 
   /**
@@ -1177,11 +1219,11 @@ public class DOM {
    *
    * @param elem the element whose inner text is to be set
    * @param text the new text
-   * @deprecated Use {@link Element#setInnerText(String)} instead.
+   * @deprecated Use {@link HTMLElement#textContent} instead.
    */
   @Deprecated
-  public static void setInnerText(Element elem, String text) {
-    elem.setInnerText(text);
+  public static void setInnerText(HTMLElement elem, String text) {
+    elem.textContent = text;
   }
 
   /**
@@ -1190,12 +1232,12 @@ public class DOM {
    * @param elem the element whose property is to be set
    * @param attr the name of the property to be set
    * @param value the property's new integer value
-   * @deprecated Use the more appropriately named {@link Element#setPropertyInt(String, int)}
+   * @deprecated Use the more appropriately named {@link HTMLElement#setAttribute(String, double)}
    *     instead.
    */
   @Deprecated
-  public static void setIntAttribute(Element elem, String attr, int value) {
-    elem.setPropertyInt(attr, value);
+  public static void setIntAttribute(HTMLElement elem, String attr, int value) {
+    Js.asPropertyMap(elem).set(attr, (double) value);
   }
 
   /**
@@ -1205,8 +1247,8 @@ public class DOM {
    * @param attr the name of the style attribute to be set
    * @param value the style attribute's new integer value
    */
-  public static void setIntStyleAttribute(Element elem, String attr, int value) {
-    elem.getStyle().setProperty(attr, Integer.toString(value));
+  public static void setIntStyleAttribute(HTMLElement elem, String attr, int value) {
+    elem.style.setProperty(attr, Integer.toString(value));
   }
 
   /**
@@ -1216,8 +1258,8 @@ public class DOM {
    * @param text the text to set
    * @param index the index of the option whose text should be set
    */
-  public static void setOptionText(Element select, String text, int index) {
-    select.<SelectElement>cast().getOptions().getItem(index).setText(text);
+  public static void setOptionText(HTMLSelectElement select, String text, int index) {
+    select.options.getAt(index).textContent = text;
   }
 
   /**
@@ -1226,12 +1268,12 @@ public class DOM {
    * @param elem the element whose style attribute is to be set
    * @param attr the name of the style attribute to be set
    * @param value the style attribute's new value
-   * @deprecated Use {@link Element#getStyle()} and {@link Style#setProperty(String, String)}
+   * @deprecated Use {@link elemental2.dom.CSSStyleDeclaration}
    *     instead.
    */
   @Deprecated
-  public static void setStyleAttribute(Element elem, String attr, String value) {
-    elem.getStyle().setProperty(attr, value);
+  public static void setStyleAttribute(HTMLElement elem, String attr, String value) {
+    elem.style.setProperty(attr, value);
   }
 
   /**
@@ -1241,7 +1283,7 @@ public class DOM {
    * @param elem the element whose events are to be retrieved
    * @param eventTypeName name of the event to sink on this element
    */
-  public static void sinkBitlessEvent(Element elem, String eventTypeName) {
+  public static void sinkBitlessEvent(HTMLElement elem, String eventTypeName) {
     impl.sinkBitlessEvent(elem, eventTypeName);
   }
 
@@ -1253,8 +1295,8 @@ public class DOM {
    * @param eventBits a bitfield describing the events sunk on this element (its possible values are
    *     described in {@link Event})
    */
-  public static void sinkEvents(Element elem, int eventBits) {
-    impl.sinkEvents(elem, eventBits);
+  public static void sinkEvents(HTMLElement elem, int eventBits) {
+    impl.sinkEvents(Js.uncheckedCast(elem), eventBits);
   }
 
   /**
@@ -1263,11 +1305,11 @@ public class DOM {
    *
    * @param elem the element to stringize
    * @return a string form of the element
-   * @deprecated Use {@link Element#getString()} instead.
+   * @deprecated Use {@link HTMLElement#outerHTML} instead.
    */
   @Deprecated
-  public static String toString(Element elem) {
-    return elem.getString();
+  public static String toString(HTMLElement elem) {
+    return elem.outerHTML;
   }
 
   /**
@@ -1277,7 +1319,7 @@ public class DOM {
    * @param elem the handle to the element that received the event.
    * @param listener the listener associated with the element that received the event.
    */
-  public static void dispatchEvent(Event evt, Element elem, EventListener listener) {
+  public static void dispatchEvent(Event evt, HTMLElement elem, EventListener listener) {
     // Preserve the current event in case we are in a reentrant event dispatch.
     Event prevCurrentEvent = currentEvent;
     currentEvent = evt;
@@ -1288,14 +1330,14 @@ public class DOM {
   }
 
   /**
-   * This method is a similar to {@link #dispatchEvent(Event, Element, EventListener)} but only
+   * This method is a similar to {@link #dispatchEvent(Event, HTMLElement, EventListener)} but only
    * dispatches if an event listener is set to element.
    *
    * @param evt the handle to the event being fired.
    * @param elem the handle to the element that received the event.
    * @return {@code true} if the event was dispatched
    */
-  public static boolean dispatchEvent(Event evt, Element elem) {
+  public static boolean dispatchEvent(Event evt, HTMLElement elem) {
     EventListener eventListener = getEventListener(elem);
     if (eventListener == null) {
       return false;
@@ -1328,7 +1370,7 @@ public class DOM {
     return ret;
   }
 
-  private static void dispatchEventImpl(Event evt, Element elem, EventListener listener) {
+  private static void dispatchEventImpl(Event evt, HTMLElement elem, EventListener listener) {
     // If this element has capture...
     if (elem == sCaptureElem) {
       // ... and it's losing capture, clear sCaptureElem.
@@ -1345,6 +1387,44 @@ public class DOM {
     elemental2.dom.EventListener listener = (evt) -> handler.onResize(new WindowResizeEvent());
     DomGlobal.window.addEventListener("resize", listener);
     return () -> DomGlobal.window.removeEventListener("resize", listener);
+  }
+
+  public static int getAbsoluteTop(HTMLElement el) {
+    double subPixelAbsoluteTop = el.getBoundingClientRect().top + getScrollingElement(el.ownerDocument).scrollTop;
+    return Js.coerceToInt(subPixelAbsoluteTop);
+  }
+
+  public static int getAbsoluteLeft(HTMLElement el) {
+    double subPixelAbsoluteTop = el.getBoundingClientRect().left + getScrollingElement(el.ownerDocument).scrollLeft;
+    return Js.coerceToInt(subPixelAbsoluteTop);
+  }
+
+  private static HTMLElement getScrollingElement(elemental2.dom.Document doc) {
+    HTMLElement scrollingElement = Js.uncheckedCast(doc.scrollingElement);
+    if (scrollingElement != null) {
+      return scrollingElement;
+    } else {
+      // could also check for compatMode
+      return doc.documentElement;
+    }
+  }
+
+  public static void removeAllChildren(HTMLElement element) {
+    for (int i = element.childNodes.length - 1; i >= 0; i--) {
+      element.removeChild(element.childNodes.getAt(i));
+    }
+  }
+
+  public static boolean isElement(Object o) {
+    return isNode(o) ? Js.<Node>uncheckedCast(o).nodeType == Node.ELEMENT_NODE : false;
+  }
+
+  public static boolean isNode(Object o) {
+      try {
+        return Js.isTruthy(o) && Js.isTruthy(Js.asPropertyMap(o).get("nodeType"));
+      } catch (Exception var2) {
+        return false;
+      }
   }
 
   private static class WindowResizeEvent extends ResizeEvent {

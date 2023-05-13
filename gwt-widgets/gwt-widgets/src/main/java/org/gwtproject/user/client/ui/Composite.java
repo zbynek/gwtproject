@@ -15,9 +15,9 @@
  */
 package org.gwtproject.user.client.ui;
 
+import elemental2.dom.HTMLElement;
 import org.gwtproject.dom.builder.shared.HtmlBuilderFactory;
 import org.gwtproject.dom.builder.shared.HtmlSpanBuilder;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.event.logical.shared.AttachEvent;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
@@ -43,10 +43,10 @@ public abstract class Composite extends Widget implements IsRenderable {
 
   private IsRenderable renderable;
 
-  private Element elementToWrap;
+  private HTMLElement elementToWrap;
 
   @Override
-  public void claimElement(Element element) {
+  public void claimElement(HTMLElement element) {
     if (renderable != null) {
       renderable.claimElement(element);
       setElement(widget.getElement());
@@ -60,7 +60,7 @@ public abstract class Composite extends Widget implements IsRenderable {
     if (renderable != null) {
       renderable.initializeClaimedElement();
     } else {
-      elementToWrap.getParentNode().replaceChild(widget.getElement(), elementToWrap);
+      elementToWrap.parentNode.replaceChild(widget.getElement(), elementToWrap);
     }
   }
 
@@ -146,7 +146,7 @@ public abstract class Composite extends Widget implements IsRenderable {
 
     // Use the contained widget's element as the composite's element,
     // effectively merging them within the DOM.
-    Element elem = widget.getElement();
+    HTMLElement elem = widget.getElement();
     setElement(elem);
 
     if (PotentialElement.isPotential(elem)) {
@@ -199,7 +199,7 @@ public abstract class Composite extends Widget implements IsRenderable {
   }
 
   @Override
-  protected Element resolvePotentialElement() {
+  protected HTMLElement resolvePotentialElement() {
     setElement(widget.resolvePotentialElement());
     return getElement();
   }

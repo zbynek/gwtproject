@@ -18,14 +18,12 @@ package org.gwtproject.user.client.ui.impl;
 import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
 import jsinterop.annotations.JsFunction;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.gwtproject.core.client.JavaScriptObject;
-import org.gwtproject.dom.client.DivElement;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
+import org.gwtproject.user.client.DOM;
 
 /**
  * Implementation of {@link FocusImpl} that uses a hidden input element to serve as a 'proxy' for
@@ -34,16 +32,16 @@ import org.gwtproject.dom.client.Element;
 public class FocusImplStandard extends FocusImpl {
 
   /** Single focusHandler shared by all focusable. */
-  static JavaScriptObject focusHandler;
+  static FnVarArgs focusHandler;
 
-  private static Element createFocusable0(JavaScriptObject focusHandler) {
+  private static HTMLElement createFocusable0(FnVarArgs focusHandler) {
     // Divs are focusable in all browsers, but only IE supports the accessKey
     // property on divs. We use the infamous 'hidden input' trick to add an
     // accessKey to the focusable div. Note that the input is only used to
     // capture focus when the accessKey is pressed. Focus is forwarded to the
     // div immediately.
-    DivElement div = Document.get().createDivElement();
-    div.setTabIndex(0);
+    HTMLDivElement div = DOM.createDiv();
+    div.tabIndex = 0;
 
     HTMLInputElement input = (HTMLInputElement) DomGlobal.document.createElement("input");
 
@@ -68,36 +66,36 @@ public class FocusImplStandard extends FocusImpl {
   }
 
   @Override
-  public Element createFocusable() {
+  public HTMLElement createFocusable() {
     return createFocusable0(ensureFocusHandler());
   }
 
   @Override
-  public void setAccessKey(Element elem, char key) {
-    ((JsPropertyMap) elem.getFirstChild()).set("accessKey", Character.toString(key));
+  public void setAccessKey(HTMLElement elem, char key) {
+    ((JsPropertyMap) elem.firstChild).set("accessKey", Character.toString(key));
   }
 
   /**
    * Use an isolated method call to create the handler to avoid creating memory leaks via
    * handler-closures-element.
    */
-  private JavaScriptObject createFocusHandler() {
+  private FnVarArgs createFocusHandler() {
     // This function is called directly as an event handler, so 'this' is
     // set up by the browser to be the input on which the event is fired. We
     // call focus() in a timeout or the element may be blurred when this event
     // ends.
     FnVarArgs func =
         (event) -> {
-          Element _this = Js.uncheckedCast(this);
-          HTMLDivElement div = Js.uncheckedCast(_this.getParentNode());
+          HTMLElement _this = Js.uncheckedCast(this);
+          HTMLDivElement div = Js.uncheckedCast(_this.parentNode);
           if (div.onfocus != null) {
             DomGlobal.setTimeout(p0 -> div.focus(), 0);
           }
         };
-    return (JavaScriptObject) func;
+    return func;
   }
 
-  private JavaScriptObject ensureFocusHandler() {
+  private FnVarArgs ensureFocusHandler() {
     return focusHandler != null ? focusHandler : (focusHandler = createFocusHandler());
   }
 

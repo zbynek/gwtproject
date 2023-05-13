@@ -17,8 +17,9 @@ package org.gwtproject.animation.client.testing;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import elemental2.dom.HTMLElement;
 import org.gwtproject.animation.client.AnimationScheduler;
-import org.gwtproject.dom.client.Element;
 
 /**
  * A stub implementation of {@link AnimationScheduler} that does not execute the callbacks. Use
@@ -39,14 +40,14 @@ public class StubAnimationScheduler extends AnimationScheduler {
   }
 
   @Override
-  public StubAnimationHandle requestAnimationFrame(AnimationCallback callback, Element element) {
+  public StubAnimationHandle requestAnimationFrame(AnimationCallback callback, HTMLElement element) {
     callbacks.add(callback);
     return new StubAnimationHandle(callback);
   }
 
   /**
    * A handle to the requested animation frame created by {@link
-   * #requestAnimationFrame(AnimationCallback, Element)}.
+   * #requestAnimationFrame(AnimationCallback, HTMLElement)}.
    */
   public class StubAnimationHandle extends AnimationHandle {
 

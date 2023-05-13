@@ -15,7 +15,7 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Element;
+import elemental2.dom.HTMLElement;
 import org.gwtproject.text.shared.testing.PassthroughParser;
 import org.gwtproject.text.shared.testing.PassthroughRenderer;
 
@@ -72,7 +72,7 @@ public class TextBoxBase extends ValueBoxBase<String> {
    *
    * @param elem the browser element to wrap
    */
-  protected TextBoxBase(Element elem) {
+  protected TextBoxBase(HTMLElement elem) {
     super(elem, PassthroughRenderer.instance(), PassthroughParser.instance());
   }
 

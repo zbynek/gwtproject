@@ -16,11 +16,12 @@
 package org.gwtproject.user.cellview.client;
 
 import java.util.Collection;
+
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLTableRowElement;
 import org.gwtproject.cell.client.Cell.Context;
 import org.gwtproject.cell.client.HasCell;
 import org.gwtproject.dom.builder.shared.TableSectionBuilder;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.TableRowElement;
 
 /**
  * Builder used to construct a CellTable.
@@ -54,35 +55,35 @@ public interface CellTableBuilder<T> {
    * @param elem the elm that the column contains
    * @return the immediate column containing the element
    */
-  HasCell<T, ?> getColumn(Context context, T rowValue, Element elem);
+  HasCell<T, ?> getColumn(Context context, T rowValue, HTMLElement elem);
 
   /** Return all the columns that this table builder has rendered. */
   Collection<HasCell<T, ?>> getColumns();
 
   /**
-   * Get the index of the primary row from the associated {@link TableRowElement} (an TR element).
+   * Get the index of the primary row from the associated {@link HTMLTableRowElement} (an TR element).
    *
    * @param row the row element
    * @return the row value index
    */
-  int getRowValueIndex(TableRowElement row);
+  int getRowValueIndex(HTMLTableRowElement row);
 
   /**
-   * Get the index of the subrow value from the associated {@link TableRowElement} (an TR element).
+   * Get the index of the subrow value from the associated {@link HTMLTableRowElement} (an TR element).
    * The sub row value starts at 0 for the first row that represents a row value.
    *
    * @param row the row element
    * @return the subrow value index, or 0 if not found
    */
-  int getSubrowValueIndex(TableRowElement row);
+  int getSubrowValueIndex(HTMLTableRowElement row);
 
   /**
    * Return if an element contains a cell. This may be faster to execute than {@link
-   * #getColumn(Context, Object, Element)}.
+   * #getColumn(Context, Object, HTMLElement)}.
    *
    * @param elem the element of interest
    */
-  boolean isColumn(Element elem);
+  boolean isColumn(HTMLElement elem);
 
   /**
    * Start building rows. User may want to reset the internal state of the table builder (e.g.,

@@ -15,10 +15,10 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.AnchorElement;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.WhiteSpace;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.safehtml.client.HasSafeHtml;
@@ -27,11 +27,11 @@ import org.gwtproject.safehtml.shared.SafeUri;
 import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
 import org.gwtproject.safehtml.shared.annotations.IsSafeUri;
 import org.gwtproject.safehtml.shared.annotations.SuppressIsSafeHtmlCastCheck;
+import org.gwtproject.user.client.DOM;
 
 /**
  * A widget that represents a simple &lt;a&gt; element.
  *
- * <p>If you want use this anchor only for changing history states, use {@link Hyperlink} instead.
  *
  * <p>
  *
@@ -41,7 +41,6 @@ import org.gwtproject.safehtml.shared.annotations.SuppressIsSafeHtmlCastCheck;
  *   <li>.gwt-Anchor { }
  * </ul>
  *
- * @see Hyperlink
  */
 public class Anchor extends FocusWidget
     implements HasHorizontalAlignment,
@@ -64,9 +63,9 @@ public class Anchor extends FocusWidget
    *
    * @param element the element to be wrapped
    */
-  public static Anchor wrap(Element element) {
+  public static Anchor wrap(HTMLElement element) {
     // Assert that the element is attached.
-    assert Document.get().getBody().isOrHasChild(element);
+    assert DomGlobal.document.body.contains(element);
 
     Anchor anchor = new Anchor(element);
 
@@ -105,7 +104,7 @@ public class Anchor extends FocusWidget
    *     it blank
    */
   public Anchor(boolean useDefaultHref) {
-    setElement(Document.get().createAnchorElement());
+    setElement(DOM.createAnchor());
     setStyleName("gwt-Anchor");
     directionalTextHelper = new DirectionalTextHelper(getAnchorElement(), /* is inline */ true);
     if (useDefaultHref) {
@@ -122,7 +121,7 @@ public class Anchor extends FocusWidget
           new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-              if (DEFAULT_HREF.equals(getAnchorElement().getHref())) {
+              if (DEFAULT_HREF.equals(getAnchorElement().href)) {
                 event.preventDefault();
               }
             }
@@ -267,8 +266,8 @@ public class Anchor extends FocusWidget
    *
    * @param element the element to be used
    */
-  protected Anchor(Element element) {
-    AnchorElement.as(element);
+  protected Anchor(HTMLElement element) {
+    assert "a".equalsIgnoreCase(element.tagName);
     setElement(element);
     directionalTextHelper = new DirectionalTextHelper(getAnchorElement(), /* is inline */ true);
   }
@@ -284,22 +283,22 @@ public class Anchor extends FocusWidget
    * @return the anchor's href
    */
   public String getHref() {
-    return getAnchorElement().getHref();
+    return getAnchorElement().href;
   }
 
   @Override
   public String getHTML() {
-    return getElement().getInnerHTML();
+    return getElement().innerHTML;
   }
 
   @Override
   public String getName() {
-    return getAnchorElement().getName();
+    return getAnchorElement().name;
   }
 
   @Override
   public int getTabIndex() {
-    return getAnchorElement().getTabIndex();
+    return getAnchorElement().tabIndex;
   }
 
   /**
@@ -309,7 +308,7 @@ public class Anchor extends FocusWidget
    * @return the target frame
    */
   public String getTarget() {
-    return getAnchorElement().getTarget();
+    return getAnchorElement().target;
   }
 
   @Override
@@ -320,12 +319,12 @@ public class Anchor extends FocusWidget
 
   @Override
   public boolean getWordWrap() {
-    return !WhiteSpace.NOWRAP.getCssName().equals(getElement().getStyle().getWhiteSpace());
+    return !"nowrap".equals(getElement().style.whiteSpace);
   }
 
   @Override
   public void setAccessKey(char key) {
-    getAnchorElement().setAccessKey(Character.toString(key));
+    getAnchorElement().accessKey = Character.toString(key);
   }
 
   @Override
@@ -340,7 +339,7 @@ public class Anchor extends FocusWidget
   @Override
   public void setHorizontalAlignment(HorizontalAlignmentConstant align) {
     horzAlign = align;
-    getElement().getStyle().setProperty("textAlign", align.getTextAlignString());
+    getElement().style.setProperty("textAlign", align.getTextAlignString());
   }
 
   /**
@@ -349,7 +348,7 @@ public class Anchor extends FocusWidget
    * @param href the anchor's href
    */
   public void setHref(SafeUri href) {
-    getAnchorElement().setHref(href);
+    getAnchorElement().href = href.asString();
   }
 
   /**
@@ -358,7 +357,7 @@ public class Anchor extends FocusWidget
    * @param href the anchor's href
    */
   public void setHref(@IsSafeUri String href) {
-    getAnchorElement().setHref(href);
+    getAnchorElement().href = href;
   }
 
   @Override
@@ -373,12 +372,12 @@ public class Anchor extends FocusWidget
 
   @Override
   public void setName(String name) {
-    getAnchorElement().setName(name);
+    getAnchorElement().name = name;
   }
 
   @Override
   public void setTabIndex(int index) {
-    getAnchorElement().setTabIndex(index);
+    getAnchorElement().tabIndex = index;
   }
 
   /**
@@ -388,7 +387,7 @@ public class Anchor extends FocusWidget
    * @param target the target frame
    */
   public void setTarget(String target) {
-    getAnchorElement().setTarget(target);
+    getAnchorElement().target = target;
   }
 
   @Override
@@ -398,10 +397,10 @@ public class Anchor extends FocusWidget
 
   @Override
   public void setWordWrap(boolean wrap) {
-    getElement().getStyle().setWhiteSpace(wrap ? WhiteSpace.NORMAL : WhiteSpace.NOWRAP);
+    getElement().style.whiteSpace = wrap ? "normal" : "nowrap";
   }
 
-  private AnchorElement getAnchorElement() {
-    return AnchorElement.as(getElement());
+  private HTMLAnchorElement getAnchorElement() {
+    return Js.uncheckedCast(getElement());
   }
 }

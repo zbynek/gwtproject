@@ -15,7 +15,8 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Element;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
 import org.gwtproject.safehtml.shared.annotations.SuppressIsSafeHtmlCastCheck;
@@ -28,7 +29,7 @@ import org.gwtproject.safehtml.shared.annotations.SuppressIsSafeHtmlCastCheck;
 public class DirectionalTextHelper {
 
   /** The target element. */
-  private final Element element;
+  private final HTMLElement element;
 
   /**
    * Whether direction was explicitly set on the last {@code setTextOrHtml} call. If so, {@link
@@ -60,7 +61,7 @@ public class DirectionalTextHelper {
    * @param element The widget's element holding text.
    * @param isElementInline Whether the element is an inline element.
    */
-  public DirectionalTextHelper(Element element, boolean isElementInline) {
+  public DirectionalTextHelper(HTMLElement element, boolean isElementInline) {
     this.element = element;
     this.isElementInline = isElementInline;
     isSpanWrapped = false;
@@ -95,8 +96,8 @@ public class DirectionalTextHelper {
    * @return the text or html
    */
   public String getTextOrHtml(boolean isHtml) {
-    Element elem = isSpanWrapped ? element.getFirstChildElement() : element;
-    return isHtml ? elem.getInnerHTML() : elem.getInnerText();
+    HTMLElement elem = isSpanWrapped ? Js.uncheckedCast(element.firstElementChild) : element;
+    return isHtml ? elem.innerHTML : elem.textContent;
   }
 
   /**
@@ -162,9 +163,9 @@ public class DirectionalTextHelper {
 
   private void setInnerTextOrHtml(@IsSafeHtml String content, boolean isHtml) {
     if (isHtml) {
-      element.setInnerHTML(content);
+      element.innerHTML = content;
     } else {
-      element.setInnerText(content);
+      element.textContent = content;
     }
   }
 }

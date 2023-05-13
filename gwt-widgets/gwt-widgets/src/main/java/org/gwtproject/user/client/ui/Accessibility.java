@@ -15,7 +15,8 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Element;
+
+import elemental2.dom.HTMLElement;
 
 /**
  * Allows ARIA attributes to be added to widgets so that they can be identified by assistive
@@ -35,10 +36,7 @@ import org.gwtproject.dom.client.Element;
  * result, this API is subject to change as the specification stabilizes; we will do our best to
  * keep the community updated on changes.
  *
- * @deprecated Use the new GWT ARIA library with the factory class for the ARIA roles {@link
- *     org.gwtproject.aria.client.Roles}. There are getters for all ARIA roles. For each role there
- *     are get/set/remove methods defined for all (own and inherited) supported states and
- *     properties.
+ * @deprecated Use the new GWT ARIA library
  */
 @Deprecated
 public final class Accessibility {
@@ -69,7 +67,7 @@ public final class Accessibility {
    * @param elem the element which has the specified role
    * @return the value of the role, or an empty string if none exists
    */
-  public static String getRole(Element elem) {
+  public static String getRole(HTMLElement elem) {
     return elem.getAttribute(ATTR_NAME_ROLE);
   }
 
@@ -80,7 +78,7 @@ public final class Accessibility {
    * @param stateName the name of the state
    * @return the value of the state, or an empty string if none exists
    */
-  public static String getState(Element elem, String stateName) {
+  public static String getState(HTMLElement elem, String stateName) {
     return elem.getAttribute(stateName);
   }
 
@@ -90,7 +88,7 @@ public final class Accessibility {
    * @param elem the element which has the specified state
    * @param stateName the name of the state to remove
    */
-  public static void removeState(Element elem, String stateName) {
+  public static void removeState(HTMLElement elem, String stateName) {
     elem.removeAttribute(stateName);
   }
   /**
@@ -99,7 +97,7 @@ public final class Accessibility {
    * @param elem the element to be given the specified role
    * @param roleName the name of the role
    */
-  public static void setRole(Element elem, String roleName) {
+  public static void setRole(HTMLElement elem, String roleName) {
     elem.setAttribute(ATTR_NAME_ROLE, roleName);
   }
 
@@ -110,7 +108,7 @@ public final class Accessibility {
    * @param stateName the name of the state
    * @param stateValue the value of the state
    */
-  public static void setState(Element elem, String stateName, String stateValue) {
+  public static void setState(HTMLElement elem, String stateName, String stateValue) {
     elem.setAttribute(stateName, stateValue);
   }
 

@@ -17,10 +17,11 @@ package org.gwtproject.user.cellview.client;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import elemental2.dom.HTMLElement;
 import jsinterop.annotations.JsFunction;
 import jsinterop.base.Js;
 import org.gwtproject.dom.client.BrowserEvents;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.EventTarget;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
@@ -41,17 +42,17 @@ public class CellBasedWidgetImplStandard extends CellBasedWidgetImpl {
   private static void handleNonBubblingEvent(Event event) {
     // Get the event target.
     EventTarget eventTarget = event.getEventTarget();
-    if (!Element.is(eventTarget)) {
+    if (!DOM.isElement(eventTarget)) {
       return;
     }
-    Element target = eventTarget.cast();
+    HTMLElement target = eventTarget.cast();
 
     // Get the event listener, which is the first widget that handles the
     // specified event type.
     String typeName = event.getType();
     EventListener listener = DOM.getEventListener(target);
     while (target != null && listener == null) {
-      target = target.getParentElement().cast();
+      target = Js.uncheckedCast(target.parentElement);
       if (target != null && isNonBubblingEventHandled(target, typeName)) {
         // The target handles the event, so this must be the event listener.
         listener = DOM.getEventListener(target);
@@ -71,7 +72,7 @@ public class CellBasedWidgetImplStandard extends CellBasedWidgetImpl {
    * @param typeName the non-bubbling event
    * @return true if the event is handled, false if not
    */
-  private static boolean isNonBubblingEventHandled(Element elem, String typeName) {
+  private static boolean isNonBubblingEventHandled(HTMLElement elem, String typeName) {
     return "true".equals(elem.getAttribute("__gwtCellBasedWidgetImplDispatching" + typeName));
   }
 
@@ -96,7 +97,7 @@ public class CellBasedWidgetImplStandard extends CellBasedWidgetImpl {
       }
 
       // Sink the non-bubbling event.
-      Element elem = widget.getElement();
+      HTMLElement elem = widget.getElement();
       if (!isNonBubblingEventHandled(elem, typeName)) {
         elem.setAttribute("__gwtCellBasedWidgetImplDispatching" + typeName, "true");
         sinkEventImpl(elem, typeName);
@@ -119,7 +120,7 @@ public class CellBasedWidgetImplStandard extends CellBasedWidgetImpl {
    * @param elem the element to sink the event on
    * @param typeName the name of the event to sink
    */
-  private void sinkEventImpl(Element elem, String typeName) {
+  private void sinkEventImpl(HTMLElement elem, String typeName) {
     ((elemental2.dom.EventTarget) Js.uncheckedCast(elem))
         .addEventListener(typeName, Js.uncheckedCast(dispatchNonBubblingEvent), true);
   }

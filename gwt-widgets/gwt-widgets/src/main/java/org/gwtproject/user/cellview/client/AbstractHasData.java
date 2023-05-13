@@ -19,17 +19,16 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.gwtproject.cell.client.Cell;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.dom.client.BrowserEvents;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.EventTarget;
 import org.gwtproject.dom.client.NativeEvent;
-import org.gwtproject.dom.style.shared.Display;
 import org.gwtproject.event.dom.client.KeyCodes;
 import org.gwtproject.event.logical.shared.ValueChangeEvent;
-import org.gwtproject.event.logical.shared.ValueChangeHandler;
 import org.gwtproject.event.shared.Event.Type;
 import org.gwtproject.event.shared.HandlerRegistration;
 import org.gwtproject.safehtml.shared.SafeHtml;
@@ -60,7 +59,7 @@ public abstract class AbstractHasData<T> extends Composite
     implements HasData<T>, HasKeyProvider<T>, Focusable, HasKeyboardPagingPolicy {
 
   /** The temporary element use to convert HTML to DOM. */
-  private static Element tmpElem;
+  private static HTMLElement tmpElem;
 
   private final HasDataPresenter<T> presenter;
   /** A boolean indicating that the widget has focus. */
@@ -81,7 +80,7 @@ public abstract class AbstractHasData<T> extends Composite
    * @param pageSize the page size
    * @param keyProvider the key provider, or null
    */
-  public AbstractHasData(final Element elem, final int pageSize, final ProvidesKey<T> keyProvider) {
+  public AbstractHasData(final HTMLElement elem, final int pageSize, final ProvidesKey<T> keyProvider) {
     this(
         new Widget() {
           {
@@ -129,12 +128,12 @@ public abstract class AbstractHasData<T> extends Composite
    * @param tmpElem a temporary element
    * @return the parent element
    */
-  static Element convertToElements(Widget widget, Element tmpElem, SafeHtml html) {
+  static HTMLElement convertToElements(Widget widget, HTMLElement tmpElem, SafeHtml html) {
     // Attach an event listener so we can catch synchronous load events from
     // cached images.
     DOM.setEventListener(tmpElem, widget);
 
-    tmpElem.setInnerSafeHtml(html);
+    tmpElem.innerHTML = html.asString();
 
     // Detach the event listener.
     DOM.setEventListener(tmpElem, null);
@@ -149,7 +148,7 @@ public abstract class AbstractHasData<T> extends Composite
    * @param childContainer the container that holds the contents
    * @param html the html to set
    */
-  static void replaceAllChildren(Widget widget, Element childContainer, SafeHtml html) {
+  static void replaceAllChildren(Widget widget, HTMLElement childContainer, SafeHtml html) {
     // If the widget is not attached, attach an event listener so we can catch
     // synchronous load events from cached images.
     if (!widget.isAttached()) {
@@ -157,7 +156,7 @@ public abstract class AbstractHasData<T> extends Composite
     }
 
     // Render the HTML.
-    childContainer.setInnerSafeHtml(CellBasedWidgetImpl.get().processHtml(html));
+    childContainer.innerHTML = CellBasedWidgetImpl.get().processHtml(html).asString();
 
     // Detach the event listener.
     if (!widget.isAttached()) {
@@ -177,32 +176,32 @@ public abstract class AbstractHasData<T> extends Composite
    * @param html the HTML to convert
    */
   static void replaceChildren(
-      Widget widget, Element childContainer, Element newChildren, int start, SafeHtml html) {
+      Widget widget, HTMLElement childContainer, HTMLElement newChildren, int start, SafeHtml html) {
     // Get the first element to be replaced.
-    int childCount = childContainer.getChildCount();
-    Element toReplace = null;
+    int childCount = childContainer.childElementCount;
+    elemental2.dom.Element toReplace = null;
     if (start < childCount) {
-      toReplace = childContainer.getChild(start).cast();
+      toReplace = Js.uncheckedCast(childContainer.childNodes.getAt(start));
     }
 
     // Replace the elements.
-    int count = newChildren.getChildCount();
+    int count = newChildren.childElementCount;
     for (int i = 0; i < count; i++) {
       if (toReplace == null) {
         // The child will be removed from tmpElem, so always use index 0.
-        childContainer.appendChild(newChildren.getChild(0));
+        childContainer.appendChild(newChildren.childNodes.getAt(0));
       } else {
-        Element nextSibling = toReplace.getNextSiblingElement();
-        childContainer.replaceChild(newChildren.getChild(0), toReplace);
+        elemental2.dom.Element nextSibling = toReplace.nextElementSibling;
+        childContainer.replaceChild(newChildren.childNodes.getAt(0), toReplace);
         toReplace = nextSibling;
       }
     }
   }
 
   /** Return the temporary element used to create elements. */
-  private static Element getTmpElem() {
+  private static HTMLElement getTmpElem() {
     if (tmpElem == null) {
-      tmpElem = Document.get().createDivElement();
+      tmpElem = DOM.createDiv();
     }
     return tmpElem;
   }
@@ -391,7 +390,7 @@ public abstract class AbstractHasData<T> extends Composite
    *
    * @return the {@link Element} that contains the rendered row values
    */
-  public Element getRowContainer() {
+  public HTMLElement getRowContainer() {
     presenter.flush();
     return getChildContainer();
   }
@@ -507,11 +506,11 @@ public abstract class AbstractHasData<T> extends Composite
     // Verify that the target is still a child of this widget. IE fires focus
     // events even after the element has been removed from the DOM.
     EventTarget eventTarget = event.getEventTarget();
-    if (!Element.is(eventTarget)) {
+    if (!DOM.isElement(eventTarget)) {
       return;
     }
-    Element target = Element.as(eventTarget);
-    if (!getElement().isOrHasChild(Element.as(eventTarget))) {
+    HTMLElement target = Js.uncheckedCast(eventTarget);
+    if (!getElement().contains(target)) {
       return;
     }
     super.onBrowserEvent(event);
@@ -529,7 +528,7 @@ public abstract class AbstractHasData<T> extends Composite
       // A key event indicates that we already have focus.
       isFocused = true;
     } else if (BrowserEvents.MOUSEDOWN.equals(eventType)
-        && CellBasedWidgetImpl.get().isFocusable(Element.as(target))) {
+        && CellBasedWidgetImpl.get().isFocusable(Js.uncheckedCast(target))) {
       // If a natively focusable element was just clicked, then we must have
       // focus.
       isFocused = true;
@@ -557,7 +556,7 @@ public abstract class AbstractHasData<T> extends Composite
 
   @Override
   public void setFocus(boolean focused) {
-    Element elem = getKeyboardSelectedElement();
+    HTMLElement elem = getKeyboardSelectedElement();
     if (elem != null) {
       if (focused) {
         elem.focus();
@@ -681,7 +680,7 @@ public abstract class AbstractHasData<T> extends Composite
    * @param html the HTML to convert
    * @return the parent element
    */
-  protected Element convertToElements(SafeHtml html) {
+  protected HTMLElement convertToElements(SafeHtml html) {
     return convertToElements(this, getTmpElem(), html);
   }
 
@@ -697,7 +696,7 @@ public abstract class AbstractHasData<T> extends Composite
    *
    * @return the container {@link Element}
    */
-  protected abstract Element getChildContainer();
+  protected abstract HTMLElement getChildContainer();
 
   /**
    * Get the element that represents the specified index.
@@ -705,10 +704,10 @@ public abstract class AbstractHasData<T> extends Composite
    * @param index the index of the row value
    * @return the child element, or null if it does not exist
    */
-  protected Element getChildElement(int index) {
-    Element childContainer = getChildContainer();
-    int childCount = childContainer.getChildCount();
-    return (index < childCount) ? childContainer.getChild(index).<Element>cast() : null;
+  protected HTMLElement getChildElement(int index) {
+    HTMLElement childContainer = getChildContainer();
+    int childCount = childContainer.childElementCount;
+    return (index < childCount) ? Js.uncheckedCast(childContainer.childNodes.getAt(index)) : null;
   }
 
   /**
@@ -716,7 +715,7 @@ public abstract class AbstractHasData<T> extends Composite
    *
    * @return the keyboard selected element
    */
-  protected abstract Element getKeyboardSelectedElement();
+  protected abstract HTMLElement getKeyboardSelectedElement();
 
   /**
    * Check if keyboard navigation is being suppressed, such as when the user is editing a cell.
@@ -806,7 +805,7 @@ public abstract class AbstractHasData<T> extends Composite
    *     SelectionModel)} throws an {@link UnsupportedOperationException}
    */
   protected void replaceChildren(List<T> values, int start, SafeHtml html) {
-    Element newChildren = convertToElements(html);
+    HTMLElement newChildren = convertToElements(html);
     replaceChildren(this, getChildContainer(), newChildren, start, html);
   }
 
@@ -823,7 +822,7 @@ public abstract class AbstractHasData<T> extends Composite
    * @param elem the element
    * @param focusable true to make focusable, false to make unfocusable
    */
-  protected void setFocusable(Element elem, boolean focusable) {
+  protected void setFocusable(HTMLElement elem, boolean focusable) {
     if (focusable) {
       FocusImpl focusImpl = FocusImpl.getFocusImplForWidget();
       focusImpl.setTabIndex(elem, getTabIndex());
@@ -833,7 +832,7 @@ public abstract class AbstractHasData<T> extends Composite
     } else {
       // Chrome: Elements remain focusable after removing the tabIndex, so set
       // it to -1 first.
-      elem.setTabIndex(-1);
+      elem.tabIndex = -1;
       elem.removeAttribute("tabIndex");
       elem.removeAttribute("accessKey");
     }
@@ -857,7 +856,7 @@ public abstract class AbstractHasData<T> extends Composite
    *     {@link #renderRowValues(SafeHtmlBuilder, List, int, SelectionModel)}
    */
   @Deprecated
-  protected void setSelected(Element elem, boolean selected) {
+  protected void setSelected(HTMLElement elem, boolean selected) {
     // Never called.
   }
 
@@ -871,14 +870,14 @@ public abstract class AbstractHasData<T> extends Composite
    * @param element the element
    * @param show true to show, false to hide
    */
-  void showOrHide(Element element, boolean show) {
+  void showOrHide(HTMLElement element, boolean show) {
     if (element == null) {
       return;
     }
     if (show) {
-      element.getStyle().clearDisplay();
+      element.style.display = null;
     } else {
-      element.getStyle().setDisplay(Display.NONE);
+      element.style.display = "none";
     }
   }
 
@@ -963,7 +962,7 @@ public abstract class AbstractHasData<T> extends Composite
         // If a natively focusable element was just clicked, then do not steal
         // focus.
         boolean isFocusable = false;
-        Element target = Element.as(event.getNativeEvent().getEventTarget());
+        HTMLElement target = Js.uncheckedCast(event.getNativeEvent().getEventTarget());
         isFocusable = CellBasedWidgetImpl.get().isFocusable(target);
         display.setKeyboardSelectedRow(relRow, !isFocusable);
 
@@ -1092,7 +1091,7 @@ public abstract class AbstractHasData<T> extends Composite
       hasData.isRefreshing = false;
 
       // Ensure that the keyboard selected element is focusable.
-      Element elem = hasData.getKeyboardSelectedElement();
+      HTMLElement elem = hasData.getKeyboardSelectedElement();
       if (elem != null) {
         hasData.setFocusable(elem, true);
         if (hasData.isFocused) {
@@ -1117,7 +1116,7 @@ public abstract class AbstractHasData<T> extends Composite
       hasData.isRefreshing = false;
 
       // Ensure that the keyboard selected element is focusable.
-      Element elem = hasData.getKeyboardSelectedElement();
+      HTMLElement elem = hasData.getKeyboardSelectedElement();
       if (elem != null) {
         hasData.setFocusable(elem, true);
         if (hasData.isFocused) {
@@ -1138,7 +1137,7 @@ public abstract class AbstractHasData<T> extends Composite
                   @Override
                   public void execute() {
                     if (!hasData.resetFocusOnCell()) {
-                      Element elem = hasData.getKeyboardSelectedElement();
+                      HTMLElement elem = hasData.getKeyboardSelectedElement();
                       if (elem != null) {
                         elem.focus();
                       }

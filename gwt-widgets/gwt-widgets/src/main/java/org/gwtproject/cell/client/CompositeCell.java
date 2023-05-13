@@ -15,11 +15,18 @@
  */
 package org.gwtproject.cell.client;
 
-import java.util.*;
-import org.gwtproject.dom.client.Element;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.gwtproject.dom.client.EventTarget;
 import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
+import org.gwtproject.user.client.DOM;
 
 /**
  * A {@link Cell} that is composed of other {@link Cell}s.
@@ -104,13 +111,13 @@ public class CompositeCell<C> extends AbstractCell<C> {
 
   @Override
   public boolean isEditing(
-      org.gwtproject.cell.client.Cell.Context context, Element parent, C value) {
-    Element curChild = getContainerElement(parent).getFirstChildElement();
+      org.gwtproject.cell.client.Cell.Context context, HTMLElement parent, C value) {
+    HTMLElement curChild = Js.uncheckedCast(getContainerElement(parent).firstElementChild);
     for (HasCell<C, ?> hasCell : hasCells) {
       if (isEditingImpl(context, curChild, value, hasCell)) {
         return true;
       }
-      curChild = curChild.getNextSiblingElement();
+      curChild = Js.uncheckedCast(curChild.nextElementSibling);
     }
     return false;
   }
@@ -118,23 +125,23 @@ public class CompositeCell<C> extends AbstractCell<C> {
   @Override
   public void onBrowserEvent(
       org.gwtproject.cell.client.Cell.Context context,
-      Element parent,
+      HTMLElement parent,
       C value,
       NativeEvent event,
       org.gwtproject.cell.client.ValueUpdater<C> valueUpdater) {
     int index = 0;
     EventTarget eventTarget = event.getEventTarget();
-    if (Element.is(eventTarget)) {
-      Element target = eventTarget.cast();
-      Element container = getContainerElement(parent);
-      Element wrapper = container.getFirstChildElement();
+    if (DOM.isElement(eventTarget)) {
+      elemental2.dom.Element target = eventTarget.cast();
+      HTMLElement container = getContainerElement(parent);
+      HTMLElement wrapper = Js.uncheckedCast(container.firstElementChild);
       while (wrapper != null) {
-        if (wrapper.isOrHasChild(target)) {
+        if (wrapper.contains(target)) {
           onBrowserEventImpl(context, wrapper, value, event, valueUpdater, hasCells.get(index));
         }
 
         index++;
-        wrapper = wrapper.getNextSiblingElement();
+        wrapper = Js.uncheckedCast(wrapper.nextElementSibling);
       }
     }
   }
@@ -148,25 +155,25 @@ public class CompositeCell<C> extends AbstractCell<C> {
 
   @Override
   public boolean resetFocus(
-      org.gwtproject.cell.client.Cell.Context context, Element parent, C value) {
-    Element curChild = getContainerElement(parent).getFirstChildElement();
+          org.gwtproject.cell.client.Cell.Context context, HTMLElement parent, C value) {
+    HTMLElement curChild = Js.uncheckedCast(getContainerElement(parent).firstElementChild);
     for (HasCell<C, ?> hasCell : hasCells) {
       // The first child that takes focus wins. Only one child should ever be in
       // edit mode, so this is safe.
       if (resetFocusImpl(context, curChild, value, hasCell)) {
         return true;
       }
-      curChild = curChild.getNextSiblingElement();
+      curChild = Js.uncheckedCast(curChild.nextElementSibling);
     }
     return false;
   }
 
   @Override
-  public void setValue(org.gwtproject.cell.client.Cell.Context context, Element parent, C object) {
-    Element curChild = getContainerElement(parent).getFirstChildElement();
+  public void setValue(org.gwtproject.cell.client.Cell.Context context, HTMLElement parent, C object) {
+    HTMLElement curChild = Js.uncheckedCast(getContainerElement(parent).firstElementChild);
     for (HasCell<C, ?> hasCell : hasCells) {
       setValueImpl(context, curChild, object, hasCell);
-      curChild = curChild.getNextSiblingElement();
+      curChild = Js.uncheckedCast(curChild.nextElementSibling);
     }
   }
 
@@ -183,13 +190,13 @@ public class CompositeCell<C> extends AbstractCell<C> {
    * @param parent the parent element of the cell
    * @return the container element
    */
-  protected Element getContainerElement(Element parent) {
+  protected HTMLElement getContainerElement(HTMLElement parent) {
     return parent;
   }
 
   /**
    * Render the composite cell as HTML into a {@link SafeHtmlBuilder}, suitable for passing to
-   * {@link Element#setInnerHTML} on a container element.
+   * {@link HTMLElement#innerHTML} on a container element.
    *
    * <p>Note: If your cell contains natively focusable elements, such as buttons or input elements,
    * be sure to set the tabIndex to -1 so that they do not steal focus away from the containing
@@ -213,7 +220,7 @@ public class CompositeCell<C> extends AbstractCell<C> {
 
   private <X> boolean isEditingImpl(
       org.gwtproject.cell.client.Cell.Context context,
-      Element cellParent,
+      HTMLElement cellParent,
       C object,
       HasCell<C, X> hasCell) {
     return hasCell.getCell().isEditing(context, cellParent, hasCell.getValue(object));
@@ -221,7 +228,7 @@ public class CompositeCell<C> extends AbstractCell<C> {
 
   private <X> void onBrowserEventImpl(
       final org.gwtproject.cell.client.Cell.Context context,
-      Element parent,
+      HTMLElement parent,
       final C object,
       NativeEvent event,
       final org.gwtproject.cell.client.ValueUpdater<C> valueUpdater,
@@ -251,13 +258,13 @@ public class CompositeCell<C> extends AbstractCell<C> {
   }
 
   private <X> boolean resetFocusImpl(
-      Cell.Context context, Element cellParent, C value, HasCell<C, X> hasCell) {
+      Cell.Context context, HTMLElement cellParent, C value, HasCell<C, X> hasCell) {
     X cellValue = hasCell.getValue(value);
     return hasCell.getCell().resetFocus(context, cellParent, cellValue);
   }
 
   private <X> void setValueImpl(
-      Cell.Context context, Element cellParent, C object, HasCell<C, X> hasCell) {
+      Cell.Context context, HTMLElement cellParent, C object, HasCell<C, X> hasCell) {
     hasCell.getCell().setValue(context, cellParent, hasCell.getValue(object));
   }
 }

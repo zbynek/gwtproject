@@ -15,18 +15,15 @@
  */
 package org.gwtproject.layout.client;
 
-import static org.gwtproject.dom.style.shared.Unit.*;
-
-import org.gwtproject.dom.client.DivElement;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.Style;
-import org.gwtproject.dom.style.shared.Display;
-import org.gwtproject.dom.style.shared.Overflow;
-import org.gwtproject.dom.style.shared.Position;
+import elemental2.dom.CSSProperties;
+import elemental2.dom.CSSStyleDeclaration;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.gwtproject.dom.style.shared.Unit;
-import org.gwtproject.dom.style.shared.Visibility;
 import org.gwtproject.layout.client.Layout.Layer;
+import org.gwtproject.user.client.DOM;
 
 /**
  * Default implementation, which works with all browsers except for IE6. It uses only the "top",
@@ -37,108 +34,109 @@ import org.gwtproject.layout.client.Layout.Layer;
  */
 class LayoutImpl {
 
-  private static DivElement fixedRuler;
+  private static HTMLDivElement fixedRuler;
 
   static {
-    fixedRuler = createRuler(Unit.CM, Unit.CM);
-    Document.get().getBody().appendChild(fixedRuler);
+    fixedRuler = createRuler("cm", "cm");
+    DomGlobal.document.body.appendChild(fixedRuler);
   }
 
-  protected DivElement relativeRuler;
+  protected HTMLDivElement relativeRuler;
 
-  protected static DivElement createRuler(Unit widthUnit, Unit heightUnit) {
-    DivElement ruler = Document.get().createDivElement();
-    ruler.setInnerHTML("&nbsp;");
-    Style style = ruler.getStyle();
-    style.setPosition(Position.ABSOLUTE);
-    style.setZIndex(-32767);
+  protected static HTMLDivElement createRuler(String widthUnit,String heightUnit) {
+    HTMLDivElement ruler = DOM.createDiv();
+    ruler.innerHTML = "&nbsp;";
+    CSSStyleDeclaration style = ruler.style;
+    style.position = "absolute";
+    style.zIndex = CSSProperties.ZIndexUnionType.of(-32767);
 
     // Position the ruler off the top edge, double the size just to be
     // extra sure it doesn't show up on the screen.
-    style.setTop(-20, heightUnit);
+    style.top = -20 + heightUnit;
 
     // Note that we are making the ruler element 10x10, because some browsers
     // generate non-integral ratios (e.g., 1em == 13.3px), so we need a little
     // extra precision.
-    style.setWidth(10, widthUnit);
-    style.setHeight(10, heightUnit);
+    style.width = CSSProperties.WidthUnionType.of(10 + widthUnit);
+    style.height = CSSProperties.HeightUnionType.of(10 + heightUnit);
 
-    style.setVisibility(Visibility.HIDDEN);
+    style.visibility = "hidden";
     ruler.setAttribute("aria-hidden", "true");
     return ruler;
   }
 
-  public Element attachChild(Element parent, Element child, Element before) {
-    DivElement container = Document.get().createDivElement();
+  public HTMLElement attachChild(HTMLElement parent, HTMLElement child,
+                             HTMLElement before) {
+    HTMLDivElement container = DOM.createDiv();
     container.appendChild(child);
 
-    container.getStyle().setPosition(Position.ABSOLUTE);
-    container.getStyle().setOverflow(Overflow.HIDDEN);
+    container.style.position = "absolute";
+    container.style.overflow = "hidden";
 
     fillParent(child);
 
-    Element beforeContainer = null;
+    HTMLElement beforeContainer = null;
     if (before != null) {
-      beforeContainer = before.getParentElement();
-      assert beforeContainer.getParentElement() == parent
+      beforeContainer = Js.uncheckedCast(before.parentElement);
+      assert beforeContainer.parentElement == parent
           : "Element to insert before must be a sibling";
     }
     parent.insertBefore(container, beforeContainer);
     return container;
   }
 
-  public void fillParent(Element elem) {
-    Style style = elem.getStyle();
-    style.setPosition(Position.ABSOLUTE);
-    style.setLeft(0, PX);
-    style.setTop(0, PX);
-    style.setRight(0, PX);
-    style.setBottom(0, PX);
+  public void fillParent(HTMLElement elem) {
+    CSSStyleDeclaration style = elem.style;
+    style.position = "absolute";
+    style.left = "0";
+    style.top = "0";
+    style.right = "0";
+    style.bottom = "0";
   }
 
   /** @param parent the parent element */
-  public void finalizeLayout(Element parent) {}
+  public void finalizeLayout(HTMLElement parent) {}
 
-  public double getUnitSizeInPixels(Element parent, Unit unit, boolean vertical) {
+  public double getUnitSizeInPixels(HTMLElement parent, Unit unit, boolean vertical) {
     if (unit == null) {
       return 1;
     }
 
     switch (unit) {
       case PCT:
-        return (vertical ? parent.getClientHeight() : parent.getClientWidth()) / 100.0;
+        return (vertical ? parent.clientHeight : parent.clientWidth) / 100.0;
       case EM:
-        return relativeRuler.getOffsetWidth() / 10.0;
+        return relativeRuler.offsetWidth / 10.0;
       case EX:
-        return relativeRuler.getOffsetHeight() / 10.0;
+        return relativeRuler.offsetWidth / 10.0;
       case CM:
-        return fixedRuler.getOffsetWidth() * 0.1; // 1.0 cm / cm
+        return fixedRuler.offsetWidth * 0.1; // 1.0 cm / cm
       case MM:
-        return fixedRuler.getOffsetWidth() * 0.01; // 0.1 cm / mm
+        return fixedRuler.offsetWidth * 0.01; // 0.1 cm / mm
       case IN:
-        return fixedRuler.getOffsetWidth() * 0.254; // 2.54 cm / in
+        return fixedRuler.offsetWidth * 0.254; // 2.54 cm / in
       case PT:
-        return fixedRuler.getOffsetWidth() * 0.00353; // 0.0353 cm / pt
+        return fixedRuler.offsetWidth * 0.00353; // 0.0353 cm / pt
       case PC:
-        return fixedRuler.getOffsetWidth() * 0.0423; // 0.423 cm / pc
+        return fixedRuler.offsetWidth * 0.0423; // 0.423 cm / pc
       default:
       case PX:
         return 1;
     }
   }
 
-  public void initParent(Element parent) {
-    parent.getStyle().setPosition(Position.RELATIVE);
-    parent.appendChild(relativeRuler = createRuler(EM, EX));
+  public void initParent(HTMLElement parent) {
+    parent.style.position = "relative";
+    parent.appendChild(relativeRuler = createRuler("em", "ex"));
   }
 
   public void layout(Layer layer) {
-    Style style = layer.container.getStyle();
+    CSSStyleDeclaration style = layer.container.style;
 
     if (layer.visible) {
-      style.clearDisplay();
+      style.display = null;
     } else {
-      style.setDisplay(Display.NONE);
+      style.display = "none";
     }
 
     style.setProperty("left", layer.setLeft ? (layer.left + layer.leftUnit.getType()) : "");
@@ -148,63 +146,63 @@ class LayoutImpl {
     style.setProperty("width", layer.setWidth ? (layer.width + layer.widthUnit.getType()) : "");
     style.setProperty("height", layer.setHeight ? (layer.height + layer.heightUnit.getType()) : "");
 
-    style = layer.child.getStyle();
+    style = layer.child.style;
     switch (layer.hPos) {
       case BEGIN:
-        style.setLeft(0, PX);
-        style.clearRight();
+        style.left = "0";
+        style.right = null;
         break;
       case END:
-        style.clearLeft();
-        style.setRight(0, PX);
+        style.left = null;
+        style.right = "0";
         break;
       case STRETCH:
-        style.setLeft(0, PX);
-        style.setRight(0, PX);
+        style.left = "0";
+        style.right = "0";
         break;
     }
 
     switch (layer.vPos) {
       case BEGIN:
-        style.setTop(0, PX);
-        style.clearBottom();
+        style.top = "0";
+        style.bottom = null;
         break;
       case END:
-        style.clearTop();
-        style.setBottom(0, PX);
+        style.top = null;
+        style.bottom = "0";
         break;
       case STRETCH:
-        style.setTop(0, PX);
-        style.setBottom(0, PX);
+        style.top = "0";
+        style.bottom = "0";
         break;
     }
   }
 
   @SuppressWarnings("unused")
-  public void onAttach(Element parent) {
+  public void onAttach(HTMLElement parent) {
     // Do nothing. This exists only to help LayoutImplIE6 avoid memory leaks.
   }
 
   @SuppressWarnings("unused")
-  public void onDetach(Element parent) {
+  public void onDetach(HTMLElement parent) {
     // Do nothing. This exists only to help LayoutImplIE6 avoid memory leaks.
   }
 
-  public void removeChild(Element container, Element child) {
-    container.removeFromParent();
+  public void removeChild(HTMLElement container, HTMLElement child) {
+    container.remove();
 
     // We want this code to be resilient to the child having already been
     // removed from its container (perhaps by widget code).
-    if (child.getParentElement() == container) {
-      child.removeFromParent();
+    if (child.parentElement == container) {
+      child.remove();
     }
 
     // Cleanup child styles set by fillParent().
-    Style style = child.getStyle();
-    style.clearPosition();
-    style.clearLeft();
-    style.clearTop();
-    style.clearWidth();
-    style.clearHeight();
+    CSSStyleDeclaration style = child.style;
+    style.position = null;
+    style.left = null;
+    style.top = null;
+    style.width = null;
+    style.height = null;
   }
 }

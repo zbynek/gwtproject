@@ -15,9 +15,10 @@
  */
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.InputElement;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
+import jsinterop.base.Js;
 import org.gwtproject.text.shared.Parser;
 import org.gwtproject.text.shared.Renderer;
 
@@ -36,9 +37,9 @@ public class ValueBox<T> extends ValueBoxBase<T> {
    *
    * @param element the element to be wrapped
    */
-  public static <T> ValueBox<T> wrap(Element element, Renderer<T> renderer, Parser<T> parser) {
+  public static <T> ValueBox<T> wrap(HTMLElement element, Renderer<T> renderer, Parser<T> parser) {
     // Assert that the element is attached.
-    assert Document.get().getBody().isOrHasChild(element);
+    assert DomGlobal.document.body.contains(element);
 
     ValueBox<T> valueBox = new ValueBox<T>(element, renderer, parser);
 
@@ -55,9 +56,10 @@ public class ValueBox<T> extends ValueBoxBase<T> {
    *
    * @param element the element to be used
    */
-  protected ValueBox(Element element, Renderer<T> renderer, Parser<T> parser) {
+  protected ValueBox(HTMLElement element, Renderer<T> renderer, Parser<T> parser) {
     super(element, renderer, parser);
-    assert InputElement.as(element).getType().equalsIgnoreCase("text");
+    assertTagName("input");
+    assert getElement().getAttribute("type").equalsIgnoreCase("text");
   }
 
   /**
@@ -66,7 +68,7 @@ public class ValueBox<T> extends ValueBoxBase<T> {
    * @return the maximum length, in characters
    */
   public int getMaxLength() {
-    return getInputElement().getMaxLength();
+    return getInputElement().maxLength;
   }
 
   /**
@@ -75,7 +77,7 @@ public class ValueBox<T> extends ValueBoxBase<T> {
    * @return the number of visible characters
    */
   public int getVisibleLength() {
-    return getInputElement().getSize();
+    return getInputElement().size;
   }
 
   /**
@@ -84,7 +86,7 @@ public class ValueBox<T> extends ValueBoxBase<T> {
    * @param length the maximum length, in characters
    */
   public void setMaxLength(int length) {
-    getInputElement().setMaxLength(length);
+    getInputElement().maxLength = length;
   }
 
   /**
@@ -93,10 +95,10 @@ public class ValueBox<T> extends ValueBoxBase<T> {
    * @param length the number of visible characters
    */
   public void setVisibleLength(int length) {
-    getInputElement().setSize(length);
+    getInputElement().size = length;
   }
 
-  private InputElement getInputElement() {
-    return getElement().cast();
+  private HTMLInputElement getInputElement() {
+    return Js.uncheckedCast(getElement());
   }
 }

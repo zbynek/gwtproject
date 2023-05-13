@@ -15,9 +15,10 @@
  */
 package org.gwtproject.user.client.ui;
 
-import elemental2.dom.DomGlobal;
 import java.util.Locale;
-import org.gwtproject.dom.client.Element;
+
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 import org.gwtproject.user.client.DOM;
 
 /**
@@ -31,11 +32,6 @@ import org.gwtproject.user.client.DOM;
  * the panel.
  *
  * <h3>Use in UiBinder Templates</h3>
- *
- * <p>AbsolutePanel elements in {@link org.gwtproject.uibinder.client.UiBinder UiBinder} templates
- * lay out their children with absolute position, using &lt;g:at> elements. Each at element should
- * have <code>left</code> and <code>top</code> attributes in pixels. They also can contain widget
- * children directly, with no position specified.
  *
  * <p>For example:
  *
@@ -55,10 +51,10 @@ public class AbsolutePanel extends ComplexPanel implements InsertPanel.ForIsWidg
    *
    * @param elem the DOM element
    */
-  private static void changeToStaticPositioning(Element elem) {
-    elem.getStyle().setProperty("left", "");
-    elem.getStyle().setProperty("top", "");
-    elem.getStyle().setProperty("position", "");
+  private static void changeToStaticPositioning(HTMLElement elem) {
+    elem.style.setProperty("left", "");
+    elem.style.setProperty("top", "");
+    elem.style.setProperty("position", "");
   }
 
   /** Creates an empty absolute panel. */
@@ -67,8 +63,8 @@ public class AbsolutePanel extends ComplexPanel implements InsertPanel.ForIsWidg
 
     // Setting the panel's position style to 'relative' causes it to be treated
     // as a new positioning context for its children.
-    getElement().getStyle().setProperty("position", "relative");
-    getElement().getStyle().setProperty("overflow", "hidden");
+    getElement().style.setProperty("position", "relative");
+    getElement().style.setProperty("overflow", "hidden");
   }
 
   /**
@@ -78,7 +74,7 @@ public class AbsolutePanel extends ComplexPanel implements InsertPanel.ForIsWidg
    *
    * @param elem the element to be used for this panel
    */
-  protected AbsolutePanel(Element elem) {
+  protected AbsolutePanel(HTMLElement elem) {
     setElement(elem);
   }
 
@@ -125,7 +121,7 @@ public class AbsolutePanel extends ComplexPanel implements InsertPanel.ForIsWidg
    */
   public int getWidgetLeft(Widget w) {
     checkWidgetParent(w);
-    return w.getElement().getAbsoluteLeft() - getElement().getAbsoluteLeft();
+    return DOM.getAbsoluteLeft(w.getElement()) -DOM.getAbsoluteLeft(getElement());
   }
 
   /**
@@ -137,7 +133,7 @@ public class AbsolutePanel extends ComplexPanel implements InsertPanel.ForIsWidg
    */
   public int getWidgetTop(Widget w) {
     checkWidgetParent(w);
-    return w.getElement().getAbsoluteTop() - getElement().getAbsoluteTop();
+    return DOM.getAbsoluteTop(w.getElement()) -DOM.getAbsoluteTop(getElement());
   }
 
   public void insert(Widget w, int beforeIndex) {
@@ -200,13 +196,13 @@ public class AbsolutePanel extends ComplexPanel implements InsertPanel.ForIsWidg
   }
 
   protected void setWidgetPositionImpl(Widget w, int left, int top) {
-    Element h = w.getElement();
+    HTMLElement h = w.getElement();
     if (left == -1 && top == -1) {
       changeToStaticPositioning(h);
     } else {
-      h.getStyle().setProperty("position", "absolute");
-      h.getStyle().setProperty("left", left + "px");
-      h.getStyle().setProperty("top", top + "px");
+      h.style.setProperty("position", "absolute");
+      h.style.setProperty("left", left + "px");
+      h.style.setProperty("top", top + "px");
     }
   }
 
@@ -232,12 +228,12 @@ public class AbsolutePanel extends ComplexPanel implements InsertPanel.ForIsWidg
     }
 
     // Non-visible or detached elements have no offsetParent
-    if (child.getElement().getOffsetParent() == null) {
+    if (child.getElement().offsetParent == null) {
       return;
     }
 
     // Check if offsetParent == parent
-    if (child.getElement().getOffsetParent() == getElement()) {
+    if (child.getElement().offsetParent == getElement()) {
       return;
     }
 
@@ -249,7 +245,7 @@ public class AbsolutePanel extends ComplexPanel implements InsertPanel.ForIsWidg
      * the offsetParent, for elements whose parent is the document BODY, is the
      * HTML element, not the BODY element.
      */
-    if ("body".equals(getElement().getNodeName().toLowerCase(Locale.ROOT))) {
+    if ("body".equals(getElement().nodeName.toLowerCase(Locale.ROOT))) {
       return;
     }
 

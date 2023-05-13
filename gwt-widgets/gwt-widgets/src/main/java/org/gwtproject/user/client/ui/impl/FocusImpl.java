@@ -15,9 +15,9 @@
  */
 package org.gwtproject.user.client.ui.impl;
 
-import jsinterop.base.JsPropertyMap;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
+import org.gwtproject.user.client.DOM;
 
 /**
  * Implementation interface for creating and manipulating focusable elements that aren't naturally
@@ -56,29 +56,29 @@ public class FocusImpl {
   /** Not externally instantiable or extensible. */
   FocusImpl() {}
 
-  public void blur(Element elem) {
+  public void blur(HTMLElement elem) {
     elem.blur();
   }
 
-  public Element createFocusable() {
-    Element e = Document.get().createDivElement().cast();
-    e.setTabIndex(0);
+  public HTMLElement createFocusable() {
+    HTMLElement e = DOM.createDiv();
+    e.tabIndex = 0;
     return e;
   }
 
-  public void focus(Element elem) {
+  public void focus(HTMLElement elem) {
     elem.focus();
   }
 
-  public int getTabIndex(Element elem) {
-    return elem.getTabIndex();
+  public int getTabIndex(HTMLElement elem) {
+    return elem.tabIndex;
   }
 
-  public void setAccessKey(Element elem, char key) {
-    ((JsPropertyMap) elem).set("accessKey", Character.toString(key));
+  public void setAccessKey(HTMLElement elem, char key) {
+    Js.asPropertyMap(elem).set("accessKey", Character.toString(key));
   }
 
-  public void setTabIndex(Element elem, int index) {
-    elem.setTabIndex(index);
+  public void setTabIndex(HTMLElement elem, int index) {
+    elem.tabIndex = index;
   }
 }

@@ -15,16 +15,18 @@
  */
 package org.gwtproject.user.client.ui;
 
-import elemental2.core.JsArray;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import elemental2.dom.HTMLCollection;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLTableCellElement;
+import elemental2.dom.HTMLTableColElement;
+import elemental2.dom.HTMLTableElement;
+import elemental2.dom.HTMLTableRowElement;
+import elemental2.dom.HTMLTableSectionElement;
 import jsinterop.base.Js;
-import jsinterop.base.JsPropertyMap;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.TableCellElement;
-import org.gwtproject.dom.client.TableRowElement;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.event.dom.client.DoubleClickEvent;
@@ -93,7 +95,7 @@ public abstract class HTMLTable extends Panel
      *
      * @return the cell's element.
      */
-    public Element getElement() {
+    public HTMLElement getElement() {
       return getCellFormatter().getElement(rowIndex, cellIndex);
     }
 
@@ -118,7 +120,7 @@ public abstract class HTMLTable extends Panel
      */
     public void addStyleName(int row, int column, String styleName) {
       prepareCell(row, column);
-      Element td = getCellElement(bodyElem, row, column);
+      HTMLElement td = getCellElement(bodyElem, row, column);
       UIObject.setStyleName(td, styleName, true);
     }
 
@@ -130,7 +132,7 @@ public abstract class HTMLTable extends Panel
      * @return the column's TD element
      * @throws IndexOutOfBoundsException
      */
-    public Element getElement(int row, int column) {
+    public HTMLTableCellElement getElement(int row, int column) {
       checkCellBounds(row, column);
       return getCellElement(bodyElem, row, column);
     }
@@ -169,7 +171,7 @@ public abstract class HTMLTable extends Panel
      * @return <code>true</code> if the object is visible
      */
     public boolean isVisible(int row, int column) {
-      Element e = getElement(row, column);
+      HTMLElement e = getElement(row, column);
       return UIObject.isVisible(e);
     }
 
@@ -184,7 +186,7 @@ public abstract class HTMLTable extends Panel
      */
     public void removeStyleName(int row, int column, String styleName) {
       checkCellBounds(row, column);
-      Element td = getCellElement(bodyElem, row, column);
+      HTMLElement td = getCellElement(bodyElem, row, column);
       UIObject.setStyleName(td, styleName, false);
     }
 
@@ -214,8 +216,8 @@ public abstract class HTMLTable extends Panel
      */
     public void setHeight(int row, int column, String height) {
       prepareCell(row, column);
-      Element elem = getCellElement(bodyElem, row, column);
-      elem.setPropertyString("height", height);
+      HTMLTableCellElement elem = getCellElement(bodyElem, row, column);
+      elem.height = height;
     }
 
     /**
@@ -229,8 +231,8 @@ public abstract class HTMLTable extends Panel
      */
     public void setHorizontalAlignment(int row, int column, HorizontalAlignmentConstant align) {
       prepareCell(row, column);
-      Element elem = getCellElement(bodyElem, row, column);
-      elem.setPropertyString("align", align.getTextAlignString());
+      HTMLTableCellElement elem = getCellElement(bodyElem, row, column);
+      elem.align = align.getTextAlignString();
     }
 
     /**
@@ -271,7 +273,7 @@ public abstract class HTMLTable extends Panel
     public void setVerticalAlignment(int row, int column, VerticalAlignmentConstant align) {
       prepareCell(row, column);
       getCellElement(bodyElem, row, column)
-          .getStyle()
+          .style
           .setProperty("verticalAlign", align.getVerticalAlignString());
     }
 
@@ -285,7 +287,7 @@ public abstract class HTMLTable extends Panel
      * @param visible <code>true</code> to show the cell, <code>false</code> to hide it
      */
     public void setVisible(int row, int column, boolean visible) {
-      Element e = ensureElement(row, column);
+      HTMLElement e = ensureElement(row, column);
       UIObject.setVisible(e, visible);
     }
 
@@ -300,7 +302,7 @@ public abstract class HTMLTable extends Panel
     public void setWidth(int row, int column, String width) {
       // Give the subclass a chance to prepare the cell.
       prepareCell(row, column);
-      getCellElement(bodyElem, row, column).setPropertyString("width", width);
+      getCellElement(bodyElem, row, column).width = width;
     }
 
     /**
@@ -314,7 +316,7 @@ public abstract class HTMLTable extends Panel
     public void setWordWrap(int row, int column, boolean wrap) {
       prepareCell(row, column);
       String wrapValue = wrap ? "" : "nowrap";
-      getElement(row, column).getStyle().setProperty("whiteSpace", wrapValue);
+      getElement(row, column).style.setProperty("whiteSpace", wrapValue);
     }
 
     /**
@@ -326,7 +328,7 @@ public abstract class HTMLTable extends Panel
      * @return the cell's element
      * @throws IndexOutOfBoundsException
      */
-    protected Element ensureElement(int row, int column) {
+    protected HTMLTableCellElement ensureElement(int row, int column) {
       prepareCell(row, column);
       return getCellElement(bodyElem, row, column);
     }
@@ -341,7 +343,7 @@ public abstract class HTMLTable extends Panel
      * @throws IndexOutOfBoundsException
      */
     protected String getAttr(int row, int column, String attr) {
-      Element elem = getElement(row, column);
+      HTMLElement elem = getElement(row, column);
       return elem.getAttribute(attr);
     }
 
@@ -355,7 +357,7 @@ public abstract class HTMLTable extends Panel
      * @throws IndexOutOfBoundsException
      */
     protected void setAttr(int row, int column, String attrName, String value) {
-      Element elem = ensureElement(row, column);
+      HTMLElement elem = ensureElement(row, column);
       elem.setAttribute(attrName, value);
     }
 
@@ -367,7 +369,7 @@ public abstract class HTMLTable extends Panel
      * @param col the column of the cell
      * @return the element
      */
-    private Element getCellElement(Element tbody, int row, int col) {
+    private HTMLTableCellElement getCellElement(HTMLTableSectionElement tbody, int row, int col) {
       return getCells(getRows(tbody).getAt(row)).getAt(col);
     }
 
@@ -379,7 +381,7 @@ public abstract class HTMLTable extends Panel
      * @param column the column of the cell to be retrieved
      * @return the cell's TD element
      */
-    private Element getRawElement(int row, int column) {
+    private HTMLElement getRawElement(int row, int column) {
       return getCellElement(bodyElem, row, column);
     }
   }
@@ -389,7 +391,7 @@ public abstract class HTMLTable extends Panel
    * cross-browser HTML support for column formatting.
    */
   public class ColumnFormatter {
-    protected Element columnGroup;
+    protected HTMLElement columnGroup;
 
     /**
      * Adds a style to the specified column.
@@ -409,7 +411,7 @@ public abstract class HTMLTable extends Panel
      * @param column the column index
      * @return the col element
      */
-    public Element getElement(int column) {
+    public HTMLElement getElement(int column) {
       return ensureColumn(column);
     }
 
@@ -481,7 +483,7 @@ public abstract class HTMLTable extends Panel
      * @throws IndexOutOfBoundsException
      */
     public void setWidth(int column, String width) {
-      ensureColumn(column).setPropertyString("width", width);
+      ensureColumn(column).width = width;
     }
 
     /**
@@ -495,23 +497,23 @@ public abstract class HTMLTable extends Panel
       // prepareColumnGroup() for more details.
       columns = Math.max(columns, 1);
 
-      int num = columnGroup.getChildCount();
+      int num = columnGroup.childNodes.length;
       if (num < columns) {
         for (int i = num; i < columns; i++) {
-          columnGroup.appendChild(Document.get().createColElement());
+          columnGroup.appendChild(DOM.createCol());
         }
       } else if (!growOnly && num > columns) {
         for (int i = num; i > columns; i--) {
-          columnGroup.removeChild(columnGroup.getLastChild());
+          columnGroup.removeChild(columnGroup.lastChild);
         }
       }
     }
 
-    private Element ensureColumn(int col) {
+    private HTMLTableColElement ensureColumn(int col) {
       prepareColumn(col);
       prepareColumnGroup();
       resizeColumnGroup(col + 1, true);
-      return columnGroup.getChild(col).cast();
+      return Js.uncheckedCast(columnGroup.childNodes.getAt(col));
     }
 
     /**
@@ -521,9 +523,9 @@ public abstract class HTMLTable extends Panel
      */
     private void prepareColumnGroup() {
       if (columnGroup == null) {
-        columnGroup = DOM.createElement("colgroup");
+        columnGroup = DOM.createColGroup();
         DOM.insertChild(tableElem, columnGroup, 0);
-        DOM.appendChild(columnGroup, DOM.createElement("col"));
+        DOM.appendChild(columnGroup, DOM.createCol());
       }
     }
   }
@@ -550,7 +552,7 @@ public abstract class HTMLTable extends Panel
      * @return the row's TR element
      * @throws IndexOutOfBoundsException
      */
-    public Element getElement(int row) {
+    public HTMLElement getElement(int row) {
       checkRowBounds(row);
       return getRow(bodyElem, row);
     }
@@ -586,7 +588,7 @@ public abstract class HTMLTable extends Panel
      * @return <code>true</code> if the row is visible
      */
     public boolean isVisible(int row) {
-      Element e = getElement(row);
+      HTMLElement e = getElement(row);
       return UIObject.isVisible(e);
     }
 
@@ -634,7 +636,7 @@ public abstract class HTMLTable extends Panel
      * @throws IndexOutOfBoundsException
      */
     public void setVerticalAlign(int row, VerticalAlignmentConstant align) {
-      ensureElement(row).getStyle().setProperty("verticalAlign", align.getVerticalAlignString());
+      ensureElement(row).style.setProperty("verticalAlign", align.getVerticalAlignString());
     }
 
     /**
@@ -644,7 +646,7 @@ public abstract class HTMLTable extends Panel
      * @param visible <code>true</code> to show the row, <code>false</code> to hide it
      */
     public void setVisible(int row, boolean visible) {
-      Element e = ensureElement(row);
+      HTMLElement e = ensureElement(row);
       UIObject.setVisible(e, visible);
     }
 
@@ -656,12 +658,12 @@ public abstract class HTMLTable extends Panel
      * @return the row's TR element
      * @throws IndexOutOfBoundsException
      */
-    protected Element ensureElement(int row) {
+    protected HTMLElement ensureElement(int row) {
       prepareRow(row);
       return getRow(bodyElem, row);
     }
 
-    protected Element getRow(Element tbody, int row) {
+    protected HTMLElement getRow(HTMLTableSectionElement tbody, int row) {
       return getRows(tbody).getAt(row);
     }
 
@@ -674,13 +676,13 @@ public abstract class HTMLTable extends Panel
      * @throws IndexOutOfBoundsException
      */
     protected void setAttr(int row, String attrName, String value) {
-      Element elem = ensureElement(row);
+      HTMLElement elem = ensureElement(row);
       elem.setAttribute(attrName, value);
     }
   }
 
   /** Table's body. */
-  private final Element bodyElem;
+  private final HTMLTableSectionElement bodyElem;
 
   /** Current cell formatter. */
   private CellFormatter cellFormatter;
@@ -692,7 +694,7 @@ public abstract class HTMLTable extends Panel
   private RowFormatter rowFormatter;
 
   /** Table element. */
-  private final Element tableElem;
+  private final HTMLTableElement tableElem;
 
   private ElementMapperImpl<Widget> widgetMap = new ElementMapperImpl<Widget>();
 
@@ -772,7 +774,7 @@ public abstract class HTMLTable extends Panel
    * @throws IndexOutOfBoundsException
    */
   public boolean clearCell(int row, int column) {
-    Element td = getCellFormatter().getElement(row, column);
+    HTMLElement td = getCellFormatter().getElement(row, column);
     return internalClearCell(td, true);
   }
 
@@ -792,13 +794,13 @@ public abstract class HTMLTable extends Panel
    * @return The appropriate cell, or null
    */
   public Cell getCellForEvent(ClickEvent event) {
-    Element td = getEventTargetCell(Event.as(event.getNativeEvent()));
+    HTMLElement td = getEventTargetCell(Event.as(event.getNativeEvent()));
     if (td == null) {
       return null;
     }
 
-    int row = TableRowElement.as(td.getParentElement()).getSectionRowIndex();
-    int column = TableCellElement.as(td).getCellIndex();
+    int row = Js.<HTMLTableRowElement>uncheckedCast(td.parentElement).sectionRowIndex;
+    int column = Js.<HTMLTableCellElement>uncheckedCast(td).cellIndex;
     return new Cell(row, column);
   }
 
@@ -818,7 +820,7 @@ public abstract class HTMLTable extends Panel
    * @return the cell padding, in pixels
    */
   public int getCellPadding() {
-    return tableElem.getPropertyInt("cellPadding");
+    return Integer.parseInt(tableElem.cellPadding);
   }
 
   /**
@@ -827,7 +829,7 @@ public abstract class HTMLTable extends Panel
    * @return the cell spacing, in pixels
    */
   public int getCellSpacing() {
-    return tableElem.getPropertyInt("cellSpacing");
+    return Integer.parseInt(tableElem.cellSpacing);
   }
 
   /**
@@ -848,7 +850,7 @@ public abstract class HTMLTable extends Panel
    * @throws IndexOutOfBoundsException
    */
   public String getHTML(int row, int column) {
-    return cellFormatter.getElement(row, column).getInnerHTML();
+    return cellFormatter.getElement(row, column).innerHTML;
   }
 
   /**
@@ -877,8 +879,8 @@ public abstract class HTMLTable extends Panel
    */
   public String getText(int row, int column) {
     checkCellBounds(row, column);
-    Element e = cellFormatter.getElement(row, column);
-    return e.getInnerText();
+    HTMLElement e = cellFormatter.getElement(row, column);
+    return e.textContent;
   }
 
   /**
@@ -979,7 +981,7 @@ public abstract class HTMLTable extends Panel
       orphan(widget);
     } finally {
       // Physical detach.
-      Element elem = widget.getElement();
+      HTMLElement elem = widget.getElement();
       DOM.getParent(elem).removeChild(elem);
 
       // Logical detach.
@@ -994,7 +996,7 @@ public abstract class HTMLTable extends Panel
    * @param width the width of the border, in pixels
    */
   public void setBorderWidth(int width) {
-    tableElem.setPropertyString("border", "" + width);
+    tableElem.border = "" + width;
   }
 
   /**
@@ -1003,7 +1005,7 @@ public abstract class HTMLTable extends Panel
    * @param padding the cell padding, in pixels
    */
   public void setCellPadding(int padding) {
-    tableElem.setPropertyInt("cellPadding", padding);
+    tableElem.cellPadding = "" + padding;
   }
 
   /**
@@ -1012,7 +1014,7 @@ public abstract class HTMLTable extends Panel
    * @param spacing the cell spacing, in pixels
    */
   public void setCellSpacing(int spacing) {
-    tableElem.setPropertyInt("cellSpacing", spacing);
+    tableElem.cellSpacing = "" + spacing;
   }
 
   /**
@@ -1025,9 +1027,9 @@ public abstract class HTMLTable extends Panel
    */
   public void setHTML(int row, int column, @IsSafeHtml String html) {
     prepareCell(row, column);
-    Element td = cleanCell(row, column, html == null);
+    HTMLElement td = cleanCell(row, column, html == null);
     if (html != null) {
-      td.setInnerHTML(html);
+      td.innerHTML = html;
     }
   }
 
@@ -1053,10 +1055,9 @@ public abstract class HTMLTable extends Panel
    */
   public void setText(int row, int column, String text) {
     prepareCell(row, column);
-    Element td;
-    td = cleanCell(row, column, text == null);
+    HTMLElement td = cleanCell(row, column, text == null);
     if (text != null) {
-      td.setInnerText(text);
+      td.textContent = text;
     }
   }
 
@@ -1078,7 +1079,7 @@ public abstract class HTMLTable extends Panel
     prepareCell(row, column);
 
     // Removes any existing widget.
-    Element td = cleanCell(row, column, true);
+    HTMLElement td = cleanCell(row, column, true);
 
     if (widget != null) {
       widget.removeFromParent();
@@ -1139,7 +1140,7 @@ public abstract class HTMLTable extends Panel
    *
    * @return the newly created TD
    */
-  protected Element createCell() {
+  protected HTMLTableCellElement createCell() {
     return DOM.createTD();
   }
 
@@ -1148,7 +1149,7 @@ public abstract class HTMLTable extends Panel
    *
    * @return the TBODY element
    */
-  protected Element getBodyElement() {
+  protected HTMLTableSectionElement getBodyElement() {
     return bodyElem;
   }
 
@@ -1159,8 +1160,8 @@ public abstract class HTMLTable extends Panel
    * @param row the row
    * @return number of columns in the row
    */
-  protected int getDOMCellCount(Element tableBody, int row) {
-    Element rowElement = getRows(tableBody).getAt(row);
+  protected int getDOMCellCount(HTMLTableSectionElement tableBody, int row) {
+    HTMLTableRowElement rowElement = getRows(tableBody).getAt(row);
     return getCells(rowElement).length;
   }
 
@@ -1183,7 +1184,7 @@ public abstract class HTMLTable extends Panel
     return getDOMRowCount(bodyElem);
   }
 
-  protected int getDOMRowCount(Element tbody) {
+  protected int getDOMRowCount(HTMLTableSectionElement tbody) {
     return getRows(tbody).length;
   }
 
@@ -1193,15 +1194,15 @@ public abstract class HTMLTable extends Panel
    * @param event the event to be queried
    * @return the TD associated with the event, or <code>null</code> if none is found.
    */
-  protected Element getEventTargetCell(Event event) {
-    Element td = DOM.eventGetTarget(event);
+  protected HTMLElement getEventTargetCell(Event event) {
+    HTMLElement td = DOM.eventGetTarget(event);
     for (; td != null; td = DOM.getParent(td)) {
       // If it's a TD, it might be the one we're looking for.
-      if (td.getPropertyString("tagName").equalsIgnoreCase("td")) {
+      if (td.tagName.equalsIgnoreCase("td")) {
         // Make sure it's directly a part of this table before returning
         // it.
-        Element tr = DOM.getParent(td);
-        Element body = DOM.getParent(tr);
+        HTMLElement tr = DOM.getParent(td);
+        HTMLElement body = DOM.getParent(tr);
         if (body == bodyElem) {
           return td;
         }
@@ -1222,8 +1223,8 @@ public abstract class HTMLTable extends Panel
    * @throws IndexOutOfBoundsException
    */
   protected void insertCell(int row, int column) {
-    Element tr = rowFormatter.getRow(bodyElem, row);
-    Element td = createCell();
+    HTMLElement tr = rowFormatter.getRow(bodyElem, row);
+    HTMLElement td = createCell();
     DOM.insertChild(tr, td, column);
   }
 
@@ -1236,9 +1237,9 @@ public abstract class HTMLTable extends Panel
    * @throws IndexOutOfBoundsException
    */
   protected void insertCells(int row, int column, int count) {
-    Element tr = rowFormatter.getRow(bodyElem, row);
+    HTMLElement tr = rowFormatter.getRow(bodyElem, row);
     for (int i = column; i < column + count; i++) {
-      Element td = createCell();
+      HTMLElement td = createCell();
       DOM.insertChild(tr, td, i);
     }
   }
@@ -1255,7 +1256,7 @@ public abstract class HTMLTable extends Panel
     if (beforeRow != getRowCount()) {
       checkRowBounds(beforeRow);
     }
-    Element tr = DOM.createTR();
+    HTMLElement tr = DOM.createTR();
     DOM.insertChild(bodyElem, tr, beforeRow);
     return beforeRow;
   }
@@ -1269,8 +1270,8 @@ public abstract class HTMLTable extends Panel
    * @param clearInnerHTML should the cell's inner html be cleared?
    * @return returns whether a widget was cleared
    */
-  protected boolean internalClearCell(Element td, boolean clearInnerHTML) {
-    Element maybeChild = DOM.getFirstChild(td);
+  protected boolean internalClearCell(HTMLElement td, boolean clearInnerHTML) {
+    HTMLElement maybeChild = DOM.getFirstChild(td);
     Widget widget = null;
     if (maybeChild != null) {
       widget = widgetMap.get(maybeChild);
@@ -1282,7 +1283,7 @@ public abstract class HTMLTable extends Panel
     } else {
       // Otherwise, simply clear whatever text and/or HTML may be there.
       if (clearInnerHTML) {
-        td.setInnerHTML("");
+        td.innerHTML = "";
       }
       return false;
     }
@@ -1305,7 +1306,7 @@ public abstract class HTMLTable extends Panel
     for (int row = 0; row < rowCount; row++) {
       int cellCount = getCellCount(row);
       for (int cell = 0; cell < cellCount; cell++) {
-        Element cellElem = cellFormatter.getRawElement(row, cell);
+        HTMLElement cellElem = cellFormatter.getRawElement(row, cell);
         ensureDebugId(cellElem, baseID, row + "-" + cell);
       }
     }
@@ -1355,8 +1356,8 @@ public abstract class HTMLTable extends Panel
    */
   protected void removeCell(int row, int column) {
     checkCellBounds(row, column);
-    Element td = cleanCell(row, column, false);
-    Element tr = rowFormatter.getRow(bodyElem, row);
+    HTMLElement td = cleanCell(row, column, false);
+    HTMLElement tr = rowFormatter.getRow(bodyElem, row);
     tr.removeChild(td);
   }
 
@@ -1402,20 +1403,20 @@ public abstract class HTMLTable extends Panel
     this.rowFormatter = rowFormatter;
   }
 
-  void addCells(Element tbody, int row, int num) {
-    Element rowElem = getRows(tbody).getAt(row);
+  void addCells(HTMLTableSectionElement tbody, int row, int num) {
+    HTMLElement rowElem = getRows(tbody).getAt(row);
     for (int i = 0; i < num; i++) {
-      TableCellElement tdElement = Document.get().createTDElement();
+      HTMLTableCellElement tdElement = DOM.createTD();
       rowElem.appendChild(tdElement);
     }
   }
 
-  private JsArray<Element> getRows(Element tbody) {
-    return Js.uncheckedCast(((JsPropertyMap) tbody).get("rows"));
+  private HTMLCollection<HTMLTableRowElement> getRows(HTMLTableSectionElement tbody) {
+    return tbody.rows;
   }
 
-  private JsArray<Element> getCells(Element row) {
-    return Js.uncheckedCast(((JsPropertyMap) row).get("cells"));
+  private HTMLCollection<HTMLTableCellElement> getCells(HTMLTableRowElement row) {
+    return row.cells;
   }
 
   /**
@@ -1427,9 +1428,9 @@ public abstract class HTMLTable extends Panel
    * @param clearInnerHTML should the cell's inner html be cleared?
    * @return element that has been cleaned
    */
-  private Element cleanCell(int row, int column, boolean clearInnerHTML) {
+  private HTMLElement cleanCell(int row, int column, boolean clearInnerHTML) {
     // Clear whatever is in the cell.
-    Element td = getCellFormatter().getRawElement(row, column);
+    HTMLElement td = getCellFormatter().getRawElement(row, column);
     internalClearCell(td, clearInnerHTML);
     return td;
   }
@@ -1442,8 +1443,8 @@ public abstract class HTMLTable extends Panel
    * @return the widget
    */
   private Widget getWidgetImpl(int row, int column) {
-    Element e = cellFormatter.getRawElement(row, column);
-    Element child = DOM.getFirstChild(e);
+    HTMLElement e = cellFormatter.getRawElement(row, column);
+    HTMLElement child = DOM.getFirstChild(e);
     if (child == null) {
       return null;
     } else {

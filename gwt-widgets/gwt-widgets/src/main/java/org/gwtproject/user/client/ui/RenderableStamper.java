@@ -15,9 +15,10 @@
  */
 package org.gwtproject.user.client.ui;
 
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.gwtproject.dom.builder.shared.HtmlElementBuilderBase;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 
@@ -48,9 +49,9 @@ public class RenderableStamper {
    * Finds the element that was previously stamped in the DOM. For this to work properly the element
    * must be attached to the document.
    */
-  public Element findStampedElement() {
+  public HTMLElement findStampedElement() {
     // TODO(rdcastro): Add a DEV-only check to make sure the element is attached.
-    return Document.get().getElementById(token);
+    return Js.uncheckedCast(DomGlobal.document.getElementById(token));
   }
 
   /**

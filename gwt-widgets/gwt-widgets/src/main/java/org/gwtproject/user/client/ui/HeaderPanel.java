@@ -16,14 +16,12 @@
 package org.gwtproject.user.client.ui;
 
 import java.util.Iterator;
+
+import elemental2.dom.CSSProperties;
+import elemental2.dom.HTMLElement;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.core.client.Scheduler.ScheduledCommand;
-import org.gwtproject.dom.client.Document;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.Display;
-import org.gwtproject.dom.style.shared.Overflow;
-import org.gwtproject.dom.style.shared.Position;
-import org.gwtproject.dom.style.shared.Unit;
+import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.FiniteWidgetIterator.WidgetProvider;
 
 /**
@@ -60,12 +58,12 @@ public class HeaderPanel extends Panel implements RequiresResize {
   }
 
   private Widget content;
-  private final Element contentContainer;
+  private final HTMLElement contentContainer;
   private Widget footer;
-  private final Element footerContainer;
+  private final HTMLElement footerContainer;
   private final ResizeLayoutPanel.Impl footerImpl = new ResizeLayoutPanel.ImplStandard();
   private Widget header;
-  private final Element headerContainer;
+  private final HTMLElement headerContainer;
   private final ResizeLayoutPanel.Impl headerImpl = new ResizeLayoutPanel.ImplStandard();
   private final ScheduledCommand layoutCmd =
       new ScheduledCommand() {
@@ -78,9 +76,9 @@ public class HeaderPanel extends Panel implements RequiresResize {
 
   public HeaderPanel() {
     // Create the outer element
-    Element elem = Document.get().createDivElement().cast();
-    elem.getStyle().setPosition(Position.RELATIVE);
-    elem.getStyle().setOverflow(Overflow.HIDDEN);
+    HTMLElement elem = DOM.createDiv();
+    elem.style.position = "relative";
+    elem.style.overflow = "hidden";
     setElement(elem);
 
     // Create a delegate to handle resize from the header and footer.
@@ -93,21 +91,21 @@ public class HeaderPanel extends Panel implements RequiresResize {
 
     // Create the header container.
     headerContainer = createContainer();
-    headerContainer.getStyle().setTop(0.0, Unit.PX);
+    headerContainer.style.top = "0";
     headerImpl.init(headerContainer, resizeDelegate);
     elem.appendChild(headerContainer);
 
     // Create the footer container.
     footerContainer = createContainer();
-    footerContainer.getStyle().setBottom(0.0, Unit.PX);
+    footerContainer.style.bottom = "0";
     footerImpl.init(footerContainer, resizeDelegate);
     elem.appendChild(footerContainer);
 
     // Create the content container.
     contentContainer = createContainer();
-    contentContainer.getStyle().setOverflow(Overflow.HIDDEN);
-    contentContainer.getStyle().setTop(0.0, Unit.PX);
-    contentContainer.getStyle().setHeight(0.0, Unit.PX);
+    contentContainer.style.overflow = "hidden";
+    contentContainer.style.top = "0";
+    contentContainer.style.height = CSSProperties.HeightUnionType.of("0");
     elem.appendChild(contentContainer);
   }
 
@@ -193,18 +191,18 @@ public class HeaderPanel extends Panel implements RequiresResize {
       orphan(w);
     } finally {
       // Physical detach.
-      w.getElement().removeFromParent();
+      w.getElement().remove();
 
       // Logical detach.
       if (w == content) {
         content = null;
-        contentContainer.getStyle().setDisplay(Display.NONE);
+        contentContainer.style.display = "none";
       } else if (w == header) {
         header = null;
-        headerContainer.getStyle().setDisplay(Display.NONE);
+        headerContainer.style.display = "none";
       } else if (w == footer) {
         footer = null;
-        footerContainer.getStyle().setDisplay(Display.NONE);
+        footerContainer.style.display = "none";
       }
     }
     return true;
@@ -257,7 +255,7 @@ public class HeaderPanel extends Panel implements RequiresResize {
    * @param toReplace the widget to replace
    * @param container the container in which to place the widget
    */
-  private void add(Widget w, Widget toReplace, Element container) {
+  private void add(Widget w, Widget toReplace, HTMLElement container) {
     // Validate.
     if (w == toReplace) {
       return;
@@ -276,18 +274,18 @@ public class HeaderPanel extends Panel implements RequiresResize {
     if (w != null) {
       // Physical attach.
       container.appendChild(w.getElement());
-      container.getStyle().clearDisplay();
+      container.style.display = null;
 
       adopt(w);
     }
   }
 
-  private Element createContainer() {
-    Element container = Document.get().createDivElement().cast();
-    container.getStyle().setPosition(Position.ABSOLUTE);
-    container.getStyle().setDisplay(Display.NONE);
-    container.getStyle().setLeft(0.0, Unit.PX);
-    container.getStyle().setWidth(100.0, Unit.PCT);
+  private HTMLElement createContainer() {
+    HTMLElement container = DOM.createDiv();
+    container.style.position = "absolute";
+    container.style.display = "none";
+    container.style.left = "0";
+    container.style.width = CSSProperties.WidthUnionType.of("100.0%");
     return container;
   }
 
@@ -299,18 +297,19 @@ public class HeaderPanel extends Panel implements RequiresResize {
     }
 
     // Resize the content area to fit between the header and footer.
-    int remainingHeight = getElement().getClientHeight();
+    int remainingHeight = getElement().clientHeight;
     if (header != null) {
-      int height = Math.max(0, headerContainer.getOffsetHeight());
+      int height = Math.max(0, headerContainer.offsetHeight);
       remainingHeight -= height;
-      contentContainer.getStyle().setTop(height, Unit.PX);
+      contentContainer.style.top = height + "px";
     } else {
-      contentContainer.getStyle().setTop(0.0, Unit.PX);
+      contentContainer.style.top = "0";
     }
     if (footer != null) {
-      remainingHeight -= footerContainer.getOffsetHeight();
+      remainingHeight -= footerContainer.offsetHeight;
     }
-    contentContainer.getStyle().setHeight(Math.max(0, remainingHeight), Unit.PX);
+    contentContainer.style.height =
+            CSSProperties.HeightUnionType.of(Math.max(0, remainingHeight) + "px");
 
     // Provide resize to child.
     if (content instanceof RequiresResize) {
