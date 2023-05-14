@@ -27,16 +27,11 @@ import org.gwtproject.user.client.ui.HasVerticalAlignment.VerticalAlignmentConst
  * it.
  *
  * <p>Note: This class is not related to the {@link Cell} based data presentation widgets such as
- * {@link org.gwtproject.user.cellview.client.CellList} and {@link
+ *  {@link
  * org.gwtproject.user.cellview.client.CellTable}.
  *
  * <h3>Use in UiBinder Templates</h3>
  *
- * <p>When working with CellPanel subclasses in {@link org.gwtproject.uibinder.client.UiBinder
- * UiBinder} templates, wrap child widgets in <code>&lt;g:cell></code> elements. (Note the lower
- * case "c", meant to signal that the cell is not a runtime object, and so cannot have a <code>
- * ui:field</code> attribute.) Cell elements can have attributes setting their height, width and
- * alignment.
  *
  * <h4>&lt;g:cell> attributes</h4>
  *

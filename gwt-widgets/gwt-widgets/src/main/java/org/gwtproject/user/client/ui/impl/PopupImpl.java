@@ -18,7 +18,7 @@ package org.gwtproject.user.client.ui.impl;
 import org.gwtproject.dom.client.Document;
 import org.gwtproject.dom.client.Element;
 
-/** Implementation class used by {@link org.gwtproject.user.client.ui.PopupPanel}. */
+/** Implementation class used by PopupPanel. */
 public class PopupImpl {
 
   public Element createElement() {
