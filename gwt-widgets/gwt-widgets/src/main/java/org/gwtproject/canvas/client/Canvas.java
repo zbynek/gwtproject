@@ -38,11 +38,7 @@ public class Canvas extends FocusWidget {
    * @return a new {@link Canvas} if supported, and null otherwise
    */
   public static Canvas createIfSupported() {
-    HTMLCanvasElement element = DOM.createCanvas();
-    if (!isSupportedRunTime(element)) {
-      return null;
-    }
-    return new Canvas(element);
+    return new Canvas(DOM.createCanvas());
   }
 
   /**
