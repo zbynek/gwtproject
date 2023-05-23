@@ -15,8 +15,6 @@
  */
 package org.gwtproject.user.client.ui;
 
-import elemental2.dom.DomGlobal;
-import jsinterop.base.Js;
 import org.gwtproject.user.client.DOM;
 
 /**
@@ -32,7 +30,7 @@ public class FlowPanel extends ComplexPanel implements InsertPanel.ForIsWidget {
 
   /** Creates an empty flow panel with a custom tag. */
   public FlowPanel(String tag) {
-    setElement(Js.uncheckedCast(DomGlobal.document.createElement(tag)));
+    setElement(DOM.createElement(tag));
   }
 
   /**

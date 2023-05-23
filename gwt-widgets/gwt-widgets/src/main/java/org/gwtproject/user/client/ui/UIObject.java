@@ -166,7 +166,7 @@ public abstract class UIObject implements HasVisibility {
    * element is actually visible in the browser.
    */
   public static boolean isVisible(HTMLElement elem) {
-    return !elem.style.display.equals("none");
+    return !"none".equals(elem.style.display);
   }
 
   /**
