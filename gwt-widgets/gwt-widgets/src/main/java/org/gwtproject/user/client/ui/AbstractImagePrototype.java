@@ -123,7 +123,7 @@ public abstract class AbstractImagePrototype {
    * @return the HTML representation of this prototype
    */
   public String getHTML() {
-    return getSafeHtml().asString();
+    return getSafeHtml().outerHTML;
   }
 
   /**
@@ -135,7 +135,7 @@ public abstract class AbstractImagePrototype {
    *
    * @return the HTML representation of this prototype
    */
-  public SafeHtml getSafeHtml() {
+  public HTMLElement getSafeHtml() {
     // Because this is a new method on an existing base class, we need to throw
     // UnsupportedOperationException to avoid static errors.
     throw new UnsupportedOperationException();

@@ -41,11 +41,11 @@ import org.gwtproject.user.client.ui.Image;
 public class ClippedImageImpl {
 
   interface DraggableTemplate extends SafeHtmlTemplates {
-    SafeHtml image(SafeUri clearImage, SafeStyles style);
+    HTMLElement image(SafeUri clearImage, int width, int height, String background);
   }
 
   interface Template extends SafeHtmlTemplates {
-    SafeHtml image(SafeUri clearImage, SafeStyles style);
+    HTMLElement image(SafeUri clearImage, int width, int height, String background);
   }
 
   protected static final SafeUri clearImage = UriUtils.fromTrustedString(
@@ -62,11 +62,10 @@ public class ClippedImageImpl {
 
   public HTMLElement createStructure(SafeUri url, int left, int top, int width, int height) {
     HTMLElement tmp = DOM.createSpan();
-    tmp.innerHTML = getSafeHtml(url, left, top, width, height).asString();
-
-    HTMLElement elem = Js.uncheckedCast(tmp.firstElementChild);
-    elem.onload = createOnLoadHandlerFunction();
-    return elem;
+    HTMLElement img = getSafeHtml(url, left, top, width, height);
+    tmp.appendChild(img);
+    img.onload = createOnLoadHandlerFunction();
+    return img;
   }
 
   public static Element.OnloadFn createOnLoadHandlerFunction() {
@@ -83,26 +82,21 @@ public class ClippedImageImpl {
     return image.getElement();
   }
 
-  public SafeHtml getSafeHtml(SafeUri url, int left, int top, int width, int height) {
+  public HTMLElement getSafeHtml(SafeUri url, int left, int top, int width, int height) {
     return getSafeHtml(url, left, top, width, height, false);
   }
 
-  public SafeHtml getSafeHtml(
+  public HTMLElement getSafeHtml(
       SafeUri url, int left, int top, int width, int height, boolean isDraggable) {
-    SafeStylesBuilder builder = new SafeStylesBuilder();
-    builder
-        .width(width, Unit.PX)
-        .height(height, Unit.PX)
-        .trustedNameAndValue(
-            "background",
-            "url(" + url.asString() + ") " + "no-repeat " + (-left + "px ") + (-top + "px"));
+    String background =
+            "url(" + url.asString() + ") " + "no-repeat " + (-left + "px ") + (-top + "px");
 
     if (!isDraggable) {
       return getTemplate()
-          .image(clearImage, SafeStylesUtils.fromTrustedString(builder.toSafeStyles().asString()));
+          .image(clearImage, width, height, background);
     } else {
       return getDraggableTemplate()
-          .image(clearImage, SafeStylesUtils.fromTrustedString(builder.toSafeStyles().asString()));
+          .image(clearImage, width, height, background);
     }
   }
 

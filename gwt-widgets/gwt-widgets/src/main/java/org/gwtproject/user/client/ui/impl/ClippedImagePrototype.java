@@ -15,6 +15,7 @@
  */
 package org.gwtproject.user.client.ui.impl;
 
+import elemental2.dom.HTMLElement;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import org.gwtproject.safehtml.shared.SafeHtml;
@@ -73,7 +74,7 @@ public class ClippedImagePrototype extends AbstractImagePrototype {
   }
 
   @Override
-  public SafeHtml getSafeHtml() {
+  public HTMLElement getSafeHtml() {
     return impl.getSafeHtml(url, left, top, width, height, isDraggable);
   }
 

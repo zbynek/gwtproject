@@ -15,6 +15,11 @@
  */
 package org.gwtproject.user.client.ui.impl;
 
+import elemental2.dom.CSSStyleDeclaration;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLImageElement;
+import org.gwtproject.user.client.DOM;
+
 /**
  * This class is generated from org.gwtproject.user.client.ui.impl.ClippedImageImpl.Template, do not
  * edit manually
@@ -23,15 +28,14 @@ public class ClippedImageImpl_TemplateImpl
     implements org.gwtproject.user.client.ui.impl.ClippedImageImpl.Template {
 
   /** @Template("<img src='{0}' style='{1}' border='0'>") */
-  public org.gwtproject.safehtml.shared.SafeHtml image(
-      org.gwtproject.safehtml.shared.SafeUri arg0, org.gwtproject.safecss.shared.SafeStyles arg1) {
-    StringBuilder sb = new java.lang.StringBuilder();
-    sb.append("<img src='");
-    sb.append(org.gwtproject.safehtml.shared.SafeHtmlUtils.htmlEscape(arg0.asString()));
-    sb.append("' style='");
-    sb.append(org.gwtproject.safehtml.shared.SafeHtmlUtils.htmlEscape(arg1.asString()));
-    sb.append("' border='0'>");
-    return new org.gwtproject.safehtml.shared.OnlyToBeUsedInGeneratedCodeStringBlessedAsSafeHtml(
-        sb.toString());
+  public HTMLElement image(
+      org.gwtproject.safehtml.shared.SafeUri arg0, int width, int height, String background) {
+    HTMLImageElement img = DOM.createImg();
+    img.src = arg0.asString();
+    img.style.setProperty("width", width + "px");
+    img.style.setProperty("height", height + "px");
+    img.style.background = background;
+    img.border = "0";
+    return img;
   }
 }

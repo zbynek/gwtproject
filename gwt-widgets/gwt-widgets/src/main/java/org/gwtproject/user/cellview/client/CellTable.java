@@ -89,21 +89,9 @@ import org.gwtproject.view.client.ProvidesKey;
 public class CellTable<T> extends AbstractCellTable<T>
     implements AbstractCellTable.TableSectionChangeHandler {
 
-  /** Resources that match the GWT standard style theme. */
-  public interface BasicResources extends Resources {
-
-    BasicResources INSTANCE = new CellTable_BasicResourcesImpl();
-
-    /** The styles used in this widget. */
-    @Override
-    @Source(BasicStyle.DEFAULT_CSS)
-    BasicStyle cellTableStyle();
-  }
-
   /** A ClientBundle that provides images for this widget. */
   public interface Resources extends ClientBundle {
 
-    Resources INSTANCE = new CellTable_ResourcesImpl();
     /** The background used for footer cells. */
     @Source("cellTableHeaderBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Horizontal, flipRtl = true)
@@ -217,13 +205,6 @@ public class CellTable<T> extends AbstractCellTable<T>
 
     /** Applied to the table. */
     String cellTableWidget();
-  }
-
-  /** Styles used by {@link BasicResources}. */
-  @ImportedWithPrefix("gwt-CellTable")
-  interface BasicStyle extends Style {
-    /** The path to the default CSS styles used by this resource. */
-    String DEFAULT_CSS = "org/gwtproject/user/cellview/client/CellTableBasic.gss";
   }
 
   /** Adapter class to convert {@link Resources} to {@link AbstractCellTable.Resources}. */
@@ -529,7 +510,7 @@ public class CellTable<T> extends AbstractCellTable<T>
         new ResourcesAdapter(resources),
         keyProvider);
     this.style = resources.cellTableStyle();
-    this.style.ensureInjected();
+    //this.style.ensureInjected();
     this.colGroupEnabled = enableColGroup;
 
     table = Js.uncheckedCast(getElement());
@@ -841,10 +822,10 @@ public class CellTable<T> extends AbstractCellTable<T>
   }
 
   /**
-   * Get the {@link TableColElement} at the specified index, creating it if necessary.
+   * Get the {@link HTMLTableColElement} at the specified index, creating it if necessary.
    *
    * @param index the column index
-   * @return the {@link TableColElement}
+   * @return the {@link HTMLTableColElement}
    */
   private HTMLTableColElement ensureTableColElement(int index) {
     // Ensure that we have enough columns.
