@@ -82,10 +82,10 @@ public abstract class AbstractHeaderOrFooterBuilder<T>
   private final boolean isFooter;
   private boolean isSortIconStartOfLine = true;
   private final int sortAscIconHalfHeight;
-  private SafeHtml sortAscIconHtml;
+  private HTMLElement sortAscIconHtml;
   private final int sortAscIconWidth;
   private final int sortDescIconHalfHeight;
-  private SafeHtml sortDescIconHtml;
+  private HTMLElement sortDescIconHtml;
   private final int sortDescIconWidth;
   private final AbstractCellTable<T> table;
   private int rowIndex;
@@ -316,7 +316,7 @@ public abstract class AbstractHeaderOrFooterBuilder<T>
       }
 
       style.endStyle();
-      imageHolder.html(getSortIcon(isSortAscending));
+      imageHolder.html(SafeHtmlUtils.fromTrustedString(getSortIcon(isSortAscending).outerHTML));
       imageHolder.endDiv();
 
       // Create the header wrapper.
@@ -417,19 +417,19 @@ public abstract class AbstractHeaderOrFooterBuilder<T>
    * @param isAscending true for the ascending icon, false for descending
    * @return the rendered HTML
    */
-  private SafeHtml getSortIcon(boolean isAscending) {
+  private HTMLElement getSortIcon(boolean isAscending) {
     if (isAscending) {
       if (sortAscIconHtml == null) {
         AbstractImagePrototype proto =
             AbstractImagePrototype.create(table.getResources().sortAscending());
-        sortAscIconHtml = SafeHtmlUtils.fromTrustedString(proto.getHTML());
+        sortAscIconHtml = proto.getSafeHtml();
       }
       return sortAscIconHtml;
     } else {
       if (sortDescIconHtml == null) {
         AbstractImagePrototype proto =
             AbstractImagePrototype.create(table.getResources().sortDescending());
-        sortDescIconHtml = SafeHtmlUtils.fromTrustedString(proto.getHTML());
+        sortDescIconHtml = proto.getSafeHtml();
       }
       return sortDescIconHtml;
     }

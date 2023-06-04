@@ -151,8 +151,9 @@ public abstract class DOMImpl {
   public abstract int getChildIndex(HTMLElement parent, HTMLElement child);
 
   public int getEventsSunk(HTMLElement elem) {
-    if (((JsPropertyMap) elem).has("__eventBits")) {
-      return Integer.valueOf(((JsPropertyMap) elem).get("__eventBits").toString());
+    JsPropertyMap<?> map = Js.asPropertyMap(elem);
+    if (map.has("__eventBits")) {
+      return map.getAsAny("__eventBits").asInt();
     }
     return 0;
   }

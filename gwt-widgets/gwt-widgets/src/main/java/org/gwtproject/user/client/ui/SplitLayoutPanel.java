@@ -119,8 +119,8 @@ public class SplitLayoutPanel extends DockLayoutPanel {
            */
           int width = Math.max(DomGlobal.document.documentElement.clientWidth, DomGlobal.document.documentElement.scrollWidth);
           int height = Math.max(DomGlobal.document.documentElement.clientHeight, DomGlobal.document.documentElement.scrollHeight);
-          glassElem.style.height = CSSProperties.HeightUnionType.of(height + "px");
-          glassElem.style.width = CSSProperties.WidthUnionType.of(width + "px");
+          glassElem.style.setProperty("height", height + "px");
+          glassElem.style.setProperty("width", width + "px");
           DomGlobal.document.body.appendChild(glassElem);
 
           offset = getEventPosition(event) - getAbsolutePosition();
@@ -319,15 +319,15 @@ public class SplitLayoutPanel extends DockLayoutPanel {
       glassElem.style.position = "absolute";
       glassElem.style.top = "0";
       glassElem.style.left = "0";
-      glassElem.style.margin = CSSProperties.MarginUnionType.of("0");
-      glassElem.style.padding = CSSProperties.PaddingUnionType.of("0");
-      glassElem.style.borderWidth = CSSProperties.BorderWidthUnionType.of("0");
+      glassElem.style.setProperty("margin", "0");
+      glassElem.style.setProperty("padding","0");
+      glassElem.style.setProperty("borderWidth", "0");
 
       // We need to set the background color or mouse events will go right
       // through the glassElem. If the SplitPanel contains an iframe, the
       // iframe will capture the event and the slider will stop moving.
       glassElem.style.setProperty("background", "white");
-      glassElem.style.opacity = CSSProperties.OpacityUnionType.of(0.0);
+      glassElem.style.setProperty("opacity", "0");
     }
   }
 

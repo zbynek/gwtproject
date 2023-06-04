@@ -34,7 +34,6 @@ import org.gwtproject.event.logical.shared.SelectionHandler;
 import org.gwtproject.event.shared.HandlerRegistration;
 import org.gwtproject.layout.client.Layout.Alignment;
 import org.gwtproject.layout.client.Layout.AnimationCallback;
-import org.gwtproject.resources.client.CommonResources;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
 import org.gwtproject.safehtml.shared.annotations.SuppressIsSafeHtmlCastCheck;
@@ -114,7 +113,8 @@ public class TabLayoutPanel extends ResizeComposite
       setStyleName(TAB_STYLE);
       inner.className = TAB_INNER_STYLE;
 
-      getElement().classList.add(CommonResources.getInlineBlockStyle());
+      getElement().style.position = "relative";
+      getElement().style.display = "inline-block";
     }
 
     public HandlerRegistration addClickHandler(ClickHandler handler) {

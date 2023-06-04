@@ -491,7 +491,7 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
     // Set the margin.
     // Use no margin on top-most items.
     double margin = isRoot ? 0.0 : CHILD_MARGIN;
-    item.getElement().style.marginLeft = CSSProperties.MarginLeftUnionType.of(margin + "px");
+    item.getElement().style.setProperty("marginLeft", margin + "px");
 
     // Physical attach.
     HTMLElement childContainer = isRoot ? tree.getElement() : childSpanElem;
