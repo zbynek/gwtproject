@@ -40,11 +40,6 @@
         </dependency>
         <dependency>
             <groupId>org.gwtproject.event</groupId>
-            <artifactId>gwt-event-dom</artifactId>
-            <version>1.0.0-RC2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.gwtproject.event</groupId>
             <artifactId>gwt-logical-event</artifactId>
             <version>1.0.0-RC1</version>
         </dependency>
