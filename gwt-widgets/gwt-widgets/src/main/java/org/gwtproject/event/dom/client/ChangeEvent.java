@@ -15,8 +15,6 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
-
 /** Represents a native change event. */
 public class ChangeEvent extends DomEvent<ChangeHandler> {
 
@@ -26,7 +24,7 @@ public class ChangeEvent extends DomEvent<ChangeHandler> {
 
   /**
    * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire change events.
    */
   protected ChangeEvent() {}

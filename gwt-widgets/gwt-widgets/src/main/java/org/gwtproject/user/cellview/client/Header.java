@@ -19,7 +19,6 @@ import elemental2.dom.HTMLElement;
 import org.gwtproject.cell.client.Cell;
 import org.gwtproject.cell.client.Cell.Context;
 import org.gwtproject.cell.client.ValueUpdater;
-import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 
 /**
@@ -87,7 +86,7 @@ public abstract class Header<H> {
    * @param elem the parent Element
    * @param event the native browser event
    */
-  public void onBrowserEvent(Context context, HTMLElement elem, NativeEvent event) {
+  public void onBrowserEvent(Context context, HTMLElement elem, elemental2.dom.Event event) {
     cell.onBrowserEvent(context, elem, getValue(), event, updater);
   }
 
@@ -106,7 +105,7 @@ public abstract class Header<H> {
    *     org.gwtproject.user.cellview.client.ColumnSortEvent}). False if the {@link CellTable}
    *     should stop respond to the event.
    */
-  public boolean onPreviewColumnSortEvent(Context context, HTMLElement elem, NativeEvent event) {
+  public boolean onPreviewColumnSortEvent(Context context, HTMLElement elem, elemental2.dom.Event event) {
     return true;
   }
 

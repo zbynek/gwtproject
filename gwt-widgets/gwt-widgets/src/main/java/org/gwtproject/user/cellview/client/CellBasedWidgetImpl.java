@@ -74,7 +74,7 @@ abstract class CellBasedWidgetImpl {
    * @param widget the {@link Widget} on which the event occurred
    * @param event the event to handle
    */
-  public void onBrowserEvent(Widget widget, Event event) {}
+  public void onBrowserEvent(Widget widget, elemental2.dom.Event event) {}
 
   /**
    * Takes in an html string and processes it, adding support for events.

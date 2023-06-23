@@ -15,7 +15,7 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.dom.client.BrowserEvents;
 
 /** Represents a native focus event. */
 public class FocusEvent extends DomEvent<FocusHandler> {
@@ -25,7 +25,7 @@ public class FocusEvent extends DomEvent<FocusHandler> {
 
   /**
    * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire focus events.
    */
   protected FocusEvent() {}

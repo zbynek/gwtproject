@@ -17,6 +17,9 @@ package org.gwtproject.event.dom.client;
 
 import org.gwtproject.event.legacy.shared.EventHandler;
 
+import elemental2.dom.KeyboardEvent;
+import jsinterop.base.Js;
+
 /**
  * Base class for Key events. The native keyboard events are somewhat a mess
  * (http://www.quirksmode.org/js/keys.html), we do some trivial normalization here, but do not
@@ -42,7 +45,7 @@ public abstract class KeyEvent<H extends EventHandler> extends DomEvent<H> {
    * @return whether the control key is down
    */
   public boolean isControlKeyDown() {
-    return getNativeEvent().getCtrlKey();
+    return getNativeKeyboardEvent().ctrlKey;
   }
 
   /**
@@ -51,7 +54,7 @@ public abstract class KeyEvent<H extends EventHandler> extends DomEvent<H> {
    * @return whether the shift key is down
    */
   public boolean isShiftKeyDown() {
-    return getNativeEvent().getShiftKey();
+    return getNativeKeyboardEvent().shiftKey;
   }
 
   /**
@@ -60,7 +63,7 @@ public abstract class KeyEvent<H extends EventHandler> extends DomEvent<H> {
    * @return whether the meta key is down
    */
   public boolean isMetaKeyDown() {
-    return getNativeEvent().getMetaKey();
+    return getNativeKeyboardEvent().metaKey;
   }
 
   /**
@@ -69,6 +72,10 @@ public abstract class KeyEvent<H extends EventHandler> extends DomEvent<H> {
    * @return whether the alt key is down
    */
   public boolean isAltKeyDown() {
-    return getNativeEvent().getAltKey();
+    return getNativeKeyboardEvent().altKey;
+  }
+
+  public KeyboardEvent getNativeKeyboardEvent() {
+    return Js.uncheckedCast(getNativeEvent());
   }
 }

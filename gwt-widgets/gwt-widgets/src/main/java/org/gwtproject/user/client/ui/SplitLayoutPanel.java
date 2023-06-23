@@ -18,6 +18,9 @@ package org.gwtproject.user.client.ui;
 import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.MouseEvent;
+import jsinterop.base.Js;
+
 import org.gwtproject.core.client.Duration;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.core.client.Scheduler.ScheduledCommand;
@@ -69,8 +72,8 @@ public class SplitLayoutPanel extends DockLayoutPanel {
     }
 
     @Override
-    protected int getEventPosition(Event event) {
-      return event.getClientX();
+    protected int getEventPosition(elemental2.dom.Event event) {
+      return (int) Js.<MouseEvent>uncheckedCast(event).clientX;
     }
 
     @Override
@@ -108,7 +111,7 @@ public class SplitLayoutPanel extends DockLayoutPanel {
     }
 
     @Override
-    public void onBrowserEvent(Event event) {
+    public void onBrowserEvent(elemental2.dom.Event event) {
       switch (DOM.eventGetType(event)) {
         case Event.ONMOUSEDOWN:
           mouseDown = true;
@@ -202,7 +205,7 @@ public class SplitLayoutPanel extends DockLayoutPanel {
 
     protected abstract double getCenterSize();
 
-    protected abstract int getEventPosition(Event event);
+    protected abstract int getEventPosition(elemental2.dom.Event event);
 
     protected abstract int getTargetPosition();
 
@@ -276,8 +279,8 @@ public class SplitLayoutPanel extends DockLayoutPanel {
     }
 
     @Override
-    protected int getEventPosition(Event event) {
-      return event.getClientY();
+    protected int getEventPosition(elemental2.dom.Event event) {
+      return (int) Js.<MouseEvent>uncheckedCast(event).clientY;
     }
 
     @Override

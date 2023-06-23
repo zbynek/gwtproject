@@ -30,7 +30,7 @@ package org.gwtproject.event.dom.client;
  * the License.
  */
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.dom.client.BrowserEvents;
 
 /**
  * Represents a native media progress event.
@@ -46,7 +46,7 @@ public class ProgressEvent extends DomEvent<ProgressHandler> {
 
   /**
    * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire media progress events.
    */
   protected ProgressEvent() {}

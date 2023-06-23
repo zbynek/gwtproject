@@ -73,7 +73,7 @@ public abstract class Composite extends Widget implements IsRenderable {
   }
 
   @Override
-  public void onBrowserEvent(Event event) {
+  public void onBrowserEvent(elemental2.dom.Event event) {
     // Fire any handler added to the composite itself.
     super.onBrowserEvent(event);
 

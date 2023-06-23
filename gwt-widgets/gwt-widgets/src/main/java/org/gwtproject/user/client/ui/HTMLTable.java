@@ -794,7 +794,7 @@ public abstract class HTMLTable extends Panel
    * @return The appropriate cell, or null
    */
   public Cell getCellForEvent(ClickEvent event) {
-    HTMLElement td = getEventTargetCell(Event.as(event.getNativeEvent()));
+    HTMLElement td = getEventTargetCell(event.getNativeEvent());
     if (td == null) {
       return null;
     }
@@ -1194,7 +1194,7 @@ public abstract class HTMLTable extends Panel
    * @param event the event to be queried
    * @return the TD associated with the event, or <code>null</code> if none is found.
    */
-  protected HTMLElement getEventTargetCell(Event event) {
+  protected HTMLElement getEventTargetCell(elemental2.dom.Event event) {
     HTMLElement td = DOM.eventGetTarget(event);
     for (; td != null; td = DOM.getParent(td)) {
       // If it's a TD, it might be the one we're looking for.

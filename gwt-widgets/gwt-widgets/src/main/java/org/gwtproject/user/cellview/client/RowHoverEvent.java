@@ -83,7 +83,7 @@ public class RowHoverEvent extends org.gwtproject.event.shared.Event<RowHoverEve
    * @return the {@link RowHoverEvent} that was fired
    */
   public static RowHoverEvent fire(
-      HasHandlers source, HTMLTableRowElement hoveringRow, Event browserEvent, boolean isUnHover) {
+      HasHandlers source, HTMLTableRowElement hoveringRow, elemental2.dom.Event browserEvent, boolean isUnHover) {
     return fire(source, hoveringRow, browserEvent, isUnHover, HoveringScope.UNKNOWN);
   }
 
@@ -102,7 +102,7 @@ public class RowHoverEvent extends org.gwtproject.event.shared.Event<RowHoverEve
   public static RowHoverEvent fire(
       HasHandlers source,
       HTMLTableRowElement hoveringRow,
-      Event browserEvent,
+      elemental2.dom.Event browserEvent,
       boolean isUnHover,
       HoveringScope hoveringScope) {
     RowHoverEvent event = new RowHoverEvent(hoveringRow, browserEvent, isUnHover, hoveringScope);
@@ -124,7 +124,7 @@ public class RowHoverEvent extends org.gwtproject.event.shared.Event<RowHoverEve
     return TYPE;
   }
 
-  private Event browserEvent;
+  private elemental2.dom.Event browserEvent;
 
   private HTMLTableRowElement hoveringRow;
 
@@ -151,7 +151,7 @@ public class RowHoverEvent extends org.gwtproject.event.shared.Event<RowHoverEve
    * @param browserEvent the original browser event
    * @param isUnHover true if this is an unhover event
    */
-  protected RowHoverEvent(HTMLTableRowElement hoveringRow, Event browserEvent, boolean isUnHover) {
+  protected RowHoverEvent(HTMLTableRowElement hoveringRow, elemental2.dom.Event browserEvent, boolean isUnHover) {
     this(hoveringRow, browserEvent, isUnHover, HoveringScope.UNKNOWN);
   }
 
@@ -166,7 +166,7 @@ public class RowHoverEvent extends org.gwtproject.event.shared.Event<RowHoverEve
    */
   protected RowHoverEvent(
       HTMLTableRowElement hoveringRow,
-      Event browserEvent,
+      elemental2.dom.Event browserEvent,
       boolean isUnHover,
       HoveringScope hoveringScope) {
     this.hoveringRow = hoveringRow;
@@ -184,7 +184,7 @@ public class RowHoverEvent extends org.gwtproject.event.shared.Event<RowHoverEve
    * Return the original browser {@link Event}. The browser event could be null if the event is
    * fired without one (e.g., by calling {@link #fire(HasHandler, HTMLTableRowElement, isUnHover)})
    */
-  public Event getBrowserEvent() {
+  public elemental2.dom.Event getBrowserEvent() {
     return browserEvent;
   }
 

@@ -17,6 +17,8 @@ package org.gwtproject.event.dom.client;
 
 import org.gwtproject.event.legacy.shared.EventHandler;
 
+import elemental2.dom.MouseEvent;
+
 /**
  * Abstract class representing position events such as mouse or touch events.
  *
@@ -30,7 +32,7 @@ public abstract class HumanInputEvent<H extends EventHandler> extends DomEvent<H
    * @return whether the alt key is down
    */
   public boolean isAltKeyDown() {
-    return getNativeEvent().getAltKey();
+    return getNativeMouseEvent().altKey;
   }
 
   /**
@@ -39,7 +41,7 @@ public abstract class HumanInputEvent<H extends EventHandler> extends DomEvent<H
    * @return whether the control key is down
    */
   public boolean isControlKeyDown() {
-    return getNativeEvent().getCtrlKey();
+    return getNativeMouseEvent().ctrlKey;
   }
 
   /**
@@ -48,7 +50,7 @@ public abstract class HumanInputEvent<H extends EventHandler> extends DomEvent<H
    * @return whether the meta key is down
    */
   public boolean isMetaKeyDown() {
-    return getNativeEvent().getMetaKey();
+    return getNativeMouseEvent().metaKey;
   }
 
   /**
@@ -57,6 +59,10 @@ public abstract class HumanInputEvent<H extends EventHandler> extends DomEvent<H
    * @return whether the shift key is down
    */
   public boolean isShiftKeyDown() {
-    return getNativeEvent().getShiftKey();
+    return getNativeMouseEvent().shiftKey;
+  }
+
+  public MouseEvent getNativeMouseEvent() {
+    return (MouseEvent) getNativeEvent();
   }
 }

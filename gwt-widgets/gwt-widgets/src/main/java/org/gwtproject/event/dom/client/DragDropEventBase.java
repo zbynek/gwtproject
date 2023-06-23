@@ -15,9 +15,11 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.DataTransfer;
 import org.gwtproject.dom.client.PartialSupport;
 import org.gwtproject.event.legacy.shared.EventHandler;
+
+import elemental2.dom.DataTransfer;
+import elemental2.dom.DragEvent;
 
 /**
  * Base class for drag and drop events.
@@ -54,7 +56,7 @@ public abstract class DragDropEventBase<H extends EventHandler> extends DomEvent
    * @return the {@link DataTransfer} object
    */
   public DataTransfer getDataTransfer() {
-    return getNativeEvent().getDataTransfer();
+    return ((DragEvent) getNativeEvent()).dataTransfer;
   }
 
   /**

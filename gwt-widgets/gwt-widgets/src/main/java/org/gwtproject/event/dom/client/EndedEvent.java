@@ -15,7 +15,7 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.dom.client.BrowserEvents;
 
 /**
  * Represents a native media ended event.
@@ -30,7 +30,7 @@ public class EndedEvent extends DomEvent<EndedHandler> {
 
   /**
    * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire media ended events.
    */
   protected EndedEvent() {}

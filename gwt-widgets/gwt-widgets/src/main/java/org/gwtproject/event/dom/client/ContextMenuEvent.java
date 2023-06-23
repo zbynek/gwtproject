@@ -15,8 +15,6 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
-
 /** Represents a native context menu event. */
 public class ContextMenuEvent extends DomEvent<ContextMenuHandler> {
 
@@ -26,7 +24,7 @@ public class ContextMenuEvent extends DomEvent<ContextMenuHandler> {
 
   /**
    * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire context menu events.
    */
   protected ContextMenuEvent() {}

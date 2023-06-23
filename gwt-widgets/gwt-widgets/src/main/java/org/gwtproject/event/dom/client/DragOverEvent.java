@@ -15,7 +15,7 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.dom.client.BrowserEvents;
 
 /** Represents a native drag over event. */
 public class DragOverEvent extends DragDropEventBase<DragOverHandler> {
@@ -26,10 +26,10 @@ public class DragOverEvent extends DragDropEventBase<DragOverHandler> {
 
   /**
    * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} or {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
-   * org.gwtproject.event.shared.HasHandlers, org.gwtproject.dom.client.Element)} to fire drag over
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
+   * org.gwtproject.event.shared.HasHandlers, elemental2.dom.HTMLElement)} to fire drag over
    * events.
    */
   protected DragOverEvent() {}

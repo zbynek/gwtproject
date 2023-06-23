@@ -15,8 +15,6 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
-
 /**
  * Represents a native media can play through event.
  *
@@ -34,7 +32,7 @@ public class CanPlayThroughEvent extends DomEvent<CanPlayThroughHandler> {
 
   /**
    * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire media can play through events.
    */
   protected CanPlayThroughEvent() {}

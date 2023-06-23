@@ -15,7 +15,7 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.dom.client.BrowserEvents;
 
 /** Represents a native gesture change event. */
 public class GestureChangeEvent extends DomEvent<GestureChangeHandler> {
@@ -26,7 +26,7 @@ public class GestureChangeEvent extends DomEvent<GestureChangeHandler> {
 
   /**
    * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire gesture change events.
    */
   protected GestureChangeEvent() {}
@@ -43,14 +43,6 @@ public class GestureChangeEvent extends DomEvent<GestureChangeHandler> {
   @Override
   public final Type<GestureChangeHandler> getAssociatedType() {
     return TYPE;
-  }
-
-  public double getRotation() {
-    return getNativeEvent().getRotation();
-  }
-
-  public double getScale() {
-    return getNativeEvent().getScale();
   }
 
   @Override

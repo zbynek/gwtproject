@@ -31,7 +31,7 @@ package org.gwtproject.event.dom.client;
  * the License.
  */
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.dom.client.BrowserEvents;
 
 /** Represents a native touch start event. */
 public class TouchStartEvent extends TouchEvent<TouchStartHandler> {
@@ -42,7 +42,7 @@ public class TouchStartEvent extends TouchEvent<TouchStartHandler> {
 
   /**
    * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire touch start events.
    */
   protected TouchStartEvent() {}

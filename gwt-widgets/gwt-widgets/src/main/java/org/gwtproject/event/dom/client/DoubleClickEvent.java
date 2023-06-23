@@ -15,7 +15,7 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.dom.client.BrowserEvents;
 
 /** Represents a native double click event. */
 public class DoubleClickEvent extends MouseEvent<DoubleClickHandler> {
@@ -26,7 +26,7 @@ public class DoubleClickEvent extends MouseEvent<DoubleClickHandler> {
 
   /**
    * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire double click events.
    */
   protected DoubleClickEvent() {}

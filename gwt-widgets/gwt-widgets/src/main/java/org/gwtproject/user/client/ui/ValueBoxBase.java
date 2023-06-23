@@ -49,7 +49,7 @@ public class ValueBoxBase<T> extends FocusWidget
 
   private final Parser<T> parser;
   private final Renderer<T> renderer;
-  private Event currentEvent;
+  private elemental2.dom.Event currentEvent;
   private boolean valueChangeHandlerInitialized;
 
   /**
@@ -215,7 +215,7 @@ public class ValueBoxBase<T> extends FocusWidget
   }
 
   @Override
-  public void onBrowserEvent(Event event) {
+  public void onBrowserEvent(elemental2.dom.Event event) {
     int type = DOM.eventGetType(event);
     if ((type & Event.KEYEVENTS) != 0) {
       // Fire the keyboard event. Hang on to the current event object so that

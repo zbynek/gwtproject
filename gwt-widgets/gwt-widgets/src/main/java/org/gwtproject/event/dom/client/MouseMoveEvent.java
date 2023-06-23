@@ -15,7 +15,7 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.dom.client.BrowserEvents;
 
 /** Represents a native mouse move event. */
 public class MouseMoveEvent extends MouseEvent<MouseMoveHandler> {
@@ -26,7 +26,7 @@ public class MouseMoveEvent extends MouseEvent<MouseMoveHandler> {
 
   /**
    * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire mouse move events.
    */
   protected MouseMoveEvent() {}

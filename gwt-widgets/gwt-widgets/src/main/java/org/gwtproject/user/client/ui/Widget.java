@@ -16,6 +16,7 @@
 package org.gwtproject.user.client.ui;
 
 import elemental2.dom.HTMLElement;
+import elemental2.dom.MouseEvent;
 import jsinterop.base.Js;
 import org.gwtproject.event.dom.client.DomEvent;
 import org.gwtproject.event.legacy.shared.EventHandler;
@@ -199,7 +200,7 @@ public class Widget extends UIObject implements EventListener, HasAttachHandlers
     return attached;
   }
 
-  public void onBrowserEvent(Event event) {
+  public void onBrowserEvent(elemental2.dom.Event event) {
     switch (DOM.eventGetType(event)) {
       case Event.ONMOUSEOVER:
         // Only fire the mouse over event if it's coming from outside this
@@ -207,13 +208,13 @@ public class Widget extends UIObject implements EventListener, HasAttachHandlers
       case Event.ONMOUSEOUT:
         // Only fire the mouse out event if it's leaving this
         // widget.
-        HTMLElement related = Js.uncheckedCast(event.getRelatedEventTarget());
+        HTMLElement related = Js.uncheckedCast(((MouseEvent) event).relatedTarget);
         if (related != null && getElement().contains(related)) {
           return;
         }
         break;
     }
-    DomEvent.fireNativeEvent(event, this, Js.uncheckedCast(this.getElement()));
+    DomEvent.fireNativeEvent(event, this, this.getElement());
   }
 
   /**

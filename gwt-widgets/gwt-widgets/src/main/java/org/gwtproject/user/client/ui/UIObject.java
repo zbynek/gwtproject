@@ -73,42 +73,6 @@ import org.gwtproject.user.client.Event;
  * names</i>. A dependent style name is a secondary style name prefixed with the primary style name
  * of the widget itself. See {@link #addStyleName(String)} for details.
  *
- * <h3>Use in UiBinder Templates</h3>
-
- * <pre>
- * &lt;g:Label width='15em'>Hello there&lt;/g:Label></pre>
- *
- * <p>Generally speaking, values are parsed as if they were Java literals, so methods like {@link
- * #setVisible(boolean)} are also available:
- *
- * <pre>
- * &lt;g:Label width='15em' visible='false'>Hello there&lt;/g:Label></pre>
- *
- * Enum properties work this way too. Imagine a Bagel widget with a handy Type enum and a
- * setType(Type) method:
- *
- * <pre>
- * enum Type { poppy, sesame, raisin, jalapeno }
- *
- * &lt;my:Bagel type='poppy' /></pre>
- *
- * <p>There is also special case handling for two common method signatures, <code>(int, int)</code>
- * and <code>(double, {@link
- * org.gwtproject.dom.style.shared.Unit Unit})</code>
- *
- * <pre>
- * &lt;g:Label pixelSize='100, 100'>Hello there&lt;/g:Label></pre>
- *
- * <p>Finally, a few UiObject methods get special handling. The debug id (see {@link
- * #ensureDebugId}) of any UiObject can be set via the <code>debugId</code> attribute, and addtional
- * style names and dependent style names can be set with the <code>addStyleNames</code> and <code>
- * addStyleDependentNames</code> attributes.
- *
- * <pre>
- * &lt;g:Label debugId='helloLabel'
- *     addStyleNames='pretty rounded big'>Hello there&lt;/g:Label></pre>
- *
- * <p>Style names can be space or comma separated.
  */
 public abstract class UIObject implements HasVisibility {
 
@@ -411,7 +375,7 @@ public abstract class UIObject implements HasVisibility {
   }
 
   /**
-   * Ensure that the main {@link Element} for this {@link UIObject} has an ID property set, which
+   * Ensure that the main {@link HTMLElement} for this {@link UIObject} has an ID property set, which
    * allows it to integrate with third-party libraries and test tools. Complex {@link Widget}s will
    * also set the IDs of their important sub-elements.
    *

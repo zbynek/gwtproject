@@ -15,7 +15,7 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.dom.client.BrowserEvents;
 
 /** Represents a native touch move event. */
 public class TouchMoveEvent extends TouchEvent<TouchMoveHandler> {
@@ -26,7 +26,7 @@ public class TouchMoveEvent extends TouchEvent<TouchMoveHandler> {
 
   /**
    * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire touch move events.
    */
   protected TouchMoveEvent() {}

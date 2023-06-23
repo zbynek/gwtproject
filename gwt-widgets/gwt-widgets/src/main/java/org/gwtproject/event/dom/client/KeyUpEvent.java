@@ -15,7 +15,7 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.dom.client.BrowserEvents;
 
 /** Represents a native key up event. */
 public class KeyUpEvent extends KeyCodeEvent<KeyUpHandler> {
@@ -25,7 +25,7 @@ public class KeyUpEvent extends KeyCodeEvent<KeyUpHandler> {
 
   /**
    * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire key up events.
    */
   protected KeyUpEvent() {}

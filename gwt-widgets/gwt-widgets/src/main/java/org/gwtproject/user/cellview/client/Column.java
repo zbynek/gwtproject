@@ -134,7 +134,7 @@ public abstract class Column<T, C> implements HasCell<T, C>, HasAlignment {
    * @param object the base object to be updated
    * @param event the native browser event
    */
-  public void onBrowserEvent(Context context, HTMLElement elem, final T object, NativeEvent event) {
+  public void onBrowserEvent(Context context, HTMLElement elem, final T object, elemental2.dom.Event event) {
     final int index = context.getIndex();
     ValueUpdater<C> valueUpdater =
         (fieldUpdater == null)

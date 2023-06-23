@@ -15,21 +15,17 @@
  */
 package org.gwtproject.user.client.ui.impl;
 
+import org.gwtproject.safehtml.client.SafeHtmlTemplates;
+import org.gwtproject.safehtml.shared.SafeUri;
+import org.gwtproject.safehtml.shared.UriUtils;
+import org.gwtproject.user.client.DOM;
+import org.gwtproject.user.client.ui.Image;
+
 import elemental2.dom.Element;
 import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
 import jsinterop.annotations.JsFunction;
 import jsinterop.base.Js;
-import org.gwtproject.dom.style.shared.Unit;
-import org.gwtproject.safecss.shared.SafeStyles;
-import org.gwtproject.safecss.shared.SafeStylesBuilder;
-import org.gwtproject.safecss.shared.SafeStylesUtils;
-import org.gwtproject.safehtml.client.SafeHtmlTemplates;
-import org.gwtproject.safehtml.shared.SafeHtml;
-import org.gwtproject.safehtml.shared.SafeUri;
-import org.gwtproject.safehtml.shared.UriUtils;
-import org.gwtproject.user.client.DOM;
-import org.gwtproject.user.client.ui.Image;
 
 /**
  * Uses a combination of a clear image and a background image to clip all except a desired portion

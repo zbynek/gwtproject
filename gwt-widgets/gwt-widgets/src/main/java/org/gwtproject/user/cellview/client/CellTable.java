@@ -25,7 +25,7 @@ import elemental2.dom.HTMLTableRowElement;
 import elemental2.dom.HTMLTableSectionElement;
 import jsinterop.base.Js;
 import org.gwtproject.cell.client.Cell;
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.dom.client.BrowserEvents;
 import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.resources.client.ClientBundle;
 import org.gwtproject.resources.client.CssResource;

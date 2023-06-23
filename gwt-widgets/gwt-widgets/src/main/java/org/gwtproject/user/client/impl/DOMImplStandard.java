@@ -18,13 +18,14 @@ package org.gwtproject.user.client.impl;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.EventTarget;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.MouseEvent;
 import jsinterop.annotations.JsFunction;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.gwtproject.core.client.JavaScriptObject;
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.dom.client.BrowserEvents;
 import org.gwtproject.user.client.DOM;
-import org.gwtproject.user.client.Event;
+import elemental2.dom.Event;
 
 /**
  * Base implementation of {@link org.gwtproject.user.client.impl.DOMImpl} shared by those browsers
@@ -115,7 +116,7 @@ public abstract class DOMImplStandard extends DOMImpl {
   }
 
   private static HTMLElement getFirstAncestorWithListener(Event evt) {
-    HTMLElement curElem = evt.getCurrentEventTarget().cast();
+    HTMLElement curElem = Js.uncheckedCast(evt.currentTarget);
     while (curElem != null && getEventListener(curElem) == null) {
       curElem = Js.uncheckedCast(curElem.parentNode);
     }
@@ -129,8 +130,8 @@ public abstract class DOMImplStandard extends DOMImpl {
   }
 
   private static void dispatchUnhandledEvent(Event evt) {
-    HTMLElement element = evt.getCurrentEventTarget().cast();
-    Js.asPropertyMap(element).set("__gwtLastUnhandledEvent", evt.getType());
+    HTMLElement element = Js.uncheckedCast(evt.currentTarget);
+    Js.asPropertyMap(element).set("__gwtLastUnhandledEvent", evt.type);
     dispatchEvent(evt);
   }
 
@@ -186,23 +187,23 @@ public abstract class DOMImplStandard extends DOMImpl {
 
   @Override
   public HTMLElement eventGetFromElement(Event evt) {
-    if (evt.getType().equals(BrowserEvents.MOUSEOVER)) {
-      return evt.getRelatedEventTarget().cast();
+    if (evt.type.equals(BrowserEvents.MOUSEOVER)) {
+      return Js.uncheckedCast(((MouseEvent) evt).relatedTarget);
     }
-    if (evt.getType().equals(BrowserEvents.MOUSEOUT)) {
-      return evt.getEventTarget().cast();
+    if (evt.type.equals(BrowserEvents.MOUSEOUT)) {
+      return Js.uncheckedCast(evt.target);
     }
     return null;
   }
 
   @Override
   public HTMLElement eventGetToElement(Event evt) {
-    if (evt.getType().equals(BrowserEvents.MOUSEOVER)) {
-      return evt.getEventTarget().cast();
+    if (evt.type.equals(BrowserEvents.MOUSEOVER)) {
+      return Js.uncheckedCast(evt.target);
     }
 
-    if (evt.getType().equals(BrowserEvents.MOUSEOUT)) {
-      return evt.getRelatedEventTarget().cast();
+    if (evt.type.equals(BrowserEvents.MOUSEOUT)) {
+      return Js.uncheckedCast(((MouseEvent) evt).relatedTarget);
     }
 
     return null;

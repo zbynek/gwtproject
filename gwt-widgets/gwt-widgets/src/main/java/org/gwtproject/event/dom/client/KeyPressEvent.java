@@ -15,7 +15,10 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.dom.client.BrowserEvents;
+import org.gwtproject.user.client.DOM;
+
+import jsinterop.base.Js;
 
 /** Represents a native key press event. */
 public class KeyPressEvent extends KeyEvent<KeyPressHandler> {
@@ -26,7 +29,7 @@ public class KeyPressEvent extends KeyEvent<KeyPressHandler> {
 
   /**
    * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire key press events.
    */
   protected KeyPressEvent() {}
@@ -65,7 +68,7 @@ public class KeyPressEvent extends KeyEvent<KeyPressHandler> {
    * @return the Unicode char code
    */
   public int getUnicodeCharCode() {
-    return getNativeEvent().getCharCode();
+    return DOM.getCharCode(getNativeEvent());
   }
 
   @Override

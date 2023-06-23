@@ -15,8 +15,8 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
-import org.gwtproject.dom.client.EventTarget;
+import org.gwtproject.event.dom.client.BrowserEvents;
+import elemental2.dom.EventTarget;
 
 /** Represents a native mouse out event. */
 public class MouseOutEvent extends MouseEvent<MouseOutHandler> {
@@ -27,7 +27,7 @@ public class MouseOutEvent extends MouseEvent<MouseOutHandler> {
 
   /**
    * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire mouse out events.
    */
   protected MouseOutEvent() {}
@@ -52,7 +52,7 @@ public class MouseOutEvent extends MouseEvent<MouseOutHandler> {
    * @return the target to which the mouse pointer was moved
    */
   public EventTarget getRelatedTarget() {
-    return getNativeEvent().getRelatedEventTarget();
+    return getNativeMouseEvent().relatedTarget;
   }
 
   @Override

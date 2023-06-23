@@ -30,7 +30,7 @@ package org.gwtproject.event.dom.client;
  * the License.
  */
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.dom.client.BrowserEvents;
 
 /** Represents a native touch end event. */
 public class TouchEndEvent extends TouchEvent<TouchEndHandler> {
@@ -41,7 +41,7 @@ public class TouchEndEvent extends TouchEvent<TouchEndHandler> {
 
   /**
    * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire touch end events.
    */
   protected TouchEndEvent() {}

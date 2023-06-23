@@ -15,7 +15,7 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.dom.client.BrowserEvents;
 
 /** Represents a native drag leave event. */
 public class DragLeaveEvent extends DragDropEventBase<DragLeaveHandler> {
@@ -26,10 +26,10 @@ public class DragLeaveEvent extends DragDropEventBase<DragLeaveHandler> {
 
   /**
    * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} or {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
-   * org.gwtproject.event.shared.HasHandlers, org.gwtproject.dom.client.Element)} to fire drag exit
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
+   * org.gwtproject.event.shared.HasHandlers, elemental2.dom.HTMLElement)} to fire drag exit
    * events.
    */
   protected DragLeaveEvent() {}

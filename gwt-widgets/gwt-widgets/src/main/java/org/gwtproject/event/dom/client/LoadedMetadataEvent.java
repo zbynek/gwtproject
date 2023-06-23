@@ -30,7 +30,7 @@ package org.gwtproject.event.dom.client;
  * the License.
  */
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.dom.client.BrowserEvents;
 
 /**
  * Represents a native loadedmetadata event.
@@ -49,7 +49,7 @@ public class LoadedMetadataEvent extends DomEvent<LoadedMetadataHandler> {
 
   /**
    * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire media loadedmetadata events.
    */
   protected LoadedMetadataEvent() {}

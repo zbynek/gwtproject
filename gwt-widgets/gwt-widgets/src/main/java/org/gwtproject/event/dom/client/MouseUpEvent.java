@@ -15,7 +15,7 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.dom.client.BrowserEvents;
 
 /** Represents a native mouse up event. */
 public class MouseUpEvent extends MouseEvent<MouseUpHandler> {
@@ -26,7 +26,7 @@ public class MouseUpEvent extends MouseEvent<MouseUpHandler> {
 
   /**
    * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire mouse up events.
    */
   protected MouseUpEvent() {}

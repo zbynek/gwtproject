@@ -15,8 +15,6 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
-
 /** Represents a native blur event. */
 public class BlurEvent extends DomEvent<BlurHandler> {
 
@@ -25,7 +23,7 @@ public class BlurEvent extends DomEvent<BlurHandler> {
 
   /**
    * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire blur events.
    */
   protected BlurEvent() {}

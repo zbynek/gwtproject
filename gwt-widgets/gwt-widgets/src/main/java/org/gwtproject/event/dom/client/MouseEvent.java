@@ -15,9 +15,9 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.event.legacy.shared.EventHandler;
+import org.gwtproject.user.client.DOM;
+import elemental2.dom.HTMLElement;
 
 /**
  * Abstract class representing mouse events.
@@ -36,7 +36,7 @@ public abstract class MouseEvent<H extends EventHandler> extends HumanInputEvent
    * @return the button value
    */
   public int getNativeButton() {
-    return getNativeEvent().getButton();
+    return getNativeMouseEvent().button;
   }
 
   /**
@@ -45,7 +45,7 @@ public abstract class MouseEvent<H extends EventHandler> extends HumanInputEvent
    * @return the mouse x-position
    */
   public int getScreenX() {
-    return getNativeEvent().getScreenX();
+    return (int) getNativeMouseEvent().screenX;
   }
 
   /**
@@ -54,7 +54,7 @@ public abstract class MouseEvent<H extends EventHandler> extends HumanInputEvent
    * @return the mouse y-position
    */
   public int getScreenY() {
-    return getNativeEvent().getScreenY();
+    return (int) getNativeMouseEvent().screenY;
   }
 
   /**
@@ -63,7 +63,7 @@ public abstract class MouseEvent<H extends EventHandler> extends HumanInputEvent
    * @return the relative x-position
    */
   public int getX() {
-    Element relativeElem = getRelativeElement();
+    HTMLElement relativeElem = getRelativeElement();
     if (relativeElem != null) {
       return getRelativeX(relativeElem);
     }
@@ -76,12 +76,12 @@ public abstract class MouseEvent<H extends EventHandler> extends HumanInputEvent
    * @param target the element whose coordinate system is to be used
    * @return the relative x-position
    */
-  public int getRelativeX(Element target) {
-    NativeEvent e = getNativeEvent();
-    return e.getClientX()
-        - target.getAbsoluteLeft()
-        + target.getScrollLeft()
-        + target.getOwnerDocument().getScrollLeft();
+  public int getRelativeX(HTMLElement target) {
+    elemental2.dom.MouseEvent e = getNativeMouseEvent();
+    return (int) (e.clientX
+        - DOM.getAbsoluteLeft(target)
+        + target.scrollLeft
+        + DOM.getScrollingElement(target.ownerDocument).scrollLeft);
   }
 
   /**
@@ -90,7 +90,7 @@ public abstract class MouseEvent<H extends EventHandler> extends HumanInputEvent
    * @return the mouse x-position
    */
   public int getClientX() {
-    return getNativeEvent().getClientX();
+    return (int) getNativeMouseEvent().clientX;
   }
 
   /**
@@ -99,7 +99,7 @@ public abstract class MouseEvent<H extends EventHandler> extends HumanInputEvent
    * @return the relative y-position
    */
   public int getY() {
-    Element relativeElem = getRelativeElement();
+    HTMLElement relativeElem = getRelativeElement();
     if (relativeElem != null) {
       return getRelativeY(relativeElem);
     }
@@ -112,12 +112,12 @@ public abstract class MouseEvent<H extends EventHandler> extends HumanInputEvent
    * @param target the element whose coordinate system is to be used
    * @return the relative y-position
    */
-  public int getRelativeY(Element target) {
-    NativeEvent e = getNativeEvent();
-    return e.getClientY()
-        - target.getAbsoluteTop()
-        + target.getScrollTop()
-        + target.getOwnerDocument().getScrollTop();
+  public int getRelativeY(HTMLElement target) {
+    elemental2.dom.MouseEvent e = getNativeMouseEvent();
+    return (int) (e.clientY
+        - DOM.getAbsoluteTop(target)
+        + target.scrollTop
+        + DOM.getScrollingElement(target.ownerDocument).scrollTop);
   }
 
   /**
@@ -126,6 +126,6 @@ public abstract class MouseEvent<H extends EventHandler> extends HumanInputEvent
    * @return the mouse y-position
    */
   public int getClientY() {
-    return getNativeEvent().getClientY();
+    return (int) getNativeMouseEvent().clientY;
   }
 }

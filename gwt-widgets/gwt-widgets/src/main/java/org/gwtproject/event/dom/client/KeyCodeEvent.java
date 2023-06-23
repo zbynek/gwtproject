@@ -16,6 +16,7 @@
 package org.gwtproject.event.dom.client;
 
 import org.gwtproject.event.legacy.shared.EventHandler;
+import org.gwtproject.user.client.DOM;
 
 /**
  * Key up and key down are both events based upon a given key code.
@@ -57,7 +58,7 @@ public abstract class KeyCodeEvent<H extends EventHandler> extends KeyEvent<H> {
    * @return the key code
    */
   public int getNativeKeyCode() {
-    return getNativeEvent().getKeyCode();
+    return DOM.getKeyCode(getNativeEvent());
   }
 
   /**

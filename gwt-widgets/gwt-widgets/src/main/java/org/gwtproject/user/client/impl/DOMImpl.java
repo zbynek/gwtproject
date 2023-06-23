@@ -59,22 +59,16 @@ public abstract class DOMImpl {
     return (object instanceof org.gwtproject.user.client.EventListener);
   }
 
-  public void eventCancelBubble(Event event, boolean cancel) {
-    if (cancel == false) {
-      event.stopPropagation();
-    }
-  }
-
-  public abstract HTMLElement eventGetFromElement(Event evt);
+  public abstract HTMLElement eventGetFromElement(elemental2.dom.Event evt);
 
   public boolean eventGetRepeat(Event evt) {
     return Js.asPropertyMap(evt).has("repeat");
   }
 
-  public abstract HTMLElement eventGetToElement(Event evt);
+  public abstract HTMLElement eventGetToElement(elemental2.dom.Event evt);
 
-  public final int eventGetTypeInt(Event evt) {
-    return eventGetTypeInt(evt.getType());
+  public final int eventGetTypeInt(elemental2.dom.Event evt) {
+    return eventGetTypeInt(evt.type);
   }
 
   public int eventGetTypeInt(String eventType) {
@@ -140,7 +134,7 @@ public abstract class DOMImpl {
     }
   }
 
-  public void eventSetKeyCode(Event evt, char key) {
+  public void eventSetKeyCode(elemental2.dom.Event evt, char key) {
     Js.asPropertyMap(evt).set("keyCode", key);
   }
 

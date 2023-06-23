@@ -15,7 +15,7 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.dom.client.BrowserEvents;
 
 /** Represents a native drop event. */
 public class DropEvent extends DragDropEventBase<DropHandler> {
@@ -25,10 +25,10 @@ public class DropEvent extends DragDropEventBase<DropHandler> {
 
   /**
    * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} or {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
-   * org.gwtproject.event.shared.HasHandlers, org.gwtproject.dom.client.Element)} to fire drop
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
+   * org.gwtproject.event.shared.HasHandlers, elemental2.dom.HTMLElement)} to fire drop
    * events.
    */
   protected DropEvent() {}

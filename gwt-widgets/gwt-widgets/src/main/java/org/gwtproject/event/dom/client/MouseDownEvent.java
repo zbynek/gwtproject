@@ -15,7 +15,7 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.dom.client.BrowserEvents;
 
 /** Represents a native mouse down event. */
 public class MouseDownEvent extends MouseEvent<MouseDownHandler> {
@@ -26,7 +26,7 @@ public class MouseDownEvent extends MouseEvent<MouseDownHandler> {
 
   /**
    * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire mouse down events.
    */
   protected MouseDownEvent() {}
