@@ -38,7 +38,6 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataFormatImpl;
 import javax.imageio.stream.MemoryCacheImageInputStream;
 import javax.lang.model.element.ExecutableElement;
-import org.gwtproject.i18n.shared.cldr.LocaleInfo;
 import org.gwtproject.resources.client.impl.ImageResourcePrototype;
 import org.gwtproject.resources.ext.AbstractResourceGenerator;
 import org.gwtproject.resources.ext.ClientBundleFields;
@@ -91,19 +90,8 @@ public class ImageResourceGenerator extends AbstractResourceGenerator {
         new String[] {bundle.getNormalContentsFieldName(), bundle.getRtlContentsFieldName()};
     assert urlExpressions[0] != null : "No primary URL expression for " + name;
 
-    if (urlExpressions[1] == null) {
-      sw.println(UriUtils.class.getName() + ".fromTrustedString(" + urlExpressions[0] + "),");
-    } else {
-      sw.println(
-          UriUtils.class.getName()
-              + ".fromTrustedString("
-              + LocaleInfo.class.getCanonicalName()
-              + "getCurrentLocale().isRTL() ?"
-              + urlExpressions[1]
-              + " : "
-              + urlExpressions[0]
-              + "),");
-    }
+    sw.println(UriUtils.class.getName() + ".fromTrustedString(" + urlExpressions[0] + "),");
+
     sw.println(
         rect.getLeft()
             + ", "

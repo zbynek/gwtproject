@@ -28,7 +28,6 @@ import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import org.gwtproject.i18n.shared.cldr.I18N;
 import org.gwtproject.resources.client.ClientBundleWithLookup;
 import org.gwtproject.resources.client.Resource;
 import org.gwtproject.resources.client.ResourcePrototype;
@@ -754,17 +753,6 @@ public abstract class AbstractClientBundleGenerator extends Generator {
   }
 
   public static String[] dirtyLocales(RoundEnvironment roundEnvironment) {
-    if (!roundEnvironment.getElementsAnnotatedWith(I18N.class).isEmpty()) {
-      if (roundEnvironment.getElementsAnnotatedWith(I18N.class).size() > 1) {
-        throw new Error("App must has only one class annotated with @I18N");
-      }
-      return roundEnvironment
-          .getElementsAnnotatedWith(I18N.class)
-          .iterator()
-          .next()
-          .getAnnotation(I18N.class)
-          .value();
-    }
     return new String[0];
   }
 }

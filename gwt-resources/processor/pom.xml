@@ -35,10 +35,6 @@
             <artifactId>gwt-resources-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.treblereel.gwt.gwtproject.i18n</groupId>
-            <artifactId>gwt-i18n</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.google.auto</groupId>
             <artifactId>auto-common</artifactId>
         </dependency>
@@ -135,6 +131,7 @@
                                 <excludes>
                                     <exclude>classworlds:classworlds</exclude>
                                     <exclude>junit:junit</exclude>
+                                    <exclude>com.google.elemental2:*</exclude>
                                     <exclude>org.mockito:mockito-core</exclude>
                                     <exclude>jmock:*</exclude>
                                     <exclude>*:xml-apis</exclude>

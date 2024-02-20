@@ -44,9 +44,8 @@
             <version>1.0.0-RC1</version>
         </dependency>
         <dependency>
-            <groupId>org.gwtproject.resources</groupId>
+            <groupId>org.treblereel.gwt.gwtproject.resources</groupId>
             <artifactId>gwt-resources-api</artifactId>
-            <version>HEAD-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.gwtproject.timer</groupId>

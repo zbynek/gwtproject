@@ -42,10 +42,11 @@
         <module>gwt-internal-bom</module>
         <module>gwt-bom</module>
         <module>gwt-widgets</module>
+        <module>gwt-resources</module>
     </modules>
 
     <properties>
-        <revision>202306201</revision>
+        <revision>202402171</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <maven.compiler.source>1.8</maven.compiler.source>

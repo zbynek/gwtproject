@@ -40,32 +40,34 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.treblereel.gwt.gwtproject.core</groupId>
+            <groupId>org.gwtproject.core</groupId>
             <artifactId>gwt-core</artifactId>
+            <version>1.0.0-RC1</version>
         </dependency>
         <dependency>
-            <groupId>org.treblereel.gwt.gwtproject.safehtml</groupId>
+            <groupId>org.gwtproject.safehtml</groupId>
             <artifactId>gwt-safecss</artifactId>
+            <version>1.0.0-RC1</version>
         </dependency>
         <dependency>
-            <groupId>org.treblereel.gwt.gwtproject.safehtml</groupId>
+            <groupId>org.gwtproject.safehtml</groupId>
             <artifactId>gwt-safehtml</artifactId>
+            <version>1.0.0-RC1</version>
         </dependency>
         <dependency>
-            <groupId>org.treblereel.gwt.gwtproject.regexp</groupId>
+            <groupId>org.gwtproject.regexp</groupId>
             <artifactId>gwt-regexp</artifactId>
+            <version>1.0.0-RC1</version>
         </dependency>
         <dependency>
-            <groupId>org.treblereel.gwt.gwtproject.dom</groupId>
+            <groupId>org.gwtproject.dom</groupId>
             <artifactId>gwt-dom</artifactId>
+            <version>1.0.0-RC2</version>
         </dependency>
         <dependency>
-            <groupId>org.treblereel.gwt.gwtproject.http</groupId>
-            <artifactId>gwt-http</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.treblereel.gwt.gwtproject.callback</groupId>
+            <groupId>org.gwtproject.callback</groupId>
             <artifactId>gwt-callback</artifactId>
+            <version>1.0.0-RC1</version>
         </dependency>
     </dependencies>
 

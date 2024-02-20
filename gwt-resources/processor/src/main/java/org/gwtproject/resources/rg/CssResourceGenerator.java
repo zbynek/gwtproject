@@ -62,7 +62,6 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import org.gwtproject.i18n.shared.cldr.LocaleInfo;
 import org.gwtproject.resources.client.CssResource;
 import org.gwtproject.resources.client.CssResourceBase;
 import org.gwtproject.resources.ext.NotFoundException;
@@ -474,18 +473,7 @@ public class CssResourceGenerator extends AbstractCssResourceGenerator {
     try {
       String standard = makeExpression(logger, context, sheet, obfuscationStyle.isPretty());
       (new RtlVisitor()).accept(sheet);
-      String reversed = makeExpression(logger, context, sheet, obfuscationStyle.isPretty());
-      if (standard.equals(reversed)) {
-        return standard;
-      } else {
-        return LocaleInfo.class.getName()
-            + ".getCurrentLocale().isRTL() ? ("
-            + reversed
-            + ") : ("
-            + standard
-            + ")";
-      }
-
+      return standard;
     } catch (CssCompilerException e) {
       // Take this as a sign that one of the visitors was unhappy, but only
       // log the stack trace if there's a causal (i.e. unknown) exception.

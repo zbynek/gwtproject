@@ -19,8 +19,8 @@ package org.gwtproject.resources.client.impl;
 import elemental2.core.Global;
 import elemental2.core.JsArray;
 import elemental2.core.JsObject;
+import elemental2.dom.XMLHttpRequest;
 import jsinterop.base.Js;
-import org.gwtproject.http.client.*;
 import org.gwtproject.resources.client.*;
 import org.gwtproject.safehtml.shared.SafeUri;
 import org.gwtproject.safehtml.shared.annotations.SuppressIsTrustedResourceUriCastCheck;
@@ -106,26 +106,21 @@ public class ExternalTextResourcePrototype implements ExternalTextResource {
       callback.onSuccess(cache[index]);
       return;
     }
-
-    RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, url.asString());
-    try {
-      rb.sendRequest("", new ExternalTextResourcePrototype.ETRCallback(callback));
-    } catch (RequestException e) {
-      throw new ResourceException(this, "Unable to initiate request for external resource", e);
-    }
+    XMLHttpRequest xhr = new XMLHttpRequest();
+    ETRCallback wrappedCallback = new ETRCallback(callback);
+    xhr.open("GET", url.asString());
+    xhr.addEventListener("load", evt -> wrappedCallback.onSuccess(xhr.responseText));
+    xhr.addEventListener("error",
+            evt -> wrappedCallback.onFailure(new IllegalStateException(xhr.statusText)));
+    xhr.send();
   }
 
   /** Maps the HTTP callback onto the ResourceCallback. */
-  private class ETRCallback implements RequestCallback, AsyncCallback<JsObject> {
+  private class ETRCallback implements AsyncCallback<String> {
     final ResourceCallback<TextResource> callback;
 
     public ETRCallback(ResourceCallback<TextResource> callback) {
       this.callback = callback;
-    }
-
-    // For RequestCallback
-    public void onError(Request request, Throwable exception) {
-      onFailure(exception);
     }
 
     // For AsyncCallback
@@ -137,16 +132,11 @@ public class ExternalTextResourcePrototype implements ExternalTextResource {
               exception));
     }
 
-    // For RequestCallback
-    public void onResponseReceived(Request request, final Response response) {
-      String responseText = response.getText();
-      // Call eval() on the object.
-      JsObject jso = evalObject(responseText);
-      onSuccess(jso);
-    }
 
     // For AsyncCallback
-    public void onSuccess(JsObject jso) {
+    @Override
+    public void onSuccess(String responseText) {
+      JsObject jso = evalObject(responseText);
       if (jso == null) {
         callback.onError(
             new ResourceException(ExternalTextResourcePrototype.this, "eval() returned null"));
