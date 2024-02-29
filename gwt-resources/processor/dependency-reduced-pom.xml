@@ -71,6 +71,11 @@
                   <exclude>classworlds:classworlds</exclude>
                   <exclude>junit:junit</exclude>
                   <exclude>com.google.elemental2:*</exclude>
+                  <exclude>com.google.jsinterop:*</exclude>
+                  <exclude>org.gwtproject.core:*</exclude>
+                  <exclude>org.gwtproject.dom:*</exclude>
+                  <exclude>org.gwtproject.safehtml:*</exclude>
+                  <exclude>org.gwtproject.callback:*</exclude>
                   <exclude>org.mockito:mockito-core</exclude>
                   <exclude>jmock:*</exclude>
                   <exclude>*:xml-apis</exclude>
