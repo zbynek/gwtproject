@@ -240,6 +240,8 @@ public class ImageResourceGenerator extends AbstractResourceGenerator {
     boolean lossy = true;
     ImageRect animated = null;
     // Load the image
+    Throwable rootCause = null;
+    int readers = 0;
     try (InputStream is = imageUrl.openStream();
         MemoryCacheImageInputStream imageInputStream = new MemoryCacheImageInputStream(is)) {
       /*
@@ -251,6 +253,7 @@ public class ImageResourceGenerator extends AbstractResourceGenerator {
       while (it.hasNext()) {
         ImageReader reader = it.next();
         reader.setInput(imageInputStream);
+        readers++;
 
         int numImages = reader.getNumImages(true);
         if (numImages == 0) {
@@ -284,6 +287,7 @@ public class ImageResourceGenerator extends AbstractResourceGenerator {
               }
             }
           } catch (Exception e) {
+            rootCause = e;
             // Hope we have another reader that can handle the image
             continue readers;
           }
@@ -297,6 +301,7 @@ public class ImageResourceGenerator extends AbstractResourceGenerator {
               images[i] = reader.read(i);
             }
           } catch (Exception e) {
+            rootCause = e;
             // Hope we have another reader that can handle the image
             continue readers;
           }
@@ -304,6 +309,7 @@ public class ImageResourceGenerator extends AbstractResourceGenerator {
           animated = new ImageRect(imageName, images);
           animated.setLossy(false);
         }
+        reader.dispose();
       }
     } catch (IllegalArgumentException iex) {
       if (imageName.toLowerCase(Locale.ROOT).endsWith("png")
@@ -331,7 +337,8 @@ public class ImageResourceGenerator extends AbstractResourceGenerator {
     }
 
     if (image == null && animated == null) {
-      logger.log(TreeLogger.ERROR, "Unrecognized image file format", null);
+      logger.log(TreeLogger.ERROR, "Unrecognized image file format, tried "
+              + readers + " readers", rootCause);
       throw new UnableToCompleteException();
     }
 
