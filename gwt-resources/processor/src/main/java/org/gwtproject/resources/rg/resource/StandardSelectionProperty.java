@@ -18,7 +18,6 @@ package org.gwtproject.resources.rg.resource;
 
 import java.util.SortedSet;
 import org.gwtproject.resources.ext.SelectionProperty;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /** @author Dmitrii Tikhomirov Created by treblereel 12/5/18 */
 public class StandardSelectionProperty implements SelectionProperty {
@@ -44,6 +43,6 @@ public class StandardSelectionProperty implements SelectionProperty {
 
   @Override
   public SortedSet<String> getPossibleValues() {
-    throw new NotImplementedException();
+    throw new IllegalArgumentException("Values not enumerable");
   }
 }

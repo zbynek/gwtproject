@@ -33,7 +33,7 @@ import org.gwtproject.resources.logger.PrintWriterTreeLogger;
 
 /** @author Dmitrii Tikhomirov Created by treblereel on 9/30/18. */
 @AutoService(Processor.class)
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_11)
 @SupportedAnnotationTypes({
   "org.gwtproject.resources.client.GWT3Resources",
   "org.gwtproject.resources.client.Resource"
