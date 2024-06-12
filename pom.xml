@@ -46,7 +46,7 @@
     </modules>
 
     <properties>
-        <revision>202404301</revision>
+        <revision>202406111</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <maven.compiler.source>1.8</maven.compiler.source>

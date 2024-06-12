@@ -18,9 +18,13 @@ package org.gwtproject.resources.context;
 import com.google.common.io.BaseEncoding;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.util.function.Function;
+
 import javax.lang.model.element.TypeElement;
 import org.gwtproject.resources.ext.*;
 import org.gwtproject.resources.rg.util.Util;
+import org.gwtproject.resources.rg.util.tools.Utility;
 
 /** Defines base methods for ResourceContext implementations. */
 public abstract class AbstractResourceContext implements ResourceContext {
@@ -63,11 +67,25 @@ public abstract class AbstractResourceContext implements ResourceContext {
     byte[] bytes = Util.readURLAsBytes(resource);
     try {
       String finalMimeType =
-          (mimeType != null) ? mimeType : resource.openConnection().getContentType();
+          (mimeType != null) ? mimeType : getProperty(resource, URLConnection::getContentType);
       return deploy(fileName, finalMimeType, bytes, forceExternal);
     } catch (IOException e) {
       getLogger().log(TreeLogger.ERROR, "Unable to determine mime type of resource", e);
       throw new UnableToCompleteException();
+    }
+  }
+
+  /**
+   * Helper method to read a property of a given URL, automatically closing the InputStream
+   * that is opened as a side effect.
+   */
+  public static <T> T getProperty(URL url, Function<URLConnection, T> prop) throws IOException {
+    URLConnection conn = url.openConnection();
+    conn.setUseCaches(false);
+    try {
+      return prop.apply(conn);
+    } finally {
+      Utility.close(conn.getInputStream());
     }
   }
 

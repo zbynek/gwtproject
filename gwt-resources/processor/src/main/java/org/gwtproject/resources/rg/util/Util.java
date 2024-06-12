@@ -191,18 +191,6 @@ public final class Util {
     return buf;
   }
 
-  public static Reader createReader(ProcessingEnvironment processingEnv, URL url)
-      throws UnableToCompleteException {
-    try {
-      return new InputStreamReader(url.openStream());
-    } catch (IOException e) {
-      processingEnv
-          .getMessager()
-          .printMessage(Diagnostic.Kind.ERROR, "Unable to open resource: " + url);
-      throw new UnableToCompleteException("Unable to open resource: " + url);
-    }
-  }
-
   /** Equality check through equals() that is also satisfied if both objects are null. */
   public static boolean equalsNullCheck(Object thisObject, Object thatObject) {
     if (thisObject == null) {

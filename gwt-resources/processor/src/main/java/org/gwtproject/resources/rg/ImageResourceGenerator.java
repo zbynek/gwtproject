@@ -39,6 +39,7 @@ import javax.imageio.metadata.IIOMetadataFormatImpl;
 import javax.imageio.stream.MemoryCacheImageInputStream;
 import javax.lang.model.element.ExecutableElement;
 import org.gwtproject.resources.client.impl.ImageResourcePrototype;
+import org.gwtproject.resources.context.AbstractResourceContext;
 import org.gwtproject.resources.ext.AbstractResourceGenerator;
 import org.gwtproject.resources.ext.ClientBundleFields;
 import org.gwtproject.resources.ext.ResourceContext;
@@ -242,7 +243,14 @@ public class ImageResourceGenerator extends AbstractResourceGenerator {
     // Load the image
     Throwable rootCause = null;
     int readers = 0;
-    try (InputStream is = imageUrl.openStream();
+    URLConnection connection = null;
+    try {
+      connection = imageUrl.openConnection();
+      connection.setUseCaches(false);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    try (InputStream is = connection.getInputStream();
         MemoryCacheImageInputStream imageInputStream = new MemoryCacheImageInputStream(is)) {
       /*
        * ImageIO uses an SPI pattern API. We don't care about the particulars of
@@ -358,12 +366,7 @@ public class ImageResourceGenerator extends AbstractResourceGenerator {
    * that is opened as a side effect.
    */
   private int getContentLength(URL url) throws IOException {
-    URLConnection conn = url.openConnection();
-    try {
-      return conn.getContentLength();
-    } finally {
-      Utility.close(conn.getInputStream());
-    }
+    return AbstractResourceContext.getProperty(url, URLConnection::getContentLength);
   }
 
   /** Re-encode an image as a PNG to strip random header data. */
