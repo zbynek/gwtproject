@@ -28,7 +28,6 @@
     <inherits name="org.gwtproject.safecss.SafeCss" />
     <inherits name="org.gwtproject.event.dom.DomEvent" />
     <inherits name="org.gwtproject.event.logical.LogicalEvent" />
-    <inherits name="org.gwtproject.event.legacy.EventLegacy" />
     <inherits name="org.gwtproject.layout.Layout" />
     <inherits name="org.gwtproject.timer.Timer" />
     <inherits name="org.gwtproject.animation.Animation" />

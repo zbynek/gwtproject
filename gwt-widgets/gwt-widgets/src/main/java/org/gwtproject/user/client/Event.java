@@ -20,11 +20,8 @@ import jsinterop.base.Js;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.event.dom.client.HasNativeEvent;
-import org.gwtproject.event.legacy.shared.EventHandler;
-import org.gwtproject.event.legacy.shared.GwtEvent;
 import org.gwtproject.event.shared.HandlerManager;
 import org.gwtproject.event.shared.HandlerRegistration;
-import org.gwtproject.user.client.impl.DOMImpl;
 
 /**
  * An opaque handle to a native DOM Event. An <code>Event</code> cannot be created directly.
@@ -343,7 +340,7 @@ public class Event extends NativeEvent {
   }
 
   /** Handler interface for {@link NativePreviewEvent} events. */
-  public interface NativePreviewHandler extends EventHandler {
+  public interface NativePreviewHandler {
 
     /**
      * Called when {@link NativePreviewEvent} is fired.
@@ -354,7 +351,7 @@ public class Event extends NativeEvent {
   }
 
   /** Represents a preview of a native {@link Event}. */
-  public static class NativePreviewEvent extends GwtEvent<NativePreviewHandler>
+  public static class NativePreviewEvent extends org.gwtproject.event.shared.Event<NativePreviewHandler>
       implements HasNativeEvent {
 
     /** Handler type. */
@@ -505,9 +502,9 @@ public class Event extends NativeEvent {
       singleton.isFirstHandler = false;
     }
 
-    @Override
+
     protected void revive() {
-      super.revive();
+      setSource(null);
       isCanceled = false;
       isConsumed = false;
       isFirstHandler = true;

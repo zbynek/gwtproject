@@ -18,7 +18,7 @@ package org.gwtproject.user.client.ui;
 import jsinterop.base.Js;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.event.dom.client.DomEvent;
-import org.gwtproject.event.legacy.shared.EventHandler;
+
 import org.gwtproject.event.logical.shared.AttachEvent;
 import org.gwtproject.event.logical.shared.AttachEvent.Handler;
 import org.gwtproject.event.logical.shared.HasAttachHandlers;
@@ -70,7 +70,7 @@ public class Widget extends UIObject implements EventListener, HasAttachHandlers
    * @param handler the handler
    * @return {@link HandlerRegistration} used to remove the handler
    */
-  public final <H extends EventHandler> HandlerRegistration addBitlessDomHandler(
+  public final <H> HandlerRegistration addBitlessDomHandler(
       final H handler, DomEvent.Type<H> type) {
     assert handler != null : "handler must not be null";
     assert type != null : "type must not be null";
@@ -87,7 +87,7 @@ public class Widget extends UIObject implements EventListener, HasAttachHandlers
    * @param handler the handler
    * @return {@link HandlerRegistration} used to remove the handler
    */
-  public final <H extends EventHandler> HandlerRegistration addDomHandler(
+  public final <H> HandlerRegistration addDomHandler(
       final H handler, DomEvent.Type<H> type) {
     assert handler != null : "handler must not be null";
     assert type != null : "type must not be null";

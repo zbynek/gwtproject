@@ -15,10 +15,8 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.event.legacy.shared.EventHandler;
-
 /** Handler interface for {@link MouseUpEvent} events. */
-public interface MouseUpHandler extends EventHandler {
+public interface MouseUpHandler {
 
   /**
    * Called when MouseUpEvent is fired.

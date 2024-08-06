@@ -16,14 +16,13 @@
 package org.gwtproject.event.compat.shared;
 
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 
 /** For {@link EventBus} tests. */
 public class BarGwtEvent extends GwtEvent<BarGwtEvent.Handler> {
   /** The handler for the event. */
-  public interface Handler extends EventHandler {
+  public interface Handler {
     void onBar(BarGwtEvent e);
   }
 

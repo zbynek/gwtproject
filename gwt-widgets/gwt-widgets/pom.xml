@@ -35,11 +35,6 @@
         </dependency>
         <dependency>
             <groupId>org.gwtproject.event</groupId>
-            <artifactId>gwt-event-legacy</artifactId>
-            <version>1.0.0-RC1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.gwtproject.event</groupId>
             <artifactId>gwt-logical-event</artifactId>
             <version>1.0.0-RC1</version>
         </dependency>
@@ -56,11 +51,6 @@
             <groupId>org.gwtproject.dom</groupId>
             <artifactId>gwt-dom-style-definitions</artifactId>
             <version>1.0.0-RC1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.gwtproject.dom</groupId>
-            <artifactId>gwt-dom</artifactId>
-            <version>1.0.0-RC2</version>
         </dependency>
     </dependencies>
 

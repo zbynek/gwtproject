@@ -15,7 +15,6 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.event.legacy.shared.EventHandler;
 import org.gwtproject.event.shared.HandlerRegistration;
 import org.gwtproject.event.shared.SimpleEventBus;
 
@@ -192,7 +191,7 @@ public class DomEventGwt2Test extends AbstractHandlerGwt2Base {
     return "org.gwtproject.event.dom.EventDOMTest";
   }
 
-  interface CustomClickHandler extends EventHandler {
+  interface CustomClickHandler {
 
     void onClick(CustomClickEvent evt);
   }

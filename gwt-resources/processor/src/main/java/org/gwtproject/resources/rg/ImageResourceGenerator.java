@@ -38,6 +38,8 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataFormatImpl;
 import javax.imageio.stream.MemoryCacheImageInputStream;
 import javax.lang.model.element.ExecutableElement;
+
+import org.gwtproject.resources.client.impl.GeneratedUri;
 import org.gwtproject.resources.client.impl.ImageResourcePrototype;
 import org.gwtproject.resources.context.AbstractResourceContext;
 import org.gwtproject.resources.ext.AbstractResourceGenerator;
@@ -50,8 +52,6 @@ import org.gwtproject.resources.rg.util.SourceWriter;
 import org.gwtproject.resources.rg.util.StringKey;
 import org.gwtproject.resources.rg.util.StringSourceWriter;
 import org.gwtproject.resources.rg.util.Util;
-import org.gwtproject.resources.rg.util.tools.Utility;
-import org.gwtproject.safehtml.shared.UriUtils;
 import org.w3c.dom.Node;
 
 /** @author Dmitrii Tikhomirov Created by treblereel 11/15/18 */
@@ -91,7 +91,7 @@ public class ImageResourceGenerator extends AbstractResourceGenerator {
         new String[] {bundle.getNormalContentsFieldName(), bundle.getRtlContentsFieldName()};
     assert urlExpressions[0] != null : "No primary URL expression for " + name;
 
-    sw.println(UriUtils.class.getName() + ".fromTrustedString(" + urlExpressions[0] + "),");
+    sw.println("new " + GeneratedUri.class.getName() + "(" + urlExpressions[0] + "),");
 
     sw.println(
         rect.getLeft()

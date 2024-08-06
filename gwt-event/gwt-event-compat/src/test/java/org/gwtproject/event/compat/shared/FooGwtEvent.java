@@ -23,7 +23,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 /** For {@link EventBus} tests. */
 public class FooGwtEvent extends GwtEvent<FooGwtEvent.Handler> {
   /** The handler for the event. */
-  public interface Handler extends EventHandler {
+  public interface Handler {
     void onFoo(FooGwtEvent e);
   }
 

@@ -17,7 +17,7 @@ package org.gwtproject.event.dom.client;
 
 import org.gwtproject.dom.client.DataTransfer;
 import org.gwtproject.dom.client.PartialSupport;
-import org.gwtproject.event.legacy.shared.EventHandler;
+
 
 /**
  * Base class for drag and drop events.
@@ -25,7 +25,7 @@ import org.gwtproject.event.legacy.shared.EventHandler;
  * @param <H> handler type
  */
 @PartialSupport
-public abstract class DragDropEventBase<H extends EventHandler> extends DomEvent<H> {
+public abstract class DragDropEventBase<H> extends DomEvent<H> {
 
   /**
    * Runtime check for whether drag events are supported in this browser.

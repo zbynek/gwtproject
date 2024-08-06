@@ -15,14 +15,12 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.event.legacy.shared.EventHandler;
-
 /**
  * Key up and key down are both events based upon a given key code.
  *
  * @param <H> handler type
  */
-public abstract class KeyCodeEvent<H extends EventHandler> extends KeyEvent<H> {
+public abstract class KeyCodeEvent<H> extends KeyEvent<H> {
 
   /**
    * Does the key code represent an arrow key?

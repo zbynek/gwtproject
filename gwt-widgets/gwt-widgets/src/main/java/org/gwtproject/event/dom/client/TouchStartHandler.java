@@ -15,10 +15,8 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.event.legacy.shared.EventHandler;
-
 /** Handler interface for {@link TouchStartEvent} events. */
-public interface TouchStartHandler extends EventHandler {
+public interface TouchStartHandler {
 
   /**
    * Called when TouchStartEvent is fired.

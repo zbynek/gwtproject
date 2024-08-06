@@ -15,15 +15,13 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.event.legacy.shared.EventHandler;
-
 /**
  * Handler interface for {@link ProgressEvent} events.
  *
  * <p><span style="color:red">Experimental API: This API is still under development and is subject
  * to change. </span>
  */
-public interface ProgressHandler extends EventHandler {
+public interface ProgressHandler {
 
   /**
    * Called when ProgressEvent is fired.

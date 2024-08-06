@@ -18,7 +18,7 @@ package org.gwtproject.event.dom.client;
 import static junit.framework.TestCase.assertTrue;
 
 import com.google.j2cl.junit.apt.J2clTestInput;
-import org.gwtproject.event.legacy.shared.EventHandler;
+
 import org.gwtproject.event.shared.HandlerRegistration;
 import org.gwtproject.event.shared.SimpleEventBus;
 import org.junit.Test;
@@ -194,7 +194,7 @@ public class DomEventJ2clTest extends AbstractHandlerBaseJ2cl {
 
   private SimpleEventBus eventbus;
 
-  interface CustomClickHandler extends EventHandler {
+  interface CustomClickHandler {
 
     void onClick(CustomClickEvent evt);
   }

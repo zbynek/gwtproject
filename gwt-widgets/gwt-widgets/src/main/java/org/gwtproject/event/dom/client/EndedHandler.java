@@ -15,15 +15,13 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.event.legacy.shared.EventHandler;
-
 /**
  * Handler interface for {@link EndedEvent} events.
  *
  * <p><span style="color:red">Experimental API: This API is still under development and is subject
  * to change. </span>
  */
-public interface EndedHandler extends EventHandler {
+public interface EndedHandler {
 
   /**
    * Called when EndedEvent is fired.

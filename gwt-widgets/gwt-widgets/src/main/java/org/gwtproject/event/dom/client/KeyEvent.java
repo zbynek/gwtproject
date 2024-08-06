@@ -15,8 +15,6 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.event.legacy.shared.EventHandler;
-
 /**
  * Base class for Key events. The native keyboard events are somewhat a mess
  * (http://www.quirksmode.org/js/keys.html), we do some trivial normalization here, but do not
@@ -24,7 +22,7 @@ import org.gwtproject.event.legacy.shared.EventHandler;
  *
  * @param <H> The event handler type
  */
-public abstract class KeyEvent<H extends EventHandler> extends DomEvent<H> {
+public abstract class KeyEvent<H> extends DomEvent<H> {
 
   /**
    * Does this event have any modifier keys down? Specifically. is the control, meta, shift, or alt

@@ -15,10 +15,8 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.event.legacy.shared.EventHandler;
-
 /** Handler interface for {@link KeyDownEvent} events. */
-public interface KeyDownHandler extends EventHandler {
+public interface KeyDownHandler {
 
   /**
    * Called when {@link KeyDownEvent} is fired.

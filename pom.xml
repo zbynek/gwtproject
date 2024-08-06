@@ -33,7 +33,14 @@
             <url>https://github.com/gwtproject</url>
         </developer>
     </developers>
-
+    <dependencies>
+        <dependency>
+            <groupId>org.gwtproject.safehtml</groupId>
+            <artifactId>gwt-safehtml</artifactId>
+            <version>1.0.0-RC1</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
 
     <inceptionYear>2019</inceptionYear>
@@ -46,7 +53,7 @@
     </modules>
 
     <properties>
-        <revision>202406111</revision>
+        <revision>202408061</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <maven.compiler.source>1.8</maven.compiler.source>

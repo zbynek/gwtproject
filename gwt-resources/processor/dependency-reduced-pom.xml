@@ -157,4 +157,12 @@
       </build>
     </profile>
   </profiles>
+  <dependencies>
+    <dependency>
+      <groupId>org.gwtproject.safehtml</groupId>
+      <artifactId>gwt-safehtml</artifactId>
+      <version>1.0.0-RC1</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
 </project>
