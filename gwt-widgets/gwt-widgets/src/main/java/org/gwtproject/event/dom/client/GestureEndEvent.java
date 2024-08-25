@@ -15,7 +15,8 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
+import jsinterop.base.Js;
+import org.gwtproject.event.shared.BrowserEvents;
 
 /** Represents a native gesture end event. */
 public class GestureEndEvent extends DomEvent<GestureEndHandler> {
@@ -25,9 +26,7 @@ public class GestureEndEvent extends DomEvent<GestureEndHandler> {
       new Type<>(BrowserEvents.GESTUREEND, new GestureEndEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
-   * org.gwtproject.event.shared.HasHandlers)} to fire gesture end events.
+   * Protected constructor
    */
   protected GestureEndEvent() {}
 
@@ -45,13 +44,6 @@ public class GestureEndEvent extends DomEvent<GestureEndHandler> {
     return TYPE;
   }
 
-  public double getRotation() {
-    return getNativeEvent().getRotation();
-  }
-
-  public double getScale() {
-    return getNativeEvent().getScale();
-  }
 
   @Override
   protected void dispatch(GestureEndHandler handler) {

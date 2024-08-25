@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.gwtproject.dom.style.shared.Unit;
+import org.gwtproject.user.client.Unit;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.event.dom.client.HasClickHandlers;

@@ -15,8 +15,9 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.DataTransfer;
-import org.gwtproject.dom.client.PartialSupport;
+import elemental2.dom.DragEvent;
+import jsinterop.base.Js;
+import elemental2.dom.DataTransfer;
 
 
 /**
@@ -24,7 +25,6 @@ import org.gwtproject.dom.client.PartialSupport;
  *
  * @param <H> handler type
  */
-@PartialSupport
 public abstract class DragDropEventBase<H> extends DomEvent<H> {
 
   /**
@@ -54,7 +54,7 @@ public abstract class DragDropEventBase<H> extends DomEvent<H> {
    * @return the {@link DataTransfer} object
    */
   public DataTransfer getDataTransfer() {
-    return getNativeEvent().getDataTransfer();
+    return Js.<DragEvent>uncheckedCast(getNativeEvent()).dataTransfer;
   }
 
   /**

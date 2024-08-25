@@ -18,12 +18,12 @@ package org.gwtproject.cell.client;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
 import jsinterop.base.Js;
-import org.gwtproject.dom.client.BrowserEvents;
-import org.gwtproject.dom.client.NativeEvent;
+import org.gwtproject.event.shared.BrowserEvents;
 import org.gwtproject.event.dom.client.KeyCodes;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
+import org.gwtproject.user.client.DOM;
 
 /**
  * A {@link Cell} used to render a checkbox. The value of the checkbox may be toggled using the
@@ -92,12 +92,12 @@ public class CheckboxCell extends AbstractEditableCell<Boolean, Boolean> {
       Context context,
       HTMLElement parent,
       Boolean value,
-      NativeEvent event,
+      elemental2.dom.Event event,
       ValueUpdater<Boolean> valueUpdater) {
-    String type = event.getType();
+    String type = event.type;
 
     boolean enterPressed =
-        BrowserEvents.KEYDOWN.equals(type) && event.getKeyCode() == KeyCodes.KEY_ENTER;
+        BrowserEvents.KEYDOWN.equals(type) && DOM.eventGetKeyCode(event) == KeyCodes.KEY_ENTER;
     if (BrowserEvents.CHANGE.equals(type) || enterPressed) {
       HTMLInputElement input = Js.uncheckedCast(parent.firstChild);
       Boolean isChecked = input.checked;

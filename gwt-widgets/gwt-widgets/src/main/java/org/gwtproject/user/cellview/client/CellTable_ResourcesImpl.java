@@ -194,7 +194,6 @@ public class CellTable_ResourcesImpl implements CellTable.Resources {
           public boolean ensureInjected() {
             if (!injected) {
               injected = true;
-              org.gwtproject.dom.client.StyleInjector.inject(getText());
               return true;
             }
             return false;

@@ -17,10 +17,11 @@ package org.gwtproject.event.dom.client;
 
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
+import elemental2.dom.TouchList;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
-import org.gwtproject.core.client.JsArray;
-import org.gwtproject.dom.client.Touch;
+import elemental2.core.JsArray;
+import elemental2.dom.Touch;
 
 /**
  * Abstract class representing touch events.
@@ -57,8 +58,8 @@ public abstract class TouchEvent<H> extends HumanInputEvent<H> {
    *
    * @return an array of touches
    */
-  public JsArray<Touch> getChangedTouches() {
-    return getNativeEvent().getChangedTouches();
+  public TouchList getChangedTouches() {
+    return ((elemental2.dom.TouchEvent) getNativeEvent()).changedTouches;
   }
 
   /**
@@ -69,8 +70,8 @@ public abstract class TouchEvent<H> extends HumanInputEvent<H> {
    *
    * @return an array of touches
    */
-  public JsArray<Touch> getTargetTouches() {
-    return getNativeEvent().getTargetTouches();
+  public TouchList getTargetTouches() {
+    return ((elemental2.dom.TouchEvent) getNativeEvent()).targetTouches;
   }
 
   /**
@@ -80,8 +81,8 @@ public abstract class TouchEvent<H> extends HumanInputEvent<H> {
    *
    * @return an array of touches
    */
-  public JsArray<Touch> getTouches() {
-    return getNativeEvent().getTouches();
+  public TouchList getTouches() {
+    return ((elemental2.dom.TouchEvent) getNativeEvent()).touches;
   }
 
   //

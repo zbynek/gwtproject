@@ -15,7 +15,7 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.shared.BrowserEvents;
 
 /** Represents a native gesture start event. */
 public class GestureStartEvent extends DomEvent<GestureStartHandler> {
@@ -25,9 +25,7 @@ public class GestureStartEvent extends DomEvent<GestureStartHandler> {
       new Type<>(BrowserEvents.GESTURESTART, new GestureStartEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
-   * org.gwtproject.event.shared.HasHandlers)} to fire gesture start events.
+   * Protected constructor.
    */
   protected GestureStartEvent() {}
 
@@ -43,14 +41,6 @@ public class GestureStartEvent extends DomEvent<GestureStartHandler> {
   @Override
   public final Type<GestureStartHandler> getAssociatedType() {
     return TYPE;
-  }
-
-  public double getRotation() {
-    return getNativeEvent().getRotation();
-  }
-
-  public double getScale() {
-    return getNativeEvent().getScale();
   }
 
   @Override

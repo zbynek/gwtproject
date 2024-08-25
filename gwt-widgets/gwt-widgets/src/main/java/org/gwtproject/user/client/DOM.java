@@ -35,7 +35,6 @@ import elemental2.dom.MouseEvent;
 import elemental2.dom.MouseEventInit;
 import elemental2.dom.Node;
 import jsinterop.base.Js;
-import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.event.logical.shared.ResizeEvent;
 import org.gwtproject.event.logical.shared.ResizeHandler;
 import org.gwtproject.event.shared.HandlerRegistration;
@@ -52,7 +51,7 @@ import org.gwtproject.user.client.ui.PotentialElement;
 public class DOM {
 
   // The current event being fired
-  private static Event currentEvent = null;
+  private static elemental2.dom.Event currentEvent = null;
   static final DOMImpl impl = new DOMImplStandardBase();
   private static HTMLElement sCaptureElem;
   private static double gwtUid = 0.0;
@@ -125,7 +124,7 @@ public class DOM {
     return btn;
   }
 
-  public static NativeEvent createHtmlEvent(String type, boolean canBubble, boolean cancelable) {
+  public static elemental2.dom.Event createHtmlEvent(String type, boolean canBubble, boolean cancelable) {
     EventInit details = EventInit.create();
     details.setBubbles(canBubble);
     details.setCancelable(cancelable);
@@ -166,7 +165,7 @@ public class DOM {
     return new MouseEvent(type, init);
   }
 
-  public static NativeEvent createLoadEvent() {
+  public static elemental2.dom.Event createLoadEvent() {
     return createHtmlEvent("load", false, false);
   }
 
@@ -448,92 +447,8 @@ public class DOM {
    * @param evt the event on which to cancel bubbling
    * @param cancel <code>true</code> to cancel bubbling
    */
-  public static void eventCancelBubble(Event evt, boolean cancel) {
+  public static void eventCancelBubble(elemental2.dom.Event evt, boolean cancel) {
     impl.eventCancelBubble(evt, cancel);
-  }
-
-  /**
-   * Gets whether the ALT key was depressed when the given event occurred.
-   *
-   * @param evt the event to be tested
-   * @return <code>true</code> if ALT was depressed when the event occurred
-   * @deprecated Use {@link Event#getAltKey()} instead.
-   */
-  @Deprecated
-  public static boolean eventGetAltKey(Event evt) {
-    return evt.getAltKey();
-  }
-
-  /**
-   * Gets the mouse buttons that were depressed when the given event occurred.
-   *
-   * @param evt the event to be tested
-   * @return a bit-field, defined by {@link Event#BUTTON_LEFT}, {@link Event#BUTTON_MIDDLE}, and
-   *     {@link Event#BUTTON_RIGHT}
-   * @deprecated Use {@link Event#getButton()} instead.
-   */
-  @Deprecated
-  public static int eventGetButton(Event evt) {
-    return evt.getButton();
-  }
-
-  /**
-   * Gets the mouse x-position within the browser window's client area.
-   *
-   * @param evt the event to be tested
-   * @return the mouse x-position
-   * @deprecated Use {@link Event#getClientX()} instead.
-   */
-  @Deprecated
-  public static int eventGetClientX(Event evt) {
-    return evt.getClientX();
-  }
-
-  /**
-   * Gets the mouse y-position within the browser window's client area.
-   *
-   * @param evt the event to be tested
-   * @return the mouse y-position
-   * @deprecated Use {@link Event#getClientY()} instead.
-   */
-  @Deprecated
-  public static int eventGetClientY(Event evt) {
-    return evt.getClientY();
-  }
-
-  /**
-   * Gets whether the CTRL key was depressed when the given event occurred.
-   *
-   * @param evt the event to be tested
-   * @return <code>true</code> if CTRL was depressed when the event occurred
-   * @deprecated Use {@link Event#getCtrlKey()} instead.
-   */
-  @Deprecated
-  public static boolean eventGetCtrlKey(Event evt) {
-    return evt.getCtrlKey();
-  }
-
-  /**
-   * Gets the current event that is being fired. The current event is only available within the
-   * lifetime of the onBrowserEvent function. Once the onBrowserEvent method returns, the current
-   * event is reset to null.
-   *
-   * @return the current event
-   */
-  public static Event eventGetCurrentEvent() {
-    return currentEvent;
-  }
-
-  /**
-   * Gets the current target element of the given event. This is the element whose listener fired
-   * last, not the element which fired the event initially.
-   *
-   * @param evt the event
-   * @return the event's current target element
-   * @see DOM#eventGetTarget(Event)
-   */
-  public static HTMLElement eventGetCurrentTarget(Event evt) {
-    return evt.getCurrentEventTarget().cast();
   }
 
   /**
@@ -543,7 +458,7 @@ public class DOM {
    * @param evt the event to be tested
    * @return the element from which the mouse pointer was moved
    */
-  public static HTMLElement eventGetFromElement(Event evt) {
+  public static HTMLElement eventGetFromElement(elemental2.dom.Event evt) {
     return impl.eventGetFromElement(evt);
   }
 
@@ -556,41 +471,11 @@ public class DOM {
    *
    * @param evt the event to be tested
    * @return the Unicode character or key code.
-   * @deprecated Use {@link Event#getKeyCode()} instead.
+   * @deprecated Use {@link elemental2.dom.KeyboardEvent#key} instead.
    */
   @Deprecated
-  public static int eventGetKeyCode(Event evt) {
-    return evt.getKeyCode();
-  }
-
-  /**
-   * Gets whether the META key was depressed when the given event occurred.
-   *
-   * @param evt the event to be tested
-   * @return <code>true</code> if META was depressed when the event occurred
-   * @deprecated Use {@link Event#getMetaKey()} instead.
-   */
-  @Deprecated
-  public static boolean eventGetMetaKey(Event evt) {
-    return evt.getMetaKey();
-  }
-
-  /**
-   * Gets the velocity of the mouse wheel associated with the event along the Y axis.
-   *
-   * <p>The velocity of the event is an artificial measurement for relative comparisons of wheel
-   * activity. It is affected by some non-browser factors, including choice of input hardware and
-   * mouse acceleration settings. The sign of the velocity measurement agrees with the screen
-   * coordinate system; negative values are towards the origin and positive values are away from the
-   * origin. Standard scrolling speed is approximately ten units per event.
-   *
-   * @param evt the event to be examined.
-   * @return The velocity of the mouse wheel.
-   * @deprecated Use {@link Event#getMouseWheelVelocityY()} instead.
-   */
-  @Deprecated
-  public static int eventGetMouseWheelVelocityY(Event evt) {
-    return evt.getMouseWheelVelocityY();
+  public static int eventGetKeyCode(elemental2.dom.Event evt) {
+    return Js.asPropertyMap(evt).getAsAny("keyCode").asInt();
   }
 
   /**
@@ -606,49 +491,13 @@ public class DOM {
   }
 
   /**
-   * Gets the mouse x-position on the user's display.
-   *
-   * @param evt the event to be tested
-   * @return the mouse x-position
-   * @deprecated Use {@link Event#getScreenX()} instead.
-   */
-  @Deprecated
-  public static int eventGetScreenX(Event evt) {
-    return evt.getScreenX();
-  }
-
-  /**
-   * Gets the mouse y-position on the user's display.
-   *
-   * @param evt the event to be tested
-   * @return the mouse y-position
-   * @deprecated Use {@link Event#getScreenY()} instead.
-   */
-  @Deprecated
-  public static int eventGetScreenY(Event evt) {
-    return evt.getScreenY();
-  }
-
-  /**
-   * Gets whether the shift key was depressed when the given event occurred.
-   *
-   * @param evt the event to be tested
-   * @return <code>true</code> if shift was depressed when the event occurred
-   * @deprecated Use {@link Event#getShiftKey()} instead.
-   */
-  @Deprecated
-  public static boolean eventGetShiftKey(Event evt) {
-    return evt.getShiftKey();
-  }
-
-  /**
    * Returns the element that was the actual target of the given event.
    *
    * @param evt the event to be tested
    * @return the target element
    */
-  public static HTMLElement eventGetTarget(Event evt) {
-    return evt.getEventTarget().cast();
+  public static HTMLElement eventGetTarget(elemental2.dom.Event evt) {
+    return Js.uncheckedCast(evt.target);
   }
 
   /**
@@ -658,7 +507,7 @@ public class DOM {
    * @param evt the event to be tested
    * @return the element to which the mouse pointer was moved
    */
-  public static HTMLElement eventGetToElement(Event evt) {
+  public static HTMLElement eventGetToElement(elemental2.dom.Event evt) {
     return impl.eventGetToElement(evt);
   }
 
@@ -668,7 +517,7 @@ public class DOM {
    * @param evt the event to be tested
    * @return the event's enumerated type, or -1 if not defined
    */
-  public static int eventGetType(Event evt) {
+  public static int eventGetType(elemental2.dom.Event evt) {
     return impl.eventGetTypeInt(evt);
   }
 
@@ -677,49 +526,23 @@ public class DOM {
    *
    * @param evt the event to be tested
    * @return the event's type name
-   * @deprecated Use {@link Event#getType()} instead.
+   * @deprecated Use {@link Event#type} instead.
    */
   @Deprecated
-  public static String eventGetTypeString(Event evt) {
-    return evt.getType();
+  public static String eventGetTypeString(elemental2.dom.Event evt) {
+    return evt.type;
   }
 
   /**
    * Prevents the browser from taking its default action for the given event.
    *
    * @param evt the event whose default action is to be prevented
-   * @deprecated Use {@link Event#preventDefault()} instead.
+   * @deprecated Use {@link elemental2.dom.Event#preventDefault()} instead.
    */
   @Deprecated
-  public static void eventPreventDefault(Event evt) {
+  public static void eventPreventDefault(elemental2.dom.Event evt) {
     evt.preventDefault();
   }
-
-  /**
-   * Sets the key code associated with the given keyboard event.
-   *
-   * @param evt the event whose key code is to be set
-   * @param key the new key code
-   * @deprecated this method only works in IE and should not have been added to the API
-   */
-  @Deprecated
-  public static void eventSetKeyCode(Event evt, char key) {
-    impl.eventSetKeyCode(evt, key);
-  }
-
-  /**
-   * Returns a stringized version of the event. This string is for debugging purposes and will NOT
-   * be consistent on different browsers.
-   *
-   * @param evt the event to stringize
-   * @return a string form of the event
-   * @deprecated Use {@link Event#getString()} instead.
-   */
-  @Deprecated
-  public static String eventToString(Event evt) {
-    return evt.getString();
-  }
-
 
   /**
    * Gets any named property from an element, as a string.
@@ -1319,9 +1142,9 @@ public class DOM {
    * @param elem the handle to the element that received the event.
    * @param listener the listener associated with the element that received the event.
    */
-  public static void dispatchEvent(Event evt, HTMLElement elem, EventListener listener) {
+  public static void dispatchEvent(elemental2.dom.Event evt, HTMLElement elem, EventListener listener) {
     // Preserve the current event in case we are in a reentrant event dispatch.
-    Event prevCurrentEvent = currentEvent;
+    elemental2.dom.Event prevCurrentEvent = currentEvent;
     currentEvent = evt;
 
     dispatchEventImpl(evt, elem, listener);
@@ -1330,14 +1153,14 @@ public class DOM {
   }
 
   /**
-   * This method is a similar to {@link #dispatchEvent(Event, HTMLElement, EventListener)} but only
+   * This method is a similar to {@link #dispatchEvent(elemental2.dom.Event, HTMLElement, EventListener)} but only
    * dispatches if an event listener is set to element.
    *
    * @param evt the handle to the event being fired.
    * @param elem the handle to the element that received the event.
    * @return {@code true} if the event was dispatched
    */
-  public static boolean dispatchEvent(Event evt, HTMLElement elem) {
+  public static boolean dispatchEvent(elemental2.dom.Event evt, HTMLElement elem) {
     EventListener eventListener = getEventListener(elem);
     if (eventListener == null) {
       return false;
@@ -1357,7 +1180,7 @@ public class DOM {
    * @param evt a handle to the event being previewed
    * @return <code>false</code> to cancel the event
    */
-  public static boolean previewEvent(Event evt) {
+  public static boolean previewEvent(elemental2.dom.Event evt) {
     // Fire a NativePreviewEvent to NativePreviewHandlers
     boolean ret = Event.fireNativePreviewEvent(evt);
     // If the preview cancels the event, stop it from bubbling and performing
@@ -1370,7 +1193,7 @@ public class DOM {
     return ret;
   }
 
-  private static void dispatchEventImpl(Event evt, HTMLElement elem, EventListener listener) {
+  private static void dispatchEventImpl(elemental2.dom.Event evt, HTMLElement elem, EventListener listener) {
     // If this element has capture...
     if (elem == sCaptureElem) {
       // ... and it's losing capture, clear sCaptureElem.

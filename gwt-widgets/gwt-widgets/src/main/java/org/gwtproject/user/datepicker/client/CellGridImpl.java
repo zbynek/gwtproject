@@ -176,7 +176,7 @@ abstract class CellGridImpl<V> extends Grid {
     return elementToCell.get(element);
   }
 
-  public Cell getCell(Event e) {
+  public Cell getCell(elemental2.dom.Event e) {
     // Find out which cell was actually clicked.
     HTMLElement td = getEventTargetCell(e);
     return td != null ? elementToCell.get(td) : null;
@@ -211,7 +211,7 @@ abstract class CellGridImpl<V> extends Grid {
   }
 
   @Override
-  public void onBrowserEvent(Event event) {
+  public void onBrowserEvent(elemental2.dom.Event event) {
     switch (DOM.eventGetType(event)) {
       case Event.ONCLICK:
         {

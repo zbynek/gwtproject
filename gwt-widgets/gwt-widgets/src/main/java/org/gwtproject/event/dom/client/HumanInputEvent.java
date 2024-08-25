@@ -15,6 +15,8 @@
  */
 package org.gwtproject.event.dom.client;
 
+import jsinterop.base.Js;
+
 /**
  * Abstract class representing position events such as mouse or touch events.
  *
@@ -22,13 +24,17 @@ package org.gwtproject.event.dom.client;
  */
 public abstract class HumanInputEvent<H> extends DomEvent<H> {
 
+  private elemental2.dom.MouseEvent getNativeMouseEvent() {
+    return Js.uncheckedCast(getNativeEvent());
+  }
+
   /**
    * Is <code>alt</code> key down.
    *
    * @return whether the alt key is down
    */
   public boolean isAltKeyDown() {
-    return getNativeEvent().getAltKey();
+    return getNativeMouseEvent().altKey;
   }
 
   /**
@@ -37,7 +43,7 @@ public abstract class HumanInputEvent<H> extends DomEvent<H> {
    * @return whether the control key is down
    */
   public boolean isControlKeyDown() {
-    return getNativeEvent().getCtrlKey();
+    return getNativeMouseEvent().ctrlKey;
   }
 
   /**
@@ -46,7 +52,7 @@ public abstract class HumanInputEvent<H> extends DomEvent<H> {
    * @return whether the meta key is down
    */
   public boolean isMetaKeyDown() {
-    return getNativeEvent().getMetaKey();
+    return getNativeMouseEvent().metaKey;
   }
 
   /**
@@ -55,6 +61,6 @@ public abstract class HumanInputEvent<H> extends DomEvent<H> {
    * @return whether the shift key is down
    */
   public boolean isShiftKeyDown() {
-    return getNativeEvent().getShiftKey();
+    return getNativeMouseEvent().shiftKey;
   }
 }

@@ -22,7 +22,7 @@ import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
-import org.gwtproject.dom.style.shared.Unit;
+import org.gwtproject.user.client.Unit;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.event.logical.shared.BeforeSelectionEvent;

@@ -18,7 +18,6 @@ package org.gwtproject.cell.client;
 import java.util.Set;
 
 import elemental2.dom.HTMLElement;
-import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 
 /**
@@ -141,15 +140,16 @@ public interface Cell<C> {
 
   /**
    * Get the set of events that this cell consumes (see {@link
-   * org.gwtproject.dom.client.BrowserEvents BrowserEvents} for useful constants). The container
-   * that uses this cell should only pass these events to {@link #onBrowserEvent(Context, HTMLElement,
-   * Object, NativeEvent, ValueUpdater)} when the event occurs.
+   * org.gwtproject.event.shared.BrowserEvents
+ BrowserEvents} for useful constants). The container
+   * that uses this cell should only pass these events to onBrowserEvent when the event occurs.
    *
    * <p>The returned value should not be modified, and may be an unmodifiable set. Changes to the
    * return value may not be reflected in the cell.
    *
    * @return the consumed events, or null if no events are consumed
-   * @see org.gwtproject.dom.client.BrowserEvents
+   * @see org.gwtproject.event.shared.BrowserEvents
+
    */
   Set<String> getConsumedEvents();
 
@@ -184,7 +184,7 @@ public interface Cell<C> {
    * @param valueUpdater a {@link ValueUpdater}, or null if not specified
    */
   void onBrowserEvent(
-          Context context, HTMLElement parent, C value, NativeEvent event, ValueUpdater<C> valueUpdater);
+          Context context, HTMLElement parent, C value, elemental2.dom.Event event, ValueUpdater<C> valueUpdater);
 
   /**
    * Render a cell as HTML into a {@link SafeHtmlBuilder}, suitable for passing to {@link

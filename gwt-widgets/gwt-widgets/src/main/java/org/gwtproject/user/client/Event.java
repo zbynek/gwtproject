@@ -18,7 +18,6 @@ package org.gwtproject.user.client;
 import elemental2.dom.HTMLElement;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
-import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.event.dom.client.HasNativeEvent;
 import org.gwtproject.event.shared.HandlerManager;
 import org.gwtproject.event.shared.HandlerRegistration;
@@ -30,7 +29,7 @@ import org.gwtproject.event.shared.HandlerRegistration;
  * was created from, and can be accessed in JavaScript code as expected. This is typically done by
  * calling methods in the {@link DOM} class.
  */
-public class Event extends NativeEvent {
+public class Event {
 
   /** Fired when an element loses keyboard focus. */
   public static final int ONBLUR = 0x01000;
@@ -118,13 +117,6 @@ public class Event extends NativeEvent {
   static HandlerManager handlers;
 
   /**
-   * Not directly instantiable. Subclasses should also define a protected no-arg constructor to
-   * prevent client code from directly instantiating the class.
-   */
-  @JsConstructor
-  protected Event() {}
-
-  /**
    * Adds a {@link NativePreviewHandler} that will receive all events before they are fired to their
    * handlers. Note that the handler will receive <u>all</u> native events, including those received
    * due to bubbling, whereas normal event handlers only receive explicitly sunk events.
@@ -153,11 +145,11 @@ public class Event extends NativeEvent {
   }
 
   /**
-   * Converts the {@link NativeEvent} to Event. This is always safe.
+   * Converts the {@link elemental2.dom.Event} to Event. This is always safe.
    *
    * @param event the event to downcast
    */
-  public static Event as(NativeEvent event) {
+  public static Event as(elemental2.dom.Event event) {
     return Js.uncheckedCast(event);
   }
 
@@ -167,19 +159,8 @@ public class Event extends NativeEvent {
    * @param nativeEvent the native event
    * @return true to fire the event normally, false to cancel the event
    */
-  public static boolean fireNativePreviewEvent(NativeEvent nativeEvent) {
+  public static boolean fireNativePreviewEvent(elemental2.dom.Event nativeEvent) {
     return NativePreviewEvent.fire(handlers, nativeEvent);
-  }
-
-  /**
-   * Gets the current event that is being fired. The current event is only available within the
-   * lifetime of the onBrowserEvent function. Once the onBrowserEvent method returns, the current
-   * event is reset to null.
-   *
-   * @return the current event
-   */
-  public static Event getCurrentEvent() {
-    return DOM.eventGetCurrentEvent();
   }
 
   /**
@@ -258,87 +239,6 @@ public class Event extends NativeEvent {
     DOM.sinkEvents(Js.uncheckedCast(elem), eventBits);
   }
 
-  /**
-   * Cancels bubbling for the given event. This will stop the event from being propagated to parent
-   * elements.
-   *
-   * @param cancel <code>true</code> to cancel bubbling
-   * @deprecated use {@link NativeEvent#stopPropagation()} instead
-   */
-  @Deprecated
-  public final void cancelBubble(boolean cancel) {
-    DOM.eventCancelBubble(this, cancel);
-  }
-
-  /**
-   * Gets the current target element of this event. This is the element whose listener fired last,
-   * not the element which fired the event initially.
-   *
-   * @return the event's current target element
-   * @deprecated use {@link NativeEvent#getCurrentEventTarget()} instead
-   */
-  @Deprecated
-  public final HTMLElement getCurrentTarget() {
-    return getCurrentEventTarget().cast();
-  }
-
-  /**
-   * Gets the element from which the mouse pointer was moved (only valid for {@link
-   * Event#ONMOUSEOVER}).
-   *
-   * @return the element from which the mouse pointer was moved
-   * @deprecated use {@link NativeEvent#getRelatedEventTarget()} instead
-   */
-  @Deprecated
-  public final HTMLElement getFromElement() {
-    return DOM.eventGetFromElement(this);
-  }
-
-  /**
-   * Gets the related target for this event.
-   *
-   * @return the related target
-   * @deprecated use {@link NativeEvent#getRelatedEventTarget()} instead
-   */
-  @Deprecated
-  public final HTMLElement getRelatedTarget() {
-    return getRelatedEventTarget().cast();
-  }
-
-  /**
-   * Gets the key-repeat state of this event.
-   *
-   * @return <code>true</code> if this key event was an auto-repeat
-   * @deprecated not supported on all browsers
-   */
-  @Deprecated
-  public final boolean getRepeat() {
-    return DOM.eventGetRepeat(this);
-  }
-
-  /**
-   * Returns the element that was the actual target of the given event.
-   *
-   * @return the target element
-   * @deprecated use {@link NativeEvent#getEventTarget()} instead
-   */
-  @Deprecated
-  public final HTMLElement getTarget() {
-    return getEventTarget().cast();
-  }
-
-  /**
-   * Gets the element to which the mouse pointer was moved (only valid for {@link
-   * Event#ONMOUSEOUT}).
-   *
-   * @return the element to which the mouse pointer was moved
-   * @deprecated use {@link NativeEvent#getRelatedEventTarget()} instead
-   */
-  @Deprecated
-  public final HTMLElement getToElement() {
-    return DOM.eventGetToElement(this);
-  }
-
   /** Handler interface for {@link NativePreviewEvent} events. */
   public interface NativePreviewHandler {
 
@@ -369,7 +269,7 @@ public class Event extends NativeEvent {
     /** A boolean indicating that the current handler is at the top of the event preview stack. */
     private boolean isFirstHandler = false;
     /** The event being previewed. */
-    private NativeEvent nativeEvent;
+    private elemental2.dom.Event nativeEvent;
 
     /**
      * Gets the type associated with this event.
@@ -390,14 +290,14 @@ public class Event extends NativeEvent {
      * @param nativeEvent the native event
      * @return true to fire the event normally, false to cancel the event
      */
-    private static boolean fire(HandlerManager handlers, NativeEvent nativeEvent) {
+    private static boolean fire(HandlerManager handlers, elemental2.dom.Event nativeEvent) {
       if (TYPE != null && handlers != null && handlers.isEventHandled(TYPE)) {
         // Cache the current values in the singleton in case we are in the
         // middle of handling another event.
         boolean lastIsCanceled = singleton.isCanceled;
         boolean lastIsConsumed = singleton.isConsumed;
         boolean lastIsFirstHandler = singleton.isFirstHandler;
-        NativeEvent lastNativeEvent = singleton.nativeEvent;
+        elemental2.dom.Event lastNativeEvent = singleton.nativeEvent;
 
         // Revive the event
         singleton.revive();
@@ -443,7 +343,7 @@ public class Event extends NativeEvent {
       return TYPE;
     }
 
-    public NativeEvent getNativeEvent() {
+    public elemental2.dom.Event getNativeEvent() {
       return nativeEvent;
     }
 
@@ -452,7 +352,7 @@ public class Event extends NativeEvent {
      *
      * @param nativeEvent the native {@link Event} being previewed.
      */
-    private void setNativeEvent(NativeEvent nativeEvent) {
+    private void setNativeEvent(elemental2.dom.Event nativeEvent) {
       this.nativeEvent = nativeEvent;
     }
 
@@ -462,7 +362,7 @@ public class Event extends NativeEvent {
      * @return the type int associated with this native event
      */
     public final int getTypeInt() {
-      return DOM.impl.eventGetTypeInt(getNativeEvent().getType());
+      return DOM.impl.eventGetTypeInt(getNativeEvent().type);
     }
 
     /**

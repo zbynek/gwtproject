@@ -15,7 +15,7 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.shared.BrowserEvents;
 
 /** Represents a native key up event. */
 public class KeyUpEvent extends KeyCodeEvent<KeyUpHandler> {

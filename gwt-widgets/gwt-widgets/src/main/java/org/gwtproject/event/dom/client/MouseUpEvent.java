@@ -15,7 +15,7 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.shared.BrowserEvents;
 
 /** Represents a native mouse up event. */
 public class MouseUpEvent extends MouseEvent<MouseUpHandler> {

@@ -16,14 +16,15 @@
 package org.gwtproject.cell.client;
 
 import elemental2.dom.HTMLElement;
-import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 import org.gwtproject.text.shared.SafeHtmlRenderer;
 import org.gwtproject.text.shared.SimpleSafeHtmlRenderer;
 
-import static org.gwtproject.dom.client.BrowserEvents.CLICK;
-import static org.gwtproject.dom.client.BrowserEvents.KEYDOWN;
+import static org.gwtproject.event.shared.BrowserEvents
+.CLICK;
+import static org.gwtproject.event.shared.BrowserEvents
+.KEYDOWN;
 
 /**
  * A {@link org.gwtproject.cell.client.Cell} used to render text. Clicking on the cell causes its
@@ -50,10 +51,10 @@ public class ClickableTextCell extends AbstractSafeHtmlCell<String> {
       Cell.Context context,
       HTMLElement parent,
       String value,
-      NativeEvent event,
+      elemental2.dom.Event event,
       org.gwtproject.cell.client.ValueUpdater<String> valueUpdater) {
     super.onBrowserEvent(context, parent, value, event, valueUpdater);
-    if (CLICK.equals(event.getType())) {
+    if (CLICK.equals(event.type)) {
       onEnterKeyDown(context, parent, value, event, valueUpdater);
     }
   }
@@ -63,7 +64,7 @@ public class ClickableTextCell extends AbstractSafeHtmlCell<String> {
       Cell.Context context,
       HTMLElement parent,
       String value,
-      NativeEvent event,
+      elemental2.dom.Event event,
       org.gwtproject.cell.client.ValueUpdater<String> valueUpdater) {
     if (valueUpdater != null) {
       valueUpdater.update(value);

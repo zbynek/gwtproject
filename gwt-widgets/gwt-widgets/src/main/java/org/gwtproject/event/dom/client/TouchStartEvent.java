@@ -31,7 +31,7 @@ package org.gwtproject.event.dom.client;
  * the License.
  */
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.shared.BrowserEvents;
 
 /** Represents a native touch start event. */
 public class TouchStartEvent extends TouchEvent<TouchStartHandler> {

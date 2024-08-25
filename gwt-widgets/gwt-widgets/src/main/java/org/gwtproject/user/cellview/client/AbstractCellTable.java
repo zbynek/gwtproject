@@ -23,13 +23,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import elemental2.dom.DomGlobal;
-import elemental2.dom.HTMLCollection;
-import elemental2.dom.HTMLElement;
-import elemental2.dom.HTMLTableCellElement;
-import elemental2.dom.HTMLTableElement;
-import elemental2.dom.HTMLTableRowElement;
-import elemental2.dom.HTMLTableSectionElement;
+import elemental2.dom.*;
 import jsinterop.base.Js;
 import org.gwtproject.cell.client.Cell;
 import org.gwtproject.cell.client.Cell.Context;
@@ -39,10 +33,8 @@ import org.gwtproject.cell.client.ValueUpdater;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.dom.builder.shared.HtmlTableSectionBuilder;
 import org.gwtproject.dom.builder.shared.TableSectionBuilder;
-import org.gwtproject.dom.client.BrowserEvents;
-import org.gwtproject.dom.client.EventTarget;
-import org.gwtproject.dom.client.NativeEvent;
-import org.gwtproject.dom.style.shared.Unit;
+import org.gwtproject.event.shared.BrowserEvents;
+import org.gwtproject.user.client.Unit;
 import org.gwtproject.event.dom.client.KeyCodes;
 import org.gwtproject.event.shared.HandlerRegistration;
 import org.gwtproject.resources.client.ImageResource;
@@ -113,8 +105,8 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
 
     @Override
     public void onCellPreview(CellPreviewEvent<T> event) {
-      NativeEvent nativeEvent = event.getNativeEvent();
-      String eventType = event.getNativeEvent().getType();
+      elemental2.dom.Event nativeEvent = event.getNativeEvent();
+      String eventType = event.getNativeEvent().type;
       if (BrowserEvents.KEYDOWN.equals(eventType) && !event.isCellEditing()) {
         /*
          * Handle keyboard navigation, unless the cell is being edited. If the
@@ -128,7 +120,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
         boolean isRtl = false;
         int keyCodeLineEnd = isRtl ? KeyCodes.KEY_LEFT : KeyCodes.KEY_RIGHT;
         int keyCodeLineStart = isRtl ? KeyCodes.KEY_RIGHT : KeyCodes.KEY_LEFT;
-        int keyCode = nativeEvent.getKeyCode();
+        int keyCode = DOM.eventGetKeyCode(nativeEvent);
         if (keyCode == keyCodeLineEnd) {
           int nextColumn = findInteractiveColumn(oldColumn, false);
           if (nextColumn <= oldColumn) {
@@ -181,7 +173,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
           if (BrowserEvents.CLICK.equals(eventType)) {
             // If a natively focusable element was just clicked, then do not
             // steal focus.
-            HTMLElement target = Js.uncheckedCast(event.getNativeEvent().getEventTarget());
+            HTMLElement target = Js.uncheckedCast(event.getNativeEvent().target);
             stealFocus = !CellBasedWidgetImpl.get().isFocusable(target);
           }
 
@@ -1525,13 +1517,13 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
   }
 
   @Override
-  protected void onBrowserEvent2(Event event) {
+  protected void onBrowserEvent2(elemental2.dom.Event event) {
     // Get the event target.
-    EventTarget eventTarget = event.getEventTarget();
+    EventTarget eventTarget = event.target;
     if (!DOM.isElement(eventTarget)) {
       return;
     }
-    final HTMLElement target = event.getEventTarget().cast();
+    final HTMLElement target = Js.uncheckedCast(event.target);
 
     // Find the cell where the event occurred.
     HTMLTableSectionElement tbody = getTableBodyElement();
@@ -1626,11 +1618,11 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
      * Forward the event to the associated header, footer, or column.
      */
     HTMLTableRowElement targetTableRow = Js.uncheckedCast(targetTableCell.parentElement);
-    String eventType = event.getType();
+    String eventType = event.type;
     boolean isSelect =
         BrowserEvents.CLICK.equals(eventType)
             || (BrowserEvents.KEYDOWN.equals(eventType)
-                && event.getKeyCode() == KeyCodes.KEY_ENTER);
+                && DOM.eventGetKeyCode(event) == KeyCodes.KEY_ENTER);
 
     int col = targetTableCell.cellIndex;
     if (targetTableSection == thead || targetTableSection == tfoot) {
@@ -1709,8 +1701,9 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
             // on top of the row, mouseout event should not be triggered. This is to avoid the
             // flickring
             // effect if the floating element is shown/hide based on hover event.
-            int clientX = event.getClientX() + (int) DomGlobal.document.documentElement.scrollLeft;
-            int clientY = event.getClientY() + (int) DomGlobal.document.documentElement.scrollTop;
+            MouseEvent evt = Js.uncheckedCast(event);
+            double clientX = evt.clientX + DomGlobal.document.documentElement.scrollLeft;
+            double clientY = evt.clientY + DomGlobal.document.documentElement.scrollTop;
             int rowLeft = DOM.getAbsoluteLeft(hoveringRow);
             int rowTop = DOM.getAbsoluteTop(hoveringRow);
             int rowWidth = hoveringRow.offsetWidth;
@@ -2185,7 +2178,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
 
   /** Fire an event to the Cell within the specified {@link HTMLTableCellElement}. */
   private <C> void fireEventToCell(
-      Event event,
+      elemental2.dom.Event event,
       String eventType,
       HTMLElement parentElem,
       final T rowValue,
@@ -2365,7 +2358,7 @@ public abstract class AbstractCellTable<T> extends AbstractHasData<T> {
    *     cell. Row style update is called only on full row change.
    */
   private void setRowHover(
-      HTMLTableRowElement tr, Event event, boolean isHovering, boolean isRowChange) {
+      HTMLTableRowElement tr, elemental2.dom.Event event, boolean isHovering, boolean isRowChange) {
     if (!skipRowHoverStyleUpdate) {
       setRowStyleName(tr, style.hoveredRow(), style.hoveredRowCell(), isHovering);
     }

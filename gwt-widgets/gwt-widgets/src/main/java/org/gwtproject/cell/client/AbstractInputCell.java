@@ -21,8 +21,7 @@ import java.util.Set;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
 import jsinterop.base.Js;
-import org.gwtproject.dom.client.BrowserEvents;
-import org.gwtproject.dom.client.NativeEvent;
+import org.gwtproject.event.shared.BrowserEvents;
 
 /**
  * An {@link AbstractCell} used to render input elements that can receive focus.
@@ -96,17 +95,17 @@ public abstract class AbstractInputCell<C, V> extends AbstractEditableCell<C, V>
       Cell.Context context,
       HTMLElement parent,
       C value,
-      NativeEvent event,
+      elemental2.dom.Event event,
       ValueUpdater<C> valueUpdater) {
     super.onBrowserEvent(context, parent, value, event, valueUpdater);
 
     // Ignore events that don't target the input.
-    HTMLElement target = Js.uncheckedCast(event.getEventTarget());
+    HTMLElement target = Js.uncheckedCast(event.target);
     if (!getInputElement(parent).contains(target)) {
       return;
     }
 
-    String eventType = event.getType();
+    String eventType = event.type;
     if (BrowserEvents.FOCUS.equals(eventType)) {
       focusedKey = context.getKey();
     } else if (BrowserEvents.BLUR.equals(eventType)) {
@@ -151,10 +150,10 @@ public abstract class AbstractInputCell<C, V> extends AbstractEditableCell<C, V>
       Cell.Context context,
       HTMLElement parent,
       C value,
-      NativeEvent event,
+      elemental2.dom.Event event,
       ValueUpdater<C> valueUpdater) {
     HTMLElement input = getInputElement(parent);
-    HTMLElement target = Js.uncheckedCast(event.getEventTarget());
+    HTMLElement target = Js.uncheckedCast(event.target);
     Object key = context.getKey();
     if (getInputElement(parent).contains(target)) {
       finishEditing(parent, value, key, valueUpdater);

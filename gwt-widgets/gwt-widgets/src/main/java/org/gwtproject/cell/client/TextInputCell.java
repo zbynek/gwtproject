@@ -18,8 +18,7 @@ package org.gwtproject.cell.client;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
 import jsinterop.base.Js;
-import org.gwtproject.dom.client.BrowserEvents;
-import org.gwtproject.dom.client.NativeEvent;
+import org.gwtproject.event.shared.BrowserEvents;
 import org.gwtproject.safehtml.client.SafeHtmlTemplates;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
@@ -139,18 +138,18 @@ public class TextInputCell
       Context context,
       HTMLElement parent,
       String value,
-      NativeEvent event,
+      elemental2.dom.Event event,
       org.gwtproject.cell.client.ValueUpdater<String> valueUpdater) {
     super.onBrowserEvent(context, parent, value, event, valueUpdater);
 
     // Ignore events that don't target the input.
     HTMLInputElement input = getInputElement(parent);
-    HTMLElement target = event.getEventTarget().cast();
+    HTMLElement target = Js.uncheckedCast(event.target);
     if (!input.contains(target)) {
       return;
     }
 
-    String eventType = event.getType();
+    String eventType = event.type;
     Object key = context.getKey();
     if (BrowserEvents.CHANGE.equals(eventType)) {
       finishEditing(parent, value, key, valueUpdater);

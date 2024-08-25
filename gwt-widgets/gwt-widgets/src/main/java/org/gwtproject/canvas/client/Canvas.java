@@ -15,12 +15,12 @@
  */
 package org.gwtproject.canvas.client;
 
+import elemental2.core.JsObject;
+import elemental2.dom.CanvasRenderingContext2D;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLCanvasElement;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.gwtproject.canvas.dom.client.Context;
-import org.gwtproject.canvas.dom.client.Context2d;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.ui.FocusWidget;
 import org.gwtproject.user.client.ui.RootPanel;
@@ -96,8 +96,8 @@ public class Canvas extends FocusWidget {
    * @param contextId the context id as a String
    * @return the canvas rendering context
    */
-  public Context getContext(String contextId) {
-    return Js.uncheckedCast(getCanvasElement().getContext(contextId));
+  public JsObject getContext(String contextId) {
+    return getCanvasElement().getContext(contextId);
   }
 
   /**
@@ -107,7 +107,7 @@ public class Canvas extends FocusWidget {
    *
    * @return a 2D canvas rendering context
    */
-  public Context2d getContext2d() {
+  public CanvasRenderingContext2D getContext2d() {
     return Js.uncheckedCast(getCanvasElement().getContext("2d"));
   }
 

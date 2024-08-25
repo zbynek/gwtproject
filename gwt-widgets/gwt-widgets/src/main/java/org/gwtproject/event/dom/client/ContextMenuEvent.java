@@ -15,7 +15,7 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.shared.BrowserEvents;
 
 /** Represents a native context menu event. */
 public class ContextMenuEvent extends DomEvent<ContextMenuHandler> {

@@ -16,7 +16,7 @@
 package org.gwtproject.user.client.ui;
 
 import jsinterop.base.Js;
-import org.gwtproject.dom.client.EventTarget;
+import elemental2.dom.EventTarget;
 import org.gwtproject.event.logical.shared.ValueChangeEvent;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
@@ -124,7 +124,7 @@ public class RadioButton extends CheckBox {
 
   /** Overridden to send ValueChangeEvents only when appropriate. */
   @Override
-  public void onBrowserEvent(Event event) {
+  public void onBrowserEvent(elemental2.dom.Event event) {
     switch (DOM.eventGetType(event)) {
       case Event.ONMOUSEUP:
       case Event.ONBLUR:
@@ -134,7 +134,7 @@ public class RadioButton extends CheckBox {
         break;
 
       case Event.ONCLICK:
-        EventTarget target = event.getEventTarget();
+        EventTarget target = event.target;
         if (DOM.isElement(target) && labelElem.contains(Js.uncheckedCast(target))) {
 
           // They clicked the label. Note our pre-click value, and

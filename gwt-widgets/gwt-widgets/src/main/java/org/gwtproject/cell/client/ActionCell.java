@@ -17,15 +17,16 @@ package org.gwtproject.cell.client;
 
 import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
-import org.gwtproject.dom.client.EventTarget;
-import org.gwtproject.dom.client.NativeEvent;
+import elemental2.dom.EventTarget;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.gwtproject.user.client.DOM;
 
-import static org.gwtproject.dom.client.BrowserEvents.CLICK;
-import static org.gwtproject.dom.client.BrowserEvents.KEYDOWN;
+import static org.gwtproject.event.shared.BrowserEvents
+.CLICK;
+import static org.gwtproject.event.shared.BrowserEvents
+.KEYDOWN;
 
 /**
  * A cell that renders a button and takes a delegate to perform actions on mouseUp.
@@ -83,11 +84,11 @@ public class ActionCell<C> extends AbstractCell<C> {
       Cell.Context context,
       HTMLElement parent,
       C value,
-      NativeEvent event,
+      elemental2.dom.Event event,
       org.gwtproject.cell.client.ValueUpdater<C> valueUpdater) {
     super.onBrowserEvent(context, parent, value, event, valueUpdater);
-    if (CLICK.equals(event.getType())) {
-      EventTarget eventTarget = event.getEventTarget();
+    if (CLICK.equals(event.type)) {
+      EventTarget eventTarget = event.target;
       if (!DOM.isElement(eventTarget)) {
         return;
       }
@@ -108,7 +109,7 @@ public class ActionCell<C> extends AbstractCell<C> {
       Cell.Context context,
       HTMLElement parent,
       C value,
-      NativeEvent event,
+      elemental2.dom.Event event,
       org.gwtproject.cell.client.ValueUpdater<C> valueUpdater) {
     delegate.execute(value);
   }

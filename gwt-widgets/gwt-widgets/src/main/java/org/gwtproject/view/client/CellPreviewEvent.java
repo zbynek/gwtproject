@@ -16,7 +16,6 @@
 package org.gwtproject.view.client;
 
 import org.gwtproject.cell.client.Cell.Context;
-import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.event.shared.Event;
 
 /**
@@ -60,7 +59,7 @@ public class CellPreviewEvent<T> extends Event<CellPreviewEvent.Handler<T>> {
    */
   public static <T> CellPreviewEvent<T> fire(
       org.gwtproject.view.client.HasCellPreviewHandlers<T> source,
-      NativeEvent nativeEvent,
+      elemental2.dom.Event nativeEvent,
       org.gwtproject.view.client.HasData<T> display,
       Context context,
       T value,
@@ -92,7 +91,7 @@ public class CellPreviewEvent<T> extends Event<CellPreviewEvent.Handler<T>> {
   private boolean isCanceled = false;
   private final boolean isCellEditing;
   private final boolean isSelectionHandled;
-  private final NativeEvent nativeEvent;
+  private final elemental2.dom.Event nativeEvent;
   private final T value;
 
   /**
@@ -106,7 +105,7 @@ public class CellPreviewEvent<T> extends Event<CellPreviewEvent.Handler<T>> {
    * @param isSelectionHandled indicates whether or not selection is handled
    */
   protected CellPreviewEvent(
-      NativeEvent nativeEvent,
+      elemental2.dom.Event nativeEvent,
       org.gwtproject.view.client.HasData<T> display,
       Context context,
       T value,
@@ -157,8 +156,8 @@ public class CellPreviewEvent<T> extends Event<CellPreviewEvent.Handler<T>> {
     return context.getIndex();
   }
 
-  /** Get the {@link NativeEvent} to preview. */
-  public NativeEvent getNativeEvent() {
+  /** Get the {@link elemental2.dom.Event} to preview. */
+  public elemental2.dom.Event getNativeEvent() {
     return nativeEvent;
   }
 

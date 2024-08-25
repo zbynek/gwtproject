@@ -15,8 +15,11 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.NativeEvent;
+
+import elemental2.dom.Element;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
+import org.gwtproject.user.client.DOM;
 
 /**
  * Abstract class representing mouse events.
@@ -26,8 +29,7 @@ import org.gwtproject.dom.client.NativeEvent;
 public abstract class MouseEvent<H> extends HumanInputEvent<H> {
 
   /**
-   * Gets the button value. Compare it to {@link NativeEvent#BUTTON_LEFT}, {@link
-   * NativeEvent#BUTTON_RIGHT}, {@link NativeEvent#BUTTON_MIDDLE}
+   * Gets the button value.
    *
    * <p>Note: this is unreliable for events not caused by the depression or release of a mouse
    * button.
@@ -35,7 +37,11 @@ public abstract class MouseEvent<H> extends HumanInputEvent<H> {
    * @return the button value
    */
   public int getNativeButton() {
-    return getNativeEvent().getButton();
+    return getNativeMouseEvent().button;
+  }
+
+  private elemental2.dom.MouseEvent getNativeMouseEvent() {
+    return Js.uncheckedCast(getNativeEvent());
   }
 
   /**
@@ -44,7 +50,7 @@ public abstract class MouseEvent<H> extends HumanInputEvent<H> {
    * @return the mouse x-position
    */
   public int getScreenX() {
-    return getNativeEvent().getScreenX();
+    return (int) getNativeMouseEvent().screenX;
   }
 
   /**
@@ -53,7 +59,7 @@ public abstract class MouseEvent<H> extends HumanInputEvent<H> {
    * @return the mouse y-position
    */
   public int getScreenY() {
-    return getNativeEvent().getScreenY();
+    return (int) getNativeMouseEvent().screenY;
   }
 
   /**
@@ -62,7 +68,7 @@ public abstract class MouseEvent<H> extends HumanInputEvent<H> {
    * @return the relative x-position
    */
   public int getX() {
-    Element relativeElem = getRelativeElement();
+    HTMLElement relativeElem = getRelativeElement();
     if (relativeElem != null) {
       return getRelativeX(relativeElem);
     }
@@ -75,12 +81,12 @@ public abstract class MouseEvent<H> extends HumanInputEvent<H> {
    * @param target the element whose coordinate system is to be used
    * @return the relative x-position
    */
-  public int getRelativeX(Element target) {
-    NativeEvent e = getNativeEvent();
-    return e.getClientX()
-        - target.getAbsoluteLeft()
-        + target.getScrollLeft()
-        + target.getOwnerDocument().getScrollLeft();
+  public int getRelativeX(HTMLElement target) {
+    elemental2.dom.MouseEvent e = getNativeMouseEvent();
+    return (int) (e.clientX
+        - DOM.getAbsoluteLeft(target)
+        + target.scrollLeft
+        + target.ownerDocument.scrollingElement.scrollLeft);
   }
 
   /**
@@ -89,7 +95,7 @@ public abstract class MouseEvent<H> extends HumanInputEvent<H> {
    * @return the mouse x-position
    */
   public int getClientX() {
-    return getNativeEvent().getClientX();
+    return (int) getNativeMouseEvent().clientX;
   }
 
   /**
@@ -98,7 +104,7 @@ public abstract class MouseEvent<H> extends HumanInputEvent<H> {
    * @return the relative y-position
    */
   public int getY() {
-    Element relativeElem = getRelativeElement();
+    HTMLElement relativeElem = getRelativeElement();
     if (relativeElem != null) {
       return getRelativeY(relativeElem);
     }
@@ -111,12 +117,12 @@ public abstract class MouseEvent<H> extends HumanInputEvent<H> {
    * @param target the element whose coordinate system is to be used
    * @return the relative y-position
    */
-  public int getRelativeY(Element target) {
-    NativeEvent e = getNativeEvent();
-    return e.getClientY()
-        - target.getAbsoluteTop()
-        + target.getScrollTop()
-        + target.getOwnerDocument().getScrollTop();
+  public int getRelativeY(HTMLElement target) {
+    elemental2.dom.MouseEvent e = getNativeMouseEvent();
+    return (int) (e.clientY
+        - DOM.getAbsoluteTop(target)
+        + target.scrollTop
+        + target.ownerDocument.scrollingElement.scrollTop);
   }
 
   /**
@@ -125,6 +131,6 @@ public abstract class MouseEvent<H> extends HumanInputEvent<H> {
    * @return the mouse y-position
    */
   public int getClientY() {
-    return getNativeEvent().getClientY();
+    return (int) getNativeMouseEvent().clientY;
   }
 }

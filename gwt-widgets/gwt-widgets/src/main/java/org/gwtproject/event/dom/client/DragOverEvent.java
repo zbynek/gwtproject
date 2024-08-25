@@ -15,7 +15,7 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.shared.BrowserEvents;
 
 /** Represents a native drag over event. */
 public class DragOverEvent extends DragDropEventBase<DragOverHandler> {

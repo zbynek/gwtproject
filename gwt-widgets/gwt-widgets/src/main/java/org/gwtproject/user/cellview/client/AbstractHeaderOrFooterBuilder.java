@@ -28,7 +28,7 @@ import org.gwtproject.dom.builder.shared.HtmlTableSectionBuilder;
 import org.gwtproject.dom.builder.shared.StylesBuilder;
 import org.gwtproject.dom.builder.shared.TableRowBuilder;
 import org.gwtproject.dom.builder.shared.TableSectionBuilder;
-import org.gwtproject.dom.style.shared.Unit;
+import org.gwtproject.user.client.Unit;
 import org.gwtproject.resources.client.ImageResource;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;

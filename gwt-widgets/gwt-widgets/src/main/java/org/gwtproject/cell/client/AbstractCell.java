@@ -20,10 +20,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import elemental2.dom.HTMLElement;
-import org.gwtproject.dom.client.BrowserEvents;
-import org.gwtproject.dom.client.NativeEvent;
+import org.gwtproject.event.shared.BrowserEvents;
 import org.gwtproject.event.dom.client.KeyCodes;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
+import org.gwtproject.user.client.DOM;
 
 /**
  * A default implementation of the {@link org.gwtproject.cell.client.Cell} interface.
@@ -108,10 +108,10 @@ public abstract class AbstractCell<C> implements Cell<C> {
    * the cell expects into the constructor.
    */
   public void onBrowserEvent(
-          Context context, HTMLElement parent, C value, NativeEvent event, ValueUpdater<C> valueUpdater) {
-    String eventType = event.getType();
+          Context context, HTMLElement parent, C value, elemental2.dom.Event event, ValueUpdater<C> valueUpdater) {
+    String eventType = event.type;
     // Special case the ENTER key for a unified user experience.
-    if (BrowserEvents.KEYDOWN.equals(eventType) && event.getKeyCode() == KeyCodes.KEY_ENTER) {
+    if (BrowserEvents.KEYDOWN.equals(eventType) && DOM.eventGetKeyCode(event) == KeyCodes.KEY_ENTER) {
       onEnterKeyDown(context, parent, value, event, valueUpdater);
     }
   }
@@ -147,7 +147,7 @@ public abstract class AbstractCell<C> implements Cell<C> {
    * @param valueUpdater a {@link ValueUpdater}, or null if not specified
    */
   protected void onEnterKeyDown(
-      Context context, HTMLElement parent, C value, NativeEvent event, ValueUpdater<C> valueUpdater) {}
+      Context context, HTMLElement parent, C value, elemental2.dom.Event event, ValueUpdater<C> valueUpdater) {}
 
   /**
    * Initialize the cell.

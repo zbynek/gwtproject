@@ -21,8 +21,8 @@ import java.util.Set;
 import elemental2.dom.HTMLElement;
 import jsinterop.annotations.JsFunction;
 import jsinterop.base.Js;
-import org.gwtproject.dom.client.BrowserEvents;
-import org.gwtproject.dom.client.EventTarget;
+import org.gwtproject.event.shared.BrowserEvents;
+import elemental2.dom.EventTarget;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
 import org.gwtproject.user.client.EventListener;
@@ -39,17 +39,17 @@ public class CellBasedWidgetImplStandard extends CellBasedWidgetImpl {
    *
    * @param event the event to handle.
    */
-  private static void handleNonBubblingEvent(Event event) {
+  private static void handleNonBubblingEvent(elemental2.dom.Event event) {
     // Get the event target.
-    EventTarget eventTarget = event.getEventTarget();
+    EventTarget eventTarget = event.target;
     if (!DOM.isElement(eventTarget)) {
       return;
     }
-    HTMLElement target = eventTarget.cast();
+    HTMLElement target = Js.uncheckedCast(eventTarget);
 
     // Get the event listener, which is the first widget that handles the
     // specified event type.
-    String typeName = event.getType();
+    String typeName = event.type;
     EventListener listener = DOM.getEventListener(target);
     while (target != null && listener == null) {
       target = Js.uncheckedCast(target.parentElement);

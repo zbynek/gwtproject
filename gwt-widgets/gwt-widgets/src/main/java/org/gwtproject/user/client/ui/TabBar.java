@@ -145,7 +145,7 @@ public class TabBar extends Composite
     }
 
     @Override
-    public void onBrowserEvent(Event event) {
+    public void onBrowserEvent(elemental2.dom.Event event) {
       if (!enabled) {
         return;
       }
@@ -157,7 +157,7 @@ public class TabBar extends Composite
           break;
 
         case Event.ONKEYDOWN:
-          if (((char) event.getKeyCode()) == KeyCodes.KEY_ENTER) {
+          if (((char) DOM.eventGetKeyCode(event)) == KeyCodes.KEY_ENTER) {
             TabBar.this.selectTabByTabWidget(this);
           }
           break;

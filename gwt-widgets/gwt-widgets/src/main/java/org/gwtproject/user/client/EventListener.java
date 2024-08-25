@@ -29,5 +29,5 @@ public interface EventListener {
    *
    * @param event the event received
    */
-  void onBrowserEvent(Event event);
+  void onBrowserEvent(elemental2.dom.Event event);
 }

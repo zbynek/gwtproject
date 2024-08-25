@@ -175,7 +175,7 @@ public class StackPanel extends ComplexPanel implements InsertPanel.ForIsWidget 
   }
 
   @Override
-  public void onBrowserEvent(Event event) {
+  public void onBrowserEvent(elemental2.dom.Event event) {
     if (DOM.eventGetType(event) == Event.ONCLICK) {
       HTMLElement target = DOM.eventGetTarget(event);
       int index = findDividerIndex(target);

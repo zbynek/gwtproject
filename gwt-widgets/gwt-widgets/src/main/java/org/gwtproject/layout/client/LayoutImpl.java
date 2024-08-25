@@ -21,7 +21,7 @@ import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
-import org.gwtproject.dom.style.shared.Unit;
+import org.gwtproject.user.client.Unit;
 import org.gwtproject.layout.client.Layout.Layer;
 import org.gwtproject.user.client.DOM;
 

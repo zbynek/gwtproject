@@ -15,7 +15,8 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
+import jsinterop.base.Js;
+import org.gwtproject.event.shared.BrowserEvents;
 
 /** Represents a native key press event. */
 public class KeyPressEvent extends KeyEvent<KeyPressHandler> {
@@ -65,7 +66,7 @@ public class KeyPressEvent extends KeyEvent<KeyPressHandler> {
    * @return the Unicode char code
    */
   public int getUnicodeCharCode() {
-    return getNativeEvent().getCharCode();
+    return Js.asPropertyMap(getNativeEvent()).getAsAny("charCode").asInt();
   }
 
   @Override

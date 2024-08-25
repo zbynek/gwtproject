@@ -18,11 +18,12 @@ package org.gwtproject.user.client.impl;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.EventTarget;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.MouseEvent;
 import jsinterop.annotations.JsFunction;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.gwtproject.core.client.JavaScriptObject;
-import org.gwtproject.dom.client.BrowserEvents;
+import org.gwtproject.event.shared.BrowserEvents;
 import org.gwtproject.user.client.DOM;
 import org.gwtproject.user.client.Event;
 
@@ -106,7 +107,7 @@ public abstract class DOMImplStandard extends DOMImpl {
     new DOMImplStandardBase();
   }
 
-  public static void dispatchEvent(Event evt) {
+  public static void dispatchEvent(elemental2.dom.Event evt) {
     HTMLElement element = getFirstAncestorWithListener(evt);
     if (element == null) {
       return;
@@ -114,31 +115,31 @@ public abstract class DOMImplStandard extends DOMImpl {
     DOM.dispatchEvent(evt, element.nodeType != 1 ? null : element, getEventListener(element));
   }
 
-  private static HTMLElement getFirstAncestorWithListener(Event evt) {
-    HTMLElement curElem = evt.getCurrentEventTarget().cast();
+  private static HTMLElement getFirstAncestorWithListener(elemental2.dom.Event evt) {
+    HTMLElement curElem = Js.uncheckedCast(evt.currentTarget);
     while (curElem != null && getEventListener(curElem) == null) {
       curElem = Js.uncheckedCast(curElem.parentNode);
     }
     return curElem;
   }
 
-  private static void dispatchDragEvent(Event evt) {
+  private static void dispatchDragEvent(elemental2.dom.Event evt) {
     // Some drag events must call preventDefault to prevent native text selection.
     evt.preventDefault();
     dispatchEvent(evt);
   }
 
-  private static void dispatchUnhandledEvent(Event evt) {
-    HTMLElement element = evt.getCurrentEventTarget().cast();
-    Js.asPropertyMap(element).set("__gwtLastUnhandledEvent", evt.getType());
+  private static void dispatchUnhandledEvent(elemental2.dom.Event evt) {
+    HTMLElement element = Js.uncheckedCast(evt.currentTarget);
+    Js.asPropertyMap(element).set("__gwtLastUnhandledEvent", evt.type);
     dispatchEvent(evt);
   }
 
-  private static void dispatchCapturedEvent(Event evt) {
+  private static void dispatchCapturedEvent(elemental2.dom.Event evt) {
     DOM.previewEvent(evt);
   }
 
-  private static void dispatchCapturedMouseEvent(Event evt) {
+  private static void dispatchCapturedMouseEvent(elemental2.dom.Event evt) {
     boolean cancelled = !DOM.previewEvent(evt);
     if (cancelled || captureElem == null) {
       return;
@@ -185,24 +186,24 @@ public abstract class DOMImplStandard extends DOMImpl {
   }
 
   @Override
-  public HTMLElement eventGetFromElement(Event evt) {
-    if (evt.getType().equals(BrowserEvents.MOUSEOVER)) {
-      return evt.getRelatedEventTarget().cast();
+  public HTMLElement eventGetFromElement(elemental2.dom.Event evt) {
+    if (evt.type.equals(BrowserEvents.MOUSEOVER)) {
+      return Js.uncheckedCast(Js.<MouseEvent>uncheckedCast(evt).relatedTarget);
     }
-    if (evt.getType().equals(BrowserEvents.MOUSEOUT)) {
-      return evt.getEventTarget().cast();
+    if (evt.type.equals(BrowserEvents.MOUSEOUT)) {
+      return Js.uncheckedCast(evt.target);
     }
     return null;
   }
 
   @Override
-  public HTMLElement eventGetToElement(Event evt) {
-    if (evt.getType().equals(BrowserEvents.MOUSEOVER)) {
-      return evt.getEventTarget().cast();
+  public HTMLElement eventGetToElement(elemental2.dom.Event evt) {
+    if (evt.type.equals(BrowserEvents.MOUSEOVER)) {
+      return Js.uncheckedCast(evt.target);
     }
 
-    if (evt.getType().equals(BrowserEvents.MOUSEOUT)) {
-      return evt.getRelatedEventTarget().cast();
+    if (evt.type.equals(BrowserEvents.MOUSEOUT)) {
+      return Js.uncheckedCast(Js.<MouseEvent>uncheckedCast(evt).relatedTarget);
     }
 
     return null;
@@ -442,6 +443,6 @@ public abstract class DOMImplStandard extends DOMImpl {
   @JsFunction
   public interface Fn {
 
-    void onInvoke(Event evt);
+    void onInvoke(elemental2.dom.Event evt);
   }
 }

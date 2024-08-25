@@ -17,16 +17,17 @@ package org.gwtproject.cell.client;
 
 import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
-import org.gwtproject.dom.client.EventTarget;
-import org.gwtproject.dom.client.NativeEvent;
+import elemental2.dom.EventTarget;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 import org.gwtproject.text.shared.SafeHtmlRenderer;
 import org.gwtproject.text.shared.SimpleSafeHtmlRenderer;
 import org.gwtproject.user.client.DOM;
 
-import static org.gwtproject.dom.client.BrowserEvents.CLICK;
-import static org.gwtproject.dom.client.BrowserEvents.KEYDOWN;
+import static org.gwtproject.event.shared.BrowserEvents
+.CLICK;
+import static org.gwtproject.event.shared.BrowserEvents
+.KEYDOWN;
 
 /** A {@link Cell} used to render a button. */
 public class ButtonCell extends AbstractSafeHtmlCell<String> {
@@ -50,11 +51,11 @@ public class ButtonCell extends AbstractSafeHtmlCell<String> {
       Cell.Context context,
       HTMLElement parent,
       String value,
-      NativeEvent event,
+      elemental2.dom.Event event,
       ValueUpdater<String> valueUpdater) {
     super.onBrowserEvent(context, parent, value, event, valueUpdater);
-    if (CLICK.equals(event.getType())) {
-      EventTarget eventTarget = event.getEventTarget();
+    if (CLICK.equals(event.type)) {
+      EventTarget eventTarget = event.target;
       if (!DOM.isElement(eventTarget)) {
         return;
       }
@@ -79,7 +80,7 @@ public class ButtonCell extends AbstractSafeHtmlCell<String> {
       Cell.Context context,
       HTMLElement parent,
       String value,
-      NativeEvent event,
+      elemental2.dom.Event event,
       ValueUpdater<String> valueUpdater) {
     if (valueUpdater != null) {
       valueUpdater.update(value);

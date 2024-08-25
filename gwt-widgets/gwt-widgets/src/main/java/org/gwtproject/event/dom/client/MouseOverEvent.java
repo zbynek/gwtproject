@@ -15,8 +15,8 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.BrowserEvents;
-import org.gwtproject.dom.client.EventTarget;
+import org.gwtproject.event.shared.BrowserEvents;
+import elemental2.dom.EventTarget;
 
 /** Represents a native mouse over event. */
 public class MouseOverEvent extends MouseEvent<MouseOverHandler> {
@@ -26,9 +26,7 @@ public class MouseOverEvent extends MouseEvent<MouseOverHandler> {
       new Type<>(BrowserEvents.MOUSEOVER, new MouseOverEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
-   * org.gwtproject.event.shared.HasHandlers)} to fire mouse over events.
+   * Protected constructor, use fireNativeEvent to fire mouse over events.
    */
   protected MouseOverEvent() {}
 
@@ -52,7 +50,7 @@ public class MouseOverEvent extends MouseEvent<MouseOverHandler> {
    * @return the target from which the mouse pointer was moved
    */
   public EventTarget getRelatedTarget() {
-    return getNativeEvent().getRelatedEventTarget();
+    return ((elemental2.dom.MouseEvent) getNativeEvent()).relatedTarget;
   }
 
   @Override

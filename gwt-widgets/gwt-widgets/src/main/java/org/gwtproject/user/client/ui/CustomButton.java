@@ -19,7 +19,6 @@ package org.gwtproject.user.client.ui;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.MouseEvent;
 import jsinterop.base.Js;
-import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.resources.client.ImageResource;
@@ -507,7 +506,7 @@ public abstract class CustomButton extends ButtonBase {
   }
 
   @Override
-  public void onBrowserEvent(Event event) {
+  public void onBrowserEvent(elemental2.dom.Event event) {
     // Should not act on button if disabled.
     if (isEnabled() == false) {
       // This can happen when events are bubbled up from non-disabled children
@@ -525,7 +524,7 @@ public abstract class CustomButton extends ButtonBase {
         }
         break;
       case Event.ONMOUSEDOWN:
-        if (event.getButton() == Event.BUTTON_LEFT) {
+        if (Js.<MouseEvent>uncheckedCast(event).button == 1) {
           setFocus(true);
           onClickStart();
           DOM.setCapture(getElement());
@@ -538,7 +537,7 @@ public abstract class CustomButton extends ButtonBase {
         if (isCapturing) {
           isCapturing = false;
           DOM.releaseCapture(getElement());
-          if (isHovering() && event.getButton() == Event.BUTTON_LEFT) {
+          if (isHovering() && Js.<MouseEvent>uncheckedCast(event).button == 1) {
             onClick();
           }
         }
@@ -584,7 +583,7 @@ public abstract class CustomButton extends ButtonBase {
     super.onBrowserEvent(event);
     // Synthesize clicks based on keyboard events AFTER the normal key handling.
     if ((DOM.eventGetType(event) & Event.KEYEVENTS) != 0) {
-      char keyCode = (char) event.getKeyCode();
+      char keyCode = (char) DOM.eventGetKeyCode(event);
       switch (type) {
         case Event.ONKEYDOWN:
           if (keyCode == ' ') {

@@ -23,9 +23,11 @@ import java.util.Set;
 
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
+import elemental2.dom.KeyboardEvent;
+import elemental2.dom.MouseEvent;
 import jsinterop.base.Js;
-import org.gwtproject.dom.client.BrowserEvents;
-import org.gwtproject.dom.client.NativeEvent;
+import org.gwtproject.event.shared.BrowserEvents;
+import org.gwtproject.user.client.DOM;
 
 /**
  * An implementation of {@link CellPreviewEvent.Handler} that adds selection support via the
@@ -134,15 +136,15 @@ public class DefaultSelectionEventManager<T> implements CellPreviewEvent.Handler
 
     public SelectAction translateSelectionEvent(CellPreviewEvent<T> event) {
       // Handle the event.
-      NativeEvent nativeEvent = event.getNativeEvent();
-      if (BrowserEvents.CLICK.equals(nativeEvent.getType())) {
+      elemental2.dom.Event nativeEvent = event.getNativeEvent();
+      if (BrowserEvents.CLICK.equals(nativeEvent.type)) {
         // Ignore if the event didn't occur in the correct column.
         if (column > -1 && column != event.getColumn()) {
           return SelectAction.IGNORE;
         }
 
         // Determine if we clicked on a checkbox.
-        HTMLElement target = nativeEvent.getEventTarget().cast();
+        HTMLElement target = Js.uncheckedCast(nativeEvent.target);
         if ("input".equals(target.tagName.toLowerCase(Locale.ROOT))) {
           final HTMLInputElement input = Js.uncheckedCast(target);
           if ("checkbox".equals(input.type.toLowerCase(Locale.ROOT))) {
@@ -496,16 +498,17 @@ public class DefaultSelectionEventManager<T> implements CellPreviewEvent.Handler
       CellPreviewEvent<T> event,
       SelectAction action,
       org.gwtproject.view.client.MultiSelectionModel<? super T> selectionModel) {
-    NativeEvent nativeEvent = event.getNativeEvent();
-    String type = nativeEvent.getType();
+    elemental2.dom.Event nativeEvent = event.getNativeEvent();
+    String type = nativeEvent.type;
     if (BrowserEvents.CLICK.equals(type)) {
       /*
        * Update selection on click. Selection is toggled only if the user
        * presses the ctrl key. If the user does not press the control key,
        * selection is additive.
        */
-      boolean shift = nativeEvent.getShiftKey();
-      boolean ctrlOrMeta = nativeEvent.getCtrlKey() || nativeEvent.getMetaKey();
+      MouseEvent evt = Js.uncheckedCast(nativeEvent);
+      boolean shift = evt.shiftKey;
+      boolean ctrlOrMeta = evt.ctrlKey || evt.metaKey;
       boolean clearOthers =
           (translator == null) ? !ctrlOrMeta : translator.clearCurrentSelection(event);
       if (action == null || action == SelectAction.DEFAULT) {
@@ -520,13 +523,13 @@ public class DefaultSelectionEventManager<T> implements CellPreviewEvent.Handler
           shift,
           clearOthers);
     } else if (BrowserEvents.KEYUP.equals(type)) {
-      int keyCode = nativeEvent.getKeyCode();
+      int keyCode = DOM.eventGetKeyCode(nativeEvent);
       if (keyCode == 32) {
         /*
          * Update selection when the space bar is pressed. The spacebar always
          * toggles selection, regardless of whether the control key is pressed.
          */
-        boolean shift = nativeEvent.getShiftKey();
+        boolean shift = Js.<KeyboardEvent>uncheckedCast(nativeEvent).shiftKey;
         boolean clearOthers =
             (translator == null) ? false : translator.clearCurrentSelection(event);
         if (action == null || action == SelectAction.DEFAULT) {
@@ -574,10 +577,11 @@ public class DefaultSelectionEventManager<T> implements CellPreviewEvent.Handler
     }
 
     // Handle default selection.
-    NativeEvent nativeEvent = event.getNativeEvent();
-    String type = nativeEvent.getType();
+    elemental2.dom.Event nativeEvent = event.getNativeEvent();
+    String type = nativeEvent.type;
     if (BrowserEvents.CLICK.equals(type)) {
-      if (nativeEvent.getCtrlKey() || nativeEvent.getMetaKey()) {
+      MouseEvent evt = Js.uncheckedCast(nativeEvent);
+      if (evt.ctrlKey || evt.metaKey) {
         // Toggle selection on ctrl+click.
         selectionModel.setSelected(value, !selectionModel.isSelected(value));
       } else {
@@ -586,7 +590,7 @@ public class DefaultSelectionEventManager<T> implements CellPreviewEvent.Handler
       }
     } else if (BrowserEvents.KEYUP.equals(type)) {
       // Toggle selection on space.
-      int keyCode = nativeEvent.getKeyCode();
+      int keyCode = DOM.eventGetKeyCode(nativeEvent);
       if (keyCode == 32) {
         selectionModel.setSelected(value, !selectionModel.isSelected(value));
       }

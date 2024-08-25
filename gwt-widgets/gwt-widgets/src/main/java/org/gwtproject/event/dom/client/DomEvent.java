@@ -17,10 +17,11 @@ package org.gwtproject.event.dom.client;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.NativeEvent;
+import elemental2.dom.Element;
 import org.gwtproject.event.shared.Event;
 import org.gwtproject.event.shared.HasHandlers;
 
@@ -34,8 +35,8 @@ import org.gwtproject.event.shared.HasHandlers;
 public abstract class DomEvent<H> extends Event<H> implements HasNativeEvent {
 
   private static JsPropertyMap<List<Type<?>>> registered;
-  private NativeEvent nativeEvent;
-  private Element relativeElem;
+  private elemental2.dom.Event nativeEvent;
+  private HTMLElement relativeElem;
 
   /**
    * Fires the given native event on the specified handlers.
@@ -43,7 +44,7 @@ public abstract class DomEvent<H> extends Event<H> implements HasNativeEvent {
    * @param nativeEvent the native event
    * @param handlerSource the source of the handlers to fire
    */
-  public static void fireNativeEvent(NativeEvent nativeEvent, HasHandlers handlerSource) {
+  public static void fireNativeEvent(elemental2.dom.Event nativeEvent, HasHandlers handlerSource) {
     fireNativeEvent(nativeEvent, handlerSource, null);
   }
 
@@ -55,16 +56,16 @@ public abstract class DomEvent<H> extends Event<H> implements HasNativeEvent {
    * @param relativeElem the element relative to which event coordinates will be measured
    */
   public static void fireNativeEvent(
-      NativeEvent nativeEvent, HasHandlers handlerSource, Element relativeElem) {
+      elemental2.dom.Event nativeEvent, HasHandlers handlerSource, HTMLElement relativeElem) {
     assert nativeEvent != null : "nativeEvent must not be null";
     if (registered != null) {
-      List<Type<?>> types = registered.get(nativeEvent.getType());
+      List<Type<?>> types = registered.get(nativeEvent.type);
       if (types != null) {
         for (Type<?> type : types) {
           // Store and restore native event just in case we are in recursive
           // loop.
-          NativeEvent currentNative = type.flyweight.nativeEvent;
-          Element currentRelativeElem = type.flyweight.relativeElem;
+          elemental2.dom.Event currentNative = type.flyweight.nativeEvent;
+          HTMLElement currentRelativeElem = type.flyweight.relativeElem;
           Object currentSource = type.flyweight.getSource();
           type.flyweight.setNativeEvent(nativeEvent);
           type.flyweight.setRelativeElement(relativeElem);
@@ -85,7 +86,7 @@ public abstract class DomEvent<H> extends Event<H> implements HasNativeEvent {
   @Override
   public abstract Type<H> getAssociatedType();
 
-  public final NativeEvent getNativeEvent() {
+  public final elemental2.dom.Event getNativeEvent() {
     return nativeEvent;
   }
 
@@ -95,7 +96,7 @@ public abstract class DomEvent<H> extends Event<H> implements HasNativeEvent {
    *
    * @param nativeEvent the native event
    */
-  public final void setNativeEvent(NativeEvent nativeEvent) {
+  public final void setNativeEvent(elemental2.dom.Event nativeEvent) {
     this.nativeEvent = nativeEvent;
   }
 
@@ -105,7 +106,7 @@ public abstract class DomEvent<H> extends Event<H> implements HasNativeEvent {
    *
    * @return the event's relative element
    */
-  public final Element getRelativeElement() {
+  public final HTMLElement getRelativeElement() {
     return relativeElem;
   }
 
@@ -114,7 +115,7 @@ public abstract class DomEvent<H> extends Event<H> implements HasNativeEvent {
    *
    * @param relativeElem the event's relative element
    */
-  public void setRelativeElement(Element relativeElem) {
+  public void setRelativeElement(HTMLElement relativeElem) {
     this.relativeElem = relativeElem;
   }
 
@@ -140,8 +141,8 @@ public abstract class DomEvent<H> extends Event<H> implements HasNativeEvent {
     private String name;
 
     /**
-     * This constructor allows dom event types to be triggered by the {@link
-     * DomEvent#fireNativeEvent(NativeEvent, HasHandlers)} method. It should only be used by
+     * This constructor allows dom event types to be triggered by the
+     * fireNativeEvent method. It should only be used by
      * implementors supporting new dom events.
      *
      * <p>Any such dom event type must act as a flyweight around a native event object.
