@@ -112,13 +112,13 @@ public class DOM {
    * @return the newly-created element
    */
   @SuppressWarnings("deprecation")
-  public static HTMLElement createButton() {
+  public static HTMLButtonElement createButton() {
     HTMLButtonElement btn = createElement("button");
     btn.type = "button";
     return btn;
   }
 
-  public static HTMLElement createSubmitButton() {
+  public static HTMLButtonElement createSubmitButton() {
     HTMLButtonElement btn = createElement("button");
     btn.type = "submit";
     return btn;
@@ -396,7 +396,7 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static HTMLElement createTFoot() {
+  public static HTMLTableSectionElement createTFoot() {
     return createElement("tfoot");
   }
 
@@ -414,7 +414,7 @@ public class DOM {
    *
    * @return the newly-created element
    */
-  public static HTMLElement createTHead() {
+  public static HTMLTableSectionElement createTHead() {
     return createElement("thead");
   }
 

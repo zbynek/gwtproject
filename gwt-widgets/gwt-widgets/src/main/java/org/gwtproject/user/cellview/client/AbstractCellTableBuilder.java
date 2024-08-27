@@ -23,11 +23,11 @@ import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLTableRowElement;
 import org.gwtproject.cell.client.Cell.Context;
 import org.gwtproject.cell.client.HasCell;
-import org.gwtproject.dom.builder.shared.ElementBuilderBase;
-import org.gwtproject.dom.builder.shared.HtmlBuilderFactory;
-import org.gwtproject.dom.builder.shared.HtmlTableSectionBuilder;
-import org.gwtproject.dom.builder.shared.TableRowBuilder;
-import org.gwtproject.dom.builder.shared.TableSectionBuilder;
+import org.gwtproject.builder.shared.ElementBuilderBase;
+import org.gwtproject.builder.shared.HtmlBuilderFactory;
+import org.gwtproject.builder.shared.HtmlTableSectionBuilder;
+import org.gwtproject.builder.shared.TableRowBuilder;
+import org.gwtproject.builder.shared.TableSectionBuilder;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 import org.gwtproject.user.client.DOM;
 

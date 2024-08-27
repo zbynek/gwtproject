@@ -18,7 +18,7 @@ package org.gwtproject.user.client.ui;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
-import org.gwtproject.dom.builder.shared.HtmlElementBuilderBase;
+import org.gwtproject.builder.shared.HtmlElementBuilderBase;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 

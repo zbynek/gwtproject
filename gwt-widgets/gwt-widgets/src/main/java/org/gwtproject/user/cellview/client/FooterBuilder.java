@@ -17,7 +17,7 @@ package org.gwtproject.user.cellview.client;
 
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLTableRowElement;
-import org.gwtproject.dom.builder.shared.TableSectionBuilder;
+import org.gwtproject.builder.shared.TableSectionBuilder;
 
 /**
  * Builds the DOM elements for the footer section of a CellTable. It also provides queries on

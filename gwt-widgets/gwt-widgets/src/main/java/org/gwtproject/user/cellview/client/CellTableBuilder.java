@@ -21,7 +21,7 @@ import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLTableRowElement;
 import org.gwtproject.cell.client.Cell.Context;
 import org.gwtproject.cell.client.HasCell;
-import org.gwtproject.dom.builder.shared.TableSectionBuilder;
+import org.gwtproject.builder.shared.TableSectionBuilder;
 
 /**
  * Builder used to construct a CellTable.

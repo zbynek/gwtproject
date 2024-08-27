@@ -22,7 +22,7 @@ import elemental2.dom.HTMLElement;
 import org.gwtproject.animation.client.Animation;
 import org.gwtproject.user.client.Unit;
 
-import static org.gwtproject.user.client.Unit;.PX;
+import static org.gwtproject.user.client.Unit.PX;
 
 /**
  * Helper class for laying out a container element and its children.

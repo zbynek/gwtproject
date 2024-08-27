@@ -16,13 +16,12 @@
 package org.gwtproject.user.client.ui;
 
 import elemental2.dom.HTMLElement;
-import org.gwtproject.dom.builder.shared.HtmlBuilderFactory;
-import org.gwtproject.dom.builder.shared.HtmlSpanBuilder;
+import org.gwtproject.builder.shared.HtmlBuilderFactory;
+import org.gwtproject.builder.shared.HtmlSpanBuilder;
 import org.gwtproject.event.logical.shared.AttachEvent;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 import org.gwtproject.user.client.DOM;
-import org.gwtproject.user.client.Event;
 
 /**
  * A type of widget that can wrap another widget, hiding the wrapped widget's methods. When added to
@@ -79,28 +78,6 @@ public abstract class Composite extends Widget implements IsRenderable {
 
     // Delegate events to the widget.
     widget.onBrowserEvent(event);
-  }
-
-  @Override
-  public SafeHtml render(RenderableStamper stamper) {
-    if (renderable != null) {
-      return renderable.render(stamper);
-    } else {
-      checkInit();
-
-      HtmlSpanBuilder spanBuilder = HtmlBuilderFactory.get().createSpanBuilder();
-      stamper.stamp(spanBuilder).end();
-      return spanBuilder.asSafeHtml();
-    }
-  }
-
-  @Override
-  public void render(RenderableStamper stamper, SafeHtmlBuilder builder) {
-    if (renderable != null) {
-      renderable.render(stamper, builder);
-    } else {
-      builder.append(render(stamper));
-    }
   }
 
   /**

@@ -16,8 +16,8 @@
 package org.gwtproject.user.cellview.client;
 
 import org.gwtproject.cell.client.Cell.Context;
-import org.gwtproject.dom.builder.shared.TableCellBuilder;
-import org.gwtproject.dom.builder.shared.TableRowBuilder;
+import org.gwtproject.builder.shared.TableCellBuilder;
+import org.gwtproject.builder.shared.TableRowBuilder;
 
 /**
  * Default implementation of {@link HeaderBuilder} that renders columns.

@@ -40,16 +40,4 @@ public interface IsRenderable {
    */
   void initializeClaimedElement();
 
-  /**
-   * @see #render(RendearbleStamper, SafeHtmlBuilder) TODO(rdcastro): Remove this once UiBinder
-   *     doesn't rely on it anymore.
-   */
-  SafeHtml render(RenderableStamper stamper);
-
-  /**
-   * Tells this object to render itself as HTML and append it to the given builder. If the
-   * implementation expects to be able to claim an element later, it must be marked by the given
-   * stamper.
-   */
-  void render(RenderableStamper stamper, SafeHtmlBuilder builder);
 }

@@ -22,8 +22,8 @@ import jsinterop.annotations.JsFunction;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.gwtproject.core.client.JavaScriptObject;
-import org.gwtproject.dom.builder.shared.HtmlBuilderFactory;
-import org.gwtproject.dom.builder.shared.HtmlElementBuilder;
+import org.gwtproject.builder.shared.HtmlBuilderFactory;
+import org.gwtproject.builder.shared.HtmlElementBuilder;
 import org.gwtproject.user.client.DOM;
 
 /**
@@ -71,20 +71,6 @@ public class PotentialElement extends HTMLElement {
     shim.__gwt_resolve = () -> buildResolveCallback(o);
     assert DOM.isElement(shim);
     return Js.uncheckedCast(shim);
-  }
-
-  /**
-   * Creates an {@link HtmlElementBuilder} instance inheriting all attributes set for the given
-   * PotentialElement.
-   *
-   * @param potentialElement assumed to be a PotentialElement, used as basis for the builder
-   * @return a propertly configured {@link HtmlElementBuilder} instance
-   */
-  public static HtmlElementBuilder createBuilderFor(HTMLElement potentialElement) {
-    PotentialElement el = PotentialElement.as(potentialElement);
-    HtmlElementBuilder builder = HtmlBuilderFactory.get().trustedCreate(el.tagName);
-    el.mergeInto(builder);
-    return builder;
   }
 
   /**
