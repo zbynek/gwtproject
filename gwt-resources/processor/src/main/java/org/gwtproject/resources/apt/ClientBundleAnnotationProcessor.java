@@ -33,7 +33,7 @@ import org.gwtproject.resources.logger.PrintWriterTreeLogger;
 
 /** @author Dmitrii Tikhomirov Created by treblereel on 9/30/18. */
 @AutoService(Processor.class)
-@SupportedSourceVersion(SourceVersion.RELEASE_11)
+@SupportedSourceVersion(SourceVersion.RELEASE_17)
 @SupportedAnnotationTypes({
   "org.gwtproject.resources.client.GWT3Resources",
   "org.gwtproject.resources.client.Resource"
@@ -48,8 +48,8 @@ public class ClientBundleAnnotationProcessor extends AbstractProcessor {
     }
 
     AptContext context = new AptContext(processingEnv, roundEnvironment);
-    TreeLogger logger = new PrintWriterTreeLogger();
-    ((PrintWriterTreeLogger) logger).setMaxDetail(TreeLogger.Type.INFO);
+    PrintWriterTreeLogger logger = new PrintWriterTreeLogger();
+    logger.setMaxDetail(TreeLogger.Type.INFO);
     Set<TypeElement> elements = context.getClassesWithAnnotation(Resource.class);
     try {
       new ClientBundleClassBuilder(logger, context, elements).process();

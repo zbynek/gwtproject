@@ -88,12 +88,8 @@ public class HandlerManager implements HasHandlers {
    */
   @Override
   public void fireEvent(Event<?> event) {
-    try {
-      // May throw an UmbrellaException.
-      eventBus.fireEventFromSource(event, source);
-    } catch (UmbrellaException e) {
-      throw new UmbrellaException(e.getCauses());
-    }
+    // May throw an UmbrellaException.
+    eventBus.fireEventFromSource(event, source);
   }
 
   /**
