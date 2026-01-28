@@ -56,10 +56,7 @@ import org.gwtproject.user.client.Event;
  * {@example com.google.gwt.examples.CheckBoxExample}
  */
 public class CheckBox extends ButtonBase
-    implements HasName,
-        HasValue<Boolean>,
-        HasWordWrap,
-        HasSafeHtml {
+    implements HasName, HasValue<Boolean>, HasWordWrap, HasSafeHtml {
 
   final DirectionalTextHelper directionalTextHelper;
   InputElement inputElem;
@@ -170,7 +167,6 @@ public class CheckBox extends ButtonBase
   public String getText() {
     return directionalTextHelper.getText();
   }
-
 
   /**
    * Determines whether this check box is currently checked.

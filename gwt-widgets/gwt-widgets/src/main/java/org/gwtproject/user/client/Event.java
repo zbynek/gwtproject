@@ -351,8 +351,8 @@ public class Event extends NativeEvent {
   }
 
   /** Represents a preview of a native {@link Event}. */
-  public static class NativePreviewEvent extends org.gwtproject.event.shared.Event<NativePreviewHandler>
-      implements HasNativeEvent {
+  public static class NativePreviewEvent
+      extends org.gwtproject.event.shared.Event<NativePreviewHandler> implements HasNativeEvent {
 
     /** Handler type. */
     private static Type<NativePreviewHandler> TYPE;
@@ -501,7 +501,6 @@ public class Event extends NativeEvent {
       handler.onPreviewNativeEvent(this);
       singleton.isFirstHandler = false;
     }
-
 
     protected void revive() {
       setSource(null);

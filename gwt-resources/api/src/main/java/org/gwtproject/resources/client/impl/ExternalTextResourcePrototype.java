@@ -110,8 +110,8 @@ public class ExternalTextResourcePrototype implements ExternalTextResource {
     ETRCallback wrappedCallback = new ETRCallback(callback);
     xhr.open("GET", url.asString());
     xhr.addEventListener("load", evt -> wrappedCallback.onSuccess(xhr.responseText));
-    xhr.addEventListener("error",
-            evt -> wrappedCallback.onFailure(new IllegalStateException(xhr.statusText)));
+    xhr.addEventListener(
+        "error", evt -> wrappedCallback.onFailure(new IllegalStateException(xhr.statusText)));
     xhr.send();
   }
 
@@ -131,7 +131,6 @@ public class ExternalTextResourcePrototype implements ExternalTextResource {
               "Unable to retrieve external resource",
               exception));
     }
-
 
     // For AsyncCallback
     @Override

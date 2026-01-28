@@ -73,8 +73,7 @@ import org.gwtproject.event.shared.HandlerRegistration;
  * by this class, since such text may need to be wrapped in Unicode bidi formatting characters. They
  * can use the getOptionText and/or setOptionText methods for this purpose instead.</b>
  */
-public class ListBox extends FocusWidget
-    implements HasChangeHandlers, HasName {
+public class ListBox extends FocusWidget implements HasChangeHandlers, HasName {
 
   private static final String BIDI_ATTR_NAME = "bidiwrapped";
 
@@ -158,7 +157,6 @@ public class ListBox extends FocusWidget
   public void addItem(String item, String value) {
     insertItem(item, value, INSERT_AT_END);
   }
-
 
   /** Removes all items from the list box. */
   public void clear() {

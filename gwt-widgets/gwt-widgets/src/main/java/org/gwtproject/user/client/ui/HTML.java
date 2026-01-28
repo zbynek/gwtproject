@@ -141,7 +141,6 @@ public class HTML extends Label implements HasHTML, HasSafeHtml {
     setHTML(html.asString());
   }
 
-
   protected String getTextOrHtml(boolean isHtml) {
     return directionalTextHelper.getTextOrHtml(isHtml);
   }

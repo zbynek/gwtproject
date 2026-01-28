@@ -1198,8 +1198,8 @@ public class Tree extends Widget
       curSelectionParent = root;
     }
 
-   curSelectionContentElem.setAttribute("aria-setsize",
-           String.valueOf(curSelectionParent.getChildCount()));
+    curSelectionContentElem.setAttribute(
+        "aria-setsize", String.valueOf(curSelectionParent.getChildCount()));
 
     int curSelectionIndex = curSelectionParent.getChildIndex(curSelection);
 
@@ -1213,7 +1213,8 @@ public class Tree extends Widget
       curSelectionContentElem.removeAttribute("aria-expanded");
 
     } else {
-      curSelectionContentElem.setAttribute("aria-expanded", String.valueOf(curSelection.getState()));
+      curSelectionContentElem.setAttribute(
+          "aria-expanded", String.valueOf(curSelection.getState()));
     }
 
     // Make sure that 'aria-selected' is true.

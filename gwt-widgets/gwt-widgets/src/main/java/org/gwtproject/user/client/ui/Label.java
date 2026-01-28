@@ -245,14 +245,12 @@ public class Label extends LabelBase<String>
     return directionalTextHelper.getText();
   }
 
-
   /**
    * Sets the label's content to the given text.
    *
    * <p>Doesn't change the widget's direction or horizontal alignment if {@code directionEstimator}
    * is null. Otherwise, the widget's direction is set using the estimator, and its alignment may
-   * therefore change as described in setText(String,
-   * Direction).
+   * therefore change as described in setText(String, Direction).
    *
    * @param text the widget's new text
    */

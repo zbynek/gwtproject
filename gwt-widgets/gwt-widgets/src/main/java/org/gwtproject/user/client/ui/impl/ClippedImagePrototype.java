@@ -15,7 +15,6 @@
  */
 package org.gwtproject.user.client.ui.impl;
 
-import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeUri;

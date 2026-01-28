@@ -54,8 +54,7 @@ public class RootLayoutPanel extends LayoutPanel {
   }
 
   private RootLayoutPanel() {
-    DOM.addWindowResizeHandler(
-            event -> RootLayoutPanel.this.onResize());
+    DOM.addWindowResizeHandler(event -> RootLayoutPanel.this.onResize());
 
     // TODO(jgw): We need notification of font-size changes as well.
     // I believe there's a hidden iframe trick that we can use to get

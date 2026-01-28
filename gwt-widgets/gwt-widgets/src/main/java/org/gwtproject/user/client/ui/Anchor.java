@@ -44,11 +44,7 @@ import org.gwtproject.safehtml.shared.annotations.SuppressIsSafeHtmlCastCheck;
  * @see Hyperlink
  */
 public class Anchor extends FocusWidget
-    implements HasHorizontalAlignment,
-        HasName,
-        HasHTML,
-        HasWordWrap,
-        HasSafeHtml {
+    implements HasHorizontalAlignment, HasName, HasHTML, HasWordWrap, HasSafeHtml {
 
   /**
    * The default HREF is a no-op javascript statement. We need an href to ensure that the browser
@@ -316,7 +312,6 @@ public class Anchor extends FocusWidget
   public String getText() {
     return directionalTextHelper.getText();
   }
-
 
   @Override
   public boolean getWordWrap() {

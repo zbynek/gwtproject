@@ -35,7 +35,6 @@ import org.gwtproject.resources.client.ImageResource;
 import org.gwtproject.resources.client.ImageResource.ImageOptions;
 import org.gwtproject.resources.client.ImageResource.RepeatStyle;
 import org.gwtproject.user.cellview.client.LoadingStateChangeEvent.LoadingState;
-import org.gwtproject.user.client.ui.DeckPanel;
 import org.gwtproject.user.client.ui.Image;
 import org.gwtproject.user.client.ui.SimplePanel;
 import org.gwtproject.user.client.ui.Widget;

@@ -1349,8 +1349,9 @@ public class DOM {
 
   private static class WindowResizeEvent extends ResizeEvent {
     public WindowResizeEvent() {
-      super(DomGlobal.document.documentElement.clientWidth,
-              DomGlobal.document.documentElement.clientHeight);
+      super(
+          DomGlobal.document.documentElement.clientWidth,
+          DomGlobal.document.documentElement.clientHeight);
     }
   }
 }

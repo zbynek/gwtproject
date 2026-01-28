@@ -38,7 +38,6 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataFormatImpl;
 import javax.imageio.stream.MemoryCacheImageInputStream;
 import javax.lang.model.element.ExecutableElement;
-
 import org.gwtproject.resources.client.impl.GeneratedUri;
 import org.gwtproject.resources.client.impl.ImageResourcePrototype;
 import org.gwtproject.resources.context.AbstractResourceContext;
@@ -345,8 +344,10 @@ public class ImageResourceGenerator extends AbstractResourceGenerator {
     }
 
     if (image == null && animated == null) {
-      logger.log(TreeLogger.ERROR, "Unrecognized image file format, tried "
-              + readers + " readers", rootCause);
+      logger.log(
+          TreeLogger.ERROR,
+          "Unrecognized image file format, tried " + readers + " readers",
+          rootCause);
       throw new UnableToCompleteException();
     }
 

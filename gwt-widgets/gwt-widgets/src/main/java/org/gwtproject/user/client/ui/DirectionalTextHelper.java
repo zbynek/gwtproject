@@ -55,7 +55,6 @@ public class DirectionalTextHelper {
    */
   private boolean isSpanWrapped;
 
-
   /**
    * @param element The widget's element holding text.
    * @param isElementInline Whether the element is an inline element.
@@ -67,7 +66,6 @@ public class DirectionalTextHelper {
     // setDirectionEstimator shouldn't refresh appearance of initial empty text.
     isDirectionExplicitlySet = true;
   }
-
 
   /**
    * Get the inner text of the element, taking the inner span wrap into consideration, if needed.

@@ -116,7 +116,6 @@ import org.gwtproject.user.client.Event;
  */
 public abstract class UIObject implements HasVisibility {
 
-
   /*
    * WARNING: For historical reasons, there are two Element classes being used
    * in this code. The dom.Element (org.gwtproject.dom.client.Element) class is

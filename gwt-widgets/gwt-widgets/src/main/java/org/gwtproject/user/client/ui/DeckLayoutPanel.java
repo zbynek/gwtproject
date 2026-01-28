@@ -335,8 +335,7 @@ public class DeckLayoutPanel extends ComplexPanel
     int newIndex = getWidgetIndex(visibleWidget);
     double direction = (oldIndex < newIndex) ? 100.0 : -100.0;
     double vDirection = isAnimationVertical ? direction : 0.0;
-    double hDirection =
-        isAnimationVertical ? 0.0 : direction;
+    double hDirection = isAnimationVertical ? 0.0 : direction;
 
     /*
      * Position the old widget in the center of the panel, and the new widget

@@ -26,8 +26,7 @@ import org.gwtproject.dom.style.shared.WhiteSpace;
  *
  * @param <T> the value type
  */
-public class LabelBase<T> extends Widget
-    implements HasWordWrap, HasAutoHorizontalAlignment {
+public class LabelBase<T> extends Widget implements HasWordWrap, HasAutoHorizontalAlignment {
 
   /** The widget's DirectionalTextHelper object. */
   final DirectionalTextHelper directionalTextHelper;

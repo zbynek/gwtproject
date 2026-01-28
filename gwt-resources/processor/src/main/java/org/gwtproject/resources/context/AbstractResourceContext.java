@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.function.Function;
-
 import javax.lang.model.element.TypeElement;
 import org.gwtproject.resources.ext.*;
 import org.gwtproject.resources.rg.util.Util;
@@ -76,8 +75,8 @@ public abstract class AbstractResourceContext implements ResourceContext {
   }
 
   /**
-   * Helper method to read a property of a given URL, automatically closing the InputStream
-   * that is opened as a side effect.
+   * Helper method to read a property of a given URL, automatically closing the InputStream that is
+   * opened as a side effect.
    */
   public static <T> T getProperty(URL url, Function<URLConnection, T> prop) throws IOException {
     URLConnection conn = url.openConnection();

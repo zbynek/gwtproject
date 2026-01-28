@@ -15,6 +15,7 @@
  */
 package org.gwtproject.user.cellview.client;
 
+import elemental2.dom.DomGlobal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,8 +23,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
-import elemental2.dom.DomGlobal;
 import org.gwtproject.cell.client.Cell;
 import org.gwtproject.cell.client.Cell.Context;
 import org.gwtproject.cell.client.FieldUpdater;

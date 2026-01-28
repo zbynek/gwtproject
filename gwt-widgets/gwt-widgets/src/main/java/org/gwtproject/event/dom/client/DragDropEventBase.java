@@ -18,7 +18,6 @@ package org.gwtproject.event.dom.client;
 import org.gwtproject.dom.client.DataTransfer;
 import org.gwtproject.dom.client.PartialSupport;
 
-
 /**
  * Base class for drag and drop events.
  *

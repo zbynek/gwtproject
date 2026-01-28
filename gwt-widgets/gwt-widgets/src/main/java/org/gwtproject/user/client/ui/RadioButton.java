@@ -33,6 +33,7 @@ import org.gwtproject.user.client.Event;
  * <p><img class='gallery' src='doc-files/RadioButton.png'/>
  *
  * <p>
+ *
  * <h3>CSS Style Rules</h3>
  *
  * <dl>
@@ -47,7 +48,6 @@ import org.gwtproject.user.client.Event;
  * {@example com.google.gwt.examples.RadioButtonExample}
  */
 public class RadioButton extends CheckBox {
-
 
   private Boolean oldValue;
 

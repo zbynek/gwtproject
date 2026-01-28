@@ -118,8 +118,13 @@ public class SplitLayoutPanel extends DockLayoutPanel {
            * Resize glassElem to take up the entire scrollable window area,
            * which is the greater of the scroll size and the client size.
            */
-          int width = Math.max(DomGlobal.document.documentElement.clientWidth, Document.get().getScrollWidth());
-          int height = Math.max(DomGlobal.document.documentElement.clientHeight, Document.get().getScrollHeight());
+          int width =
+              Math.max(
+                  DomGlobal.document.documentElement.clientWidth, Document.get().getScrollWidth());
+          int height =
+              Math.max(
+                  DomGlobal.document.documentElement.clientHeight,
+                  Document.get().getScrollHeight());
           glassElem.getStyle().setHeight(height, Unit.PX);
           glassElem.getStyle().setWidth(width, Unit.PX);
           Document.get().getBody().appendChild(glassElem);

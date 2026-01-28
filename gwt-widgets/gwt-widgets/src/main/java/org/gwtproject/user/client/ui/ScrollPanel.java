@@ -190,7 +190,7 @@ public class ScrollPanel extends SimplePanel
     getScrollableElement().setScrollTop(position);
   }
 
-   public void setVerticalScrollPosition(int position) {
+  public void setVerticalScrollPosition(int position) {
     setScrollPosition(position);
   }
 

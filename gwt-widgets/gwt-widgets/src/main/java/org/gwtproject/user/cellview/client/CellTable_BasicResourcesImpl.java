@@ -211,9 +211,7 @@ public class CellTable_BasicResourcesImpl implements CellTable.BasicResources {
                         .asString())
                     + ") "
                     + ("-"
-                        + CellTable_BasicResourcesImpl.this
-                            .cellTableFooterBackground()
-                            .getLeft()
+                        + CellTable_BasicResourcesImpl.this.cellTableFooterBackground().getLeft()
                         + "px")
                     + " "
                     + ("-"
@@ -229,9 +227,7 @@ public class CellTable_BasicResourcesImpl implements CellTable.BasicResources {
                         .asString())
                     + ") "
                     + ("-"
-                        + CellTable_BasicResourcesImpl.this
-                            .cellTableHeaderBackground()
-                            .getLeft()
+                        + CellTable_BasicResourcesImpl.this.cellTableHeaderBackground().getLeft()
                         + "px")
                     + " "
                     + ("-"
@@ -244,15 +240,11 @@ public class CellTable_BasicResourcesImpl implements CellTable.BasicResources {
                         .asString())
                     + ") "
                     + ("-"
-                        + CellTable_BasicResourcesImpl.this
-                            .cellTableSelectedBackground()
-                            .getLeft()
+                        + CellTable_BasicResourcesImpl.this.cellTableSelectedBackground().getLeft()
                         + "px")
                     + " ")
                 + (("-"
-                        + CellTable_BasicResourcesImpl.this
-                            .cellTableSelectedBackground()
-                            .getTop()
+                        + CellTable_BasicResourcesImpl.this.cellTableSelectedBackground().getTop()
                         + "px")
                     + "  repeat-x;background-color:#628cd5;color:white;height:auto;overflow:auto}.MU1SOAB-c-u{background:#628cd5}.MU1SOAB-c-k{background:#d7dde8}.MU1SOAB-c-q{margin:30px}");
           }

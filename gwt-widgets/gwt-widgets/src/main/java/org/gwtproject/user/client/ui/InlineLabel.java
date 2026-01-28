@@ -70,7 +70,6 @@ public class InlineLabel extends Label {
     setText(text);
   }
 
-
   /**
    * This constructor may be used by subclasses to explicitly use an existing element. This element
    * must be either a &lt;div&gt; &lt;span&gt; element.

@@ -39,8 +39,7 @@ import org.gwtproject.event.shared.HandlerRegistration;
  *
  * {@example com.google.gwt.examples.ToggleButtonExample}
  */
-public class ToggleButton extends CustomButton
-    implements HasValue<Boolean> {
+public class ToggleButton extends CustomButton implements HasValue<Boolean> {
   private static String STYLENAME_DEFAULT = "gwt-ToggleButton";
 
   {

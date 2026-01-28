@@ -27,11 +27,9 @@ import org.gwtproject.user.client.ui.HasVerticalAlignment.VerticalAlignmentConst
  * it.
  *
  * <p>Note: This class is not related to the {@link Cell} based data presentation widgets such as
- *  {@link
- * org.gwtproject.user.cellview.client.CellTable}.
+ * {@link org.gwtproject.user.cellview.client.CellTable}.
  *
  * <h3>Use in UiBinder Templates</h3>
- *
  *
  * <h4>&lt;g:cell> attributes</h4>
  *

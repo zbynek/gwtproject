@@ -37,10 +37,7 @@ import org.gwtproject.user.client.ui.impl.TextBoxImpl;
  * @param <T> the value type
  */
 public class ValueBoxBase<T> extends FocusWidget
-    implements HasChangeHandlers,
-        HasName,
-        HasValue<T>,
-        HasText {
+    implements HasChangeHandlers, HasName, HasValue<T>, HasText {
 
   private static TextBoxImpl impl = new TextBoxImpl();
 
