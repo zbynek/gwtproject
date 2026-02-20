@@ -17,8 +17,6 @@
 package org.gwtproject.resources.context;
 
 import com.google.auto.common.MoreElements;
-import io.github.classgraph.ClassGraph;
-import io.github.classgraph.ScanResult;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +53,6 @@ public class AptContext {
   public final Types types;
   public final RoundEnvironment roundEnvironment;
   public final ProcessingEnvironment processingEnv;
-  private final ScanResult scanResult = new ClassGraph().enableAllInfo().scan();
 
   public final Map<Element, Class<? extends ResourceGenerator>> generators = new HashMap<>();
 
@@ -72,16 +69,9 @@ public class AptContext {
   }
 
   public Set<TypeElement> getClassesWithAnnotation(Class<? extends Annotation> annotation) {
-    Set<TypeElement> rez =
-        roundEnvironment.getElementsAnnotatedWith(annotation).stream()
-            .map(element -> MoreElements.asType(element))
-            .collect(Collectors.toSet());
-
-    scanResult.getClassesWithAnnotation(annotation.getName()).stream()
-        .map(classInfo -> elements.getTypeElement(classInfo.getName()))
-        .forEach(rez::add);
-
-    return rez;
+    return roundEnvironment.getElementsAnnotatedWith(annotation).stream()
+        .map(MoreElements::asType)
+        .collect(Collectors.toSet());
   }
 
   private void initGenerators() {
