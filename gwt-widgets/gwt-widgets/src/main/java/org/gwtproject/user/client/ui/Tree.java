@@ -168,8 +168,6 @@ public class Tree extends Widget
 
   private ImageAdapter images;
 
-  private String indentValue;
-
   private boolean isAnimationEnabled = false;
 
   private boolean lastWasKeyDown;
@@ -567,12 +565,10 @@ public class Tree extends Widget
     switch (eventType) {
       case Event.ONKEYDOWN:
       case Event.ONKEYUP:
-        {
-          if (KeyCodes.isArrowKey(event.getKeyCode())) {
-            event.stopPropagation();
-            event.preventDefault();
-            return;
-          }
+        if (KeyCodes.isArrowKey(event.getKeyCode())) {
+          event.stopPropagation();
+          event.preventDefault();
+          return;
         }
     }
 
@@ -827,8 +823,6 @@ public class Tree extends Widget
   void showLeafImage(TreeItem treeItem) {
     if (useLeafImages || treeItem.isFullNode()) {
       showImage(treeItem, images.treeLeaf());
-    } else {
-      treeItem.getElement().getStyle().setProperty("paddingLeft", indentValue);
     }
   }
 
@@ -1149,9 +1143,7 @@ public class Tree extends Widget
       Image image = images.treeLeaf().createImage();
       image.getElement().getStyle().setProperty("visibility", "hidden");
       RootPanel.get().add(image);
-      int size = image.getWidth() + TreeItem.IMAGE_PAD;
       image.removeFromParent();
-      indentValue = (size) + "px";
     }
   }
 
@@ -1168,7 +1160,7 @@ public class Tree extends Widget
     }
   }
 
-  private void updateAriaAttributes() {
+  protected void updateAriaAttributes() {
 
     Element curSelectionContentElem = curSelection.getContentElem();
 

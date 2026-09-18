@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.gwtproject.animation.client.Animation;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.style.shared.Unit;
 import org.gwtproject.safehtml.client.HasSafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
@@ -44,9 +43,6 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
    * interpreting HTML.
    */
 
-  /** The margin applied to child items. */
-  private static final double CHILD_MARGIN = 16.0;
-
   /** Implementation class for {@link TreeItem}. */
   public static class TreeItemImpl {
     public TreeItemImpl() {
@@ -62,8 +58,6 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
         Element tdImg = DOM.getFirstChild(tr);
         Element tdContent = DOM.getNextSibling(tdImg);
 
-        // Undoes padding from table element.
-        item.getElement().getStyle().setProperty("padding", "0px");
         DOM.appendChild(tdContent, item.contentElem);
         item.imageHolder = tdImg;
       }
@@ -90,8 +84,6 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
       // Create the base element that will be cloned
       BASE_BARE_ELEM = DOM.createDiv();
 
-      // Simulates padding from table element.
-      BASE_BARE_ELEM.getStyle().setProperty("padding", "3px");
       DOM.appendChild(BASE_BARE_ELEM, contentElem);
       contentElem.setAttribute("role", "treeitem");
     }
@@ -191,13 +183,6 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
       curItem.childSpanElem.getStyle().setProperty("width", scrollWidth + "px");
     }
   }
-
-  // By not overwriting the default tree padding and spacing, we traditionally
-  // added 7 pixels between our image and content.
-  // <2>|<1>image<1>|<2>|<1>content
-  // So to preserve the current spacing we must add a 7 pixel pad when no image
-  // is supplied.
-  static final int IMAGE_PAD = 7;
 
   /** The duration of the animation. */
   private static final int ANIMATION_DURATION = 200;
@@ -484,11 +469,6 @@ public class TreeItem extends UIObject implements IsTreeItem, HasTreeItems, HasH
     if (children == null) {
       initChildren();
     }
-
-    // Set the margin.
-    // Use no margin on top-most items.
-    double margin = isRoot ? 0.0 : CHILD_MARGIN;
-    item.getElement().getStyle().setMarginLeft(margin, Unit.PX);
 
     // Physical attach.
     Element childContainer = isRoot ? tree.getElement() : childSpanElem;
