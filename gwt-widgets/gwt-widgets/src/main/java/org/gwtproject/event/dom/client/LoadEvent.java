@@ -24,8 +24,7 @@ public class LoadEvent extends DomEvent<LoadHandler> {
   private static final Type<LoadHandler> TYPE = new Type<>(BrowserEvents.LOAD, new LoadEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire load events.
    */
   protected LoadEvent() {}

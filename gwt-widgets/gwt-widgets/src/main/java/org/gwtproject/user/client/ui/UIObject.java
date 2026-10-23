@@ -18,7 +18,6 @@ package org.gwtproject.user.client.ui;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.stream.Collectors;
-import org.gwtproject.core.client.JavaScriptObject;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.Node;
 import org.gwtproject.dom.style.shared.Display;
@@ -75,9 +74,9 @@ import org.gwtproject.user.client.Event;
  *
  * <h3>Use in UiBinder Templates</h3>
  *
- * <p>Setter methods that follow JavaBean property conventions are exposed as attributes in {@link
- * org.gwtproject.uibinder.client.UiBinder UiBinder} templates. For example, because UiObject
- * implements {@link #setWidth(String)} you can set the width of any widget like so:
+ * <p>Setter methods that follow JavaBean property conventions are exposed as attributes in {@code
+ * UiBinder UiBinder} templates. For example, because UiObject implements {@link #setWidth(String)}
+ * you can set the width of any widget like so:
  *
  * <pre>
  * &lt;g:Label width='15em'>Hello there&lt;/g:Label></pre>
@@ -134,11 +133,6 @@ public abstract class UIObject implements HasVisibility {
   private static final String NULL_HANDLE_MSG =
       "Null widget handle. If you "
           + "are creating a composite, ensure that initWidget() has been called.";
-  /**
-   * Stores a regular expression object to extract float values from the leading portion of an input
-   * string.
-   */
-  private static JavaScriptObject numberRegex;
 
   private static DebugIdImpl debugIdImpl = new DebugIdImpl();
   private Element element;

@@ -19,7 +19,6 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.DOM;
-import org.gwtproject.user.client.Event;
 import org.gwtproject.user.client.EventListener;
 
 /** Native implementation associated with {@link DOM}. */
@@ -59,22 +58,12 @@ public abstract class DOMImpl {
     return (object instanceof org.gwtproject.user.client.EventListener);
   }
 
-  public void eventCancelBubble(Event event, boolean cancel) {
-    if (cancel == false) {
-      event.stopPropagation();
-    }
-  }
+  public abstract Element eventGetFromElement(elemental2.dom.Event evt);
 
-  public abstract Element eventGetFromElement(Event evt);
+  public abstract Element eventGetToElement(elemental2.dom.Event evt);
 
-  public boolean eventGetRepeat(Event evt) {
-    return Js.asPropertyMap(evt).has("repeat");
-  }
-
-  public abstract Element eventGetToElement(Event evt);
-
-  public final int eventGetTypeInt(Event evt) {
-    return eventGetTypeInt(evt.getType());
+  public final int eventGetTypeInt(elemental2.dom.Event evt) {
+    return eventGetTypeInt(evt.type);
   }
 
   public int eventGetTypeInt(String eventType) {
@@ -115,7 +104,7 @@ public abstract class DOMImpl {
         return 0x10000;
       case "mousewheel":
         return 0x20000;
-      case "DOMMouseScroll":
+      case "wheel":
         return 0x20000;
       case "contextmenu":
         return 0x40000;
@@ -138,10 +127,6 @@ public abstract class DOMImpl {
       default:
         return -1;
     }
-  }
-
-  public void eventSetKeyCode(Event evt, char key) {
-    Js.asPropertyMap(evt).set("keyCode", key);
   }
 
   public abstract Element getChild(Element elem, int index);

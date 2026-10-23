@@ -25,8 +25,7 @@ public class KeyDownEvent extends KeyCodeEvent<KeyDownHandler> {
       new Type<>(BrowserEvents.KEYDOWN, new KeyDownEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire key down events.
    */
   protected KeyDownEvent() {}

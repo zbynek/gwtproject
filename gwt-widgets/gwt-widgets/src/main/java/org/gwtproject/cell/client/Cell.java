@@ -17,7 +17,6 @@ package org.gwtproject.cell.client;
 
 import java.util.Set;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 
 /**
@@ -30,15 +29,15 @@ import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
  * in multiple Columns, the Cells will not differentiate the values coming from one Column versus
  * another.
  *
- * <p>However, some interactive Cells ({@link EditTextCell}, {@link CheckboxCell}, {@link
- * TextInputCell}, etc...) have a stateful "pending" state, which is a map of row values/keys to the
- * end user entered pending value. For example, if an end user types a new value in a {@link
- * TextInputCell}, the {@link TextInputCell} maps the "pending value" and associates it with the
- * original row value/key. The next time the Cell Widget renders that row value/key, the Cell
- * renders the pending value instead. This allows applications to refresh the Cell Widget without
- * clearing out all of the end user's pending changes. In subclass of {@link AbstractEditableCell},
- * the pending state remains until either the original value is updated (a successful commit), or
- * until {@link AbstractEditableCell#clearViewData(Object)} is called (a failed commit).
+ * <p>However, some interactive Cells {@link CheckboxCell}, {@link TextInputCell}, etc...) have a
+ * stateful "pending" state, which is a map of row values/keys to the end user entered pending
+ * value. For example, if an end user types a new value in a {@link TextInputCell}, the {@link
+ * TextInputCell} maps the "pending value" and associates it with the original row value/key. The
+ * next time the Cell Widget renders that row value/key, the Cell renders the pending value instead.
+ * This allows applications to refresh the Cell Widget without clearing out all of the end user's
+ * pending changes. In subclass of {@link AbstractEditableCell}, the pending state remains until
+ * either the original value is updated (a successful commit), or until {@link
+ * AbstractEditableCell#clearViewData(Object)} is called (a failed commit).
  *
  * <p>If you share an interactive Cell between two cell widgets (or Columns within the same
  * CellTable), then when the end user updates the pending value in one widget, it will be reflected
@@ -142,7 +141,7 @@ public interface Cell<C> {
    * Get the set of events that this cell consumes (see {@link
    * org.gwtproject.dom.client.BrowserEvents BrowserEvents} for useful constants). The container
    * that uses this cell should only pass these events to {@link #onBrowserEvent(Context, Element,
-   * Object, NativeEvent, ValueUpdater)} when the event occurs.
+   * Object, elemental2.dom.Event, ValueUpdater)} when the event occurs.
    *
    * <p>The returned value should not be modified, and may be an unmodifiable set. Changes to the
    * return value may not be reflected in the cell.
@@ -183,7 +182,11 @@ public interface Cell<C> {
    * @param valueUpdater a {@link ValueUpdater}, or null if not specified
    */
   void onBrowserEvent(
-      Context context, Element parent, C value, NativeEvent event, ValueUpdater<C> valueUpdater);
+      Context context,
+      Element parent,
+      C value,
+      elemental2.dom.Event event,
+      ValueUpdater<C> valueUpdater);
 
   /**
    * Render a cell as HTML into a {@link SafeHtmlBuilder}, suitable for passing to {@link

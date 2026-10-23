@@ -25,12 +25,10 @@ public class DragStartEvent extends DragDropEventBase<DragStartHandler> {
       new Type<>(BrowserEvents.DRAGSTART, new DragStartEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} or {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
-   * org.gwtproject.event.shared.HasHandlers, org.gwtproject.dom.client.Element)} to fire drag start
-   * events.
+   * DomEvent#fireNativeEvent(elemental2.dom.Event, org.gwtproject.event.shared.HasHandlers,
+   * org.gwtproject.dom.client.Element)} to fire drag start events.
    */
   protected DragStartEvent() {}
 

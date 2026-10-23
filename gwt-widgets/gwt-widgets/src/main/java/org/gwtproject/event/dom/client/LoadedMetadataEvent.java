@@ -48,8 +48,7 @@ public class LoadedMetadataEvent extends DomEvent<LoadedMetadataHandler> {
       new Type<>(BrowserEvents.LOADEDMETADATA, new LoadedMetadataEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire media loadedmetadata events.
    */
   protected LoadedMetadataEvent() {}

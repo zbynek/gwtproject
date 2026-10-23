@@ -15,6 +15,8 @@
  */
 package org.gwtproject.event.dom.client;
 
+import jsinterop.base.Js;
+
 /**
  * Key up and key down are both events based upon a given key code.
  *
@@ -55,7 +57,7 @@ public abstract class KeyCodeEvent<H> extends KeyEvent<H> {
    * @return the key code
    */
   public int getNativeKeyCode() {
-    return getNativeEvent().getKeyCode();
+    return Js.asPropertyMap(getNativeEvent()).getAsAny("keyCode").asInt();
   }
 
   /**

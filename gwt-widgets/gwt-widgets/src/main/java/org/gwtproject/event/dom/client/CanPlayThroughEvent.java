@@ -33,8 +33,7 @@ public class CanPlayThroughEvent extends DomEvent<CanPlayThroughHandler> {
       new Type<>(BrowserEvents.CANPLAYTHROUGH, new CanPlayThroughEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire media can play through events.
    */
   protected CanPlayThroughEvent() {}

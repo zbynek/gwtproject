@@ -15,6 +15,8 @@
  */
 package org.gwtproject.event.dom.client;
 
+import elemental2.dom.WheelEvent;
+import jsinterop.base.Js;
 import org.gwtproject.dom.client.BrowserEvents;
 
 /** Represents a native mouse wheel event. */
@@ -33,8 +35,7 @@ public class MouseWheelEvent extends MouseEvent<MouseWheelHandler> {
   }
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire mouse wheel events.
    */
   protected MouseWheelEvent() {}
@@ -73,7 +74,7 @@ public class MouseWheelEvent extends MouseEvent<MouseWheelHandler> {
    * @return the delta of the mouse wheel along the y axis
    */
   public int getDeltaY() {
-    return getNativeEvent().getMouseWheelVelocityY();
+    return (int) Math.signum(Js.<WheelEvent>uncheckedCast(getNativeEvent()).deltaY);
   }
 
   /**

@@ -16,86 +16,27 @@
 package org.gwtproject.user.client.impl;
 
 import elemental2.dom.DomGlobal;
+import elemental2.dom.EventListener;
 import elemental2.dom.EventTarget;
-import jsinterop.annotations.JsFunction;
+import elemental2.dom.MouseEvent;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.gwtproject.core.client.JavaScriptObject;
 import org.gwtproject.dom.client.BrowserEvents;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.Node;
 import org.gwtproject.user.client.DOM;
-import org.gwtproject.user.client.Event;
 
 /**
  * Base implementation of {@link org.gwtproject.user.client.impl.DOMImpl} shared by those browsers
  * that come a bit closer to supporting a common standard (ie, not legacy IEs).
  */
-public abstract class DOMImplStandard extends DOMImpl {
+public class DOMImplStandard extends DOMImpl {
 
   private static Element captureElem;
-  private static EventMap bitlessEventDispatchers = getBitlessEventDispatchers();
-  private static EventMap captureEventDispatchers = getCaptureEventDispatchers();
-
-  /**
-   * Adds custom bitless event dispatchers to GWT. If no specific event dispatcher supplied for an
-   * event, the default dispatcher is used.
-   *
-   * <p>Example usage:
-   *
-   * <pre>
-   * static {
-   *   DOMImplStandard.addBitlessEventDispatchers(getMyCustomDispatchers());
-   * }
-   *
-   * private static native JavaScriptObject getMyCustomDispatchers() /*-{
-   *   return {
-   *     click: @com.xxx.YYY::myCustomDispatcher(*),
-   *     ...
-   *   };
-   * }-* /;
-   * </pre>
-   *
-   * <p>Note that although this method is public for extensions, it is subject to change in
-   * different releases.
-   *
-   * @param eventMap an object that provides dispatching methods keyed with the name of the event
-   */
-  public static void addBitlessEventDispatchers(JavaScriptObject eventMap) {
-    ensureInit();
-    bitlessEventDispatchers.merge(eventMap);
-  }
-
-  /**
-   * Adds custom capture event dispatchers to GWT.
-   *
-   * <p>Example usage:
-   *
-   * <pre>
-   * static {
-   *   if (isIE10Plus())) {
-   *     DOMImplStandard.addCaptureEventDispatchers(getMsPointerCaptureDispatchers());
-   *   }
-   * }
-   *
-   * private static native JavaScriptObject getMsPointerCaptureDispatchers() /*-{
-   *   return {
-   *     MSPointerDown: @org.gwtproject.user.client.impl.DOMImplStandard::dispatchCapturedMouseEvent(*),
-   *     MSPointerUp:   @org.gwtproject.user.client.impl.DOMImplStandard::dispatchCapturedMouseEvent(*),
-   *     ...
-   *   };
-   * }-* /;
-   * </pre>
-   *
-   * <p>Note that although this method is public for extensions, it is subject to change in
-   * different releases.
-   *
-   * @param eventMap an object that provides dispatching methods keyed with the name of the event
-   */
-  public static void addCaptureEventDispatchers(JavaScriptObject eventMap) {
-    ensureInit();
-    captureEventDispatchers.merge(eventMap);
-  }
+  private static JsPropertyMap<EventListener> bitlessEventDispatchers =
+      getBitlessEventDispatchers();
+  private static JsPropertyMap<EventListener> captureEventDispatchers =
+      getCaptureEventDispatchers();
 
   private static void ensureInit() {
     if (eventSystemIsInitialized) {
@@ -104,10 +45,10 @@ public abstract class DOMImplStandard extends DOMImpl {
 
     // Ensure that any default extensions for the browser is registered via
     // static initializers in deferred binding of DOMImpl:
-    new DOMImplStandardBase();
+    new DOMImplStandard();
   }
 
-  public static void dispatchEvent(Event evt) {
+  public static void dispatchEvent(elemental2.dom.Event evt) {
     Element element = getFirstAncestorWithListener(evt);
     if (element == null) {
       return;
@@ -115,31 +56,31 @@ public abstract class DOMImplStandard extends DOMImpl {
     DOM.dispatchEvent(evt, element.getNodeType() != 1 ? null : element, getEventListener(element));
   }
 
-  private static Element getFirstAncestorWithListener(Event evt) {
-    Element curElem = evt.getCurrentEventTarget().cast();
+  private static Element getFirstAncestorWithListener(elemental2.dom.Event evt) {
+    Element curElem = Js.uncheckedCast(evt.currentTarget);
     while (curElem != null && getEventListener(curElem) == null) {
       curElem = curElem.getParentNode().cast();
     }
     return curElem;
   }
 
-  private static void dispatchDragEvent(Event evt) {
+  private static void dispatchDragEvent(elemental2.dom.Event evt) {
     // Some drag events must call preventDefault to prevent native text selection.
     evt.preventDefault();
     dispatchEvent(evt);
   }
 
-  private static void dispatchUnhandledEvent(Event evt) {
-    Element element = evt.getCurrentEventTarget().cast();
-    element.setPropertyString("__gwtLastUnhandledEvent", evt.getType());
+  private static void dispatchUnhandledEvent(elemental2.dom.Event evt) {
+    Element element = Js.uncheckedCast(evt.currentTarget);
+    element.setPropertyString("__gwtLastUnhandledEvent", evt.type);
     dispatchEvent(evt);
   }
 
-  private static void dispatchCapturedEvent(Event evt) {
+  private static void dispatchCapturedEvent(elemental2.dom.Event evt) {
     DOM.previewEvent(evt);
   }
 
-  private static void dispatchCapturedMouseEvent(Event evt) {
+  private static void dispatchCapturedMouseEvent(elemental2.dom.Event evt) {
     boolean cancelled = !DOM.previewEvent(evt);
     if (cancelled || captureElem == null) {
       return;
@@ -149,61 +90,59 @@ public abstract class DOMImplStandard extends DOMImpl {
     }
   }
 
-  private static EventMap getBitlessEventDispatchers() {
-    EventMap eventMap = new EventMap();
-    JsPropertyMap map = Js.uncheckedCast(eventMap);
-    map.set("_default_", (Fn) (event) -> dispatchEvent(event));
-    map.set("dragenter", (Fn) (event) -> dispatchDragEvent(event));
-    map.set("dragover", (Fn) (event) -> dispatchDragEvent(event));
-    return eventMap;
+  private static JsPropertyMap<EventListener> getBitlessEventDispatchers() {
+    JsPropertyMap<EventListener> map = JsPropertyMap.of();
+    map.set("_default_", (event) -> dispatchEvent(event));
+    map.set("dragenter", (event) -> dispatchDragEvent(event));
+    map.set("dragover", (event) -> dispatchDragEvent(event));
+    return map;
   }
 
-  private static EventMap getCaptureEventDispatchers() {
-    EventMap eventMap = new EventMap();
-    JsPropertyMap map = Js.uncheckedCast(eventMap);
+  private static JsPropertyMap<EventListener> getCaptureEventDispatchers() {
+    JsPropertyMap<EventListener> map = JsPropertyMap.of();
     // Mouse events
-    map.set("click", (Fn) (event) -> dispatchCapturedMouseEvent(event));
-    map.set("dblclick", (Fn) (event) -> dispatchCapturedMouseEvent(event));
-    map.set("mousedown", (Fn) (event) -> dispatchCapturedMouseEvent(event));
-    map.set("mouseup", (Fn) (event) -> dispatchCapturedMouseEvent(event));
-    map.set("mousemove", (Fn) (event) -> dispatchCapturedMouseEvent(event));
-    map.set("mouseover", (Fn) (event) -> dispatchCapturedMouseEvent(event));
-    map.set("mouseout", (Fn) (event) -> dispatchCapturedMouseEvent(event));
-    map.set("mousewheel", (Fn) (event) -> dispatchCapturedMouseEvent(event));
+    map.set("click", (event) -> dispatchCapturedMouseEvent(event));
+    map.set("dblclick", (event) -> dispatchCapturedMouseEvent(event));
+    map.set("mousedown", (event) -> dispatchCapturedMouseEvent(event));
+    map.set("mouseup", (event) -> dispatchCapturedMouseEvent(event));
+    map.set("mousemove", (event) -> dispatchCapturedMouseEvent(event));
+    map.set("mouseover", (event) -> dispatchCapturedMouseEvent(event));
+    map.set("mouseout", (event) -> dispatchCapturedMouseEvent(event));
+    map.set("mousewheel", (event) -> dispatchCapturedMouseEvent(event));
     // Keyboard events
-    map.set("keydown", (Fn) (event) -> dispatchCapturedEvent(event));
-    map.set("keyup", (Fn) (event) -> dispatchCapturedEvent(event));
-    map.set("keypress", (Fn) (event) -> dispatchCapturedEvent(event));
+    map.set("keydown", (event) -> dispatchCapturedEvent(event));
+    map.set("keyup", (event) -> dispatchCapturedEvent(event));
+    map.set("keypress", (event) -> dispatchCapturedEvent(event));
     // Touch events
-    map.set("touchstart", (Fn) (event) -> dispatchCapturedMouseEvent(event));
-    map.set("touchend", (Fn) (event) -> dispatchCapturedMouseEvent(event));
-    map.set("touchmove", (Fn) (event) -> dispatchCapturedMouseEvent(event));
-    map.set("touchcancel", (Fn) (event) -> dispatchCapturedMouseEvent(event));
-    map.set("gesturestart", (Fn) (event) -> dispatchCapturedMouseEvent(event));
-    map.set("gestureend", (Fn) (event) -> dispatchCapturedMouseEvent(event));
-    map.set("gesturechange", (Fn) (event) -> dispatchCapturedMouseEvent(event));
-    return eventMap;
+    map.set("touchstart", (event) -> dispatchCapturedMouseEvent(event));
+    map.set("touchend", (event) -> dispatchCapturedMouseEvent(event));
+    map.set("touchmove", (event) -> dispatchCapturedMouseEvent(event));
+    map.set("touchcancel", (event) -> dispatchCapturedMouseEvent(event));
+    map.set("gesturestart", (event) -> dispatchCapturedMouseEvent(event));
+    map.set("gestureend", (event) -> dispatchCapturedMouseEvent(event));
+    map.set("gesturechange", (event) -> dispatchCapturedMouseEvent(event));
+    return map;
   }
 
   @Override
-  public Element eventGetFromElement(Event evt) {
-    if (evt.getType().equals(BrowserEvents.MOUSEOVER)) {
-      return evt.getRelatedEventTarget().cast();
+  public Element eventGetFromElement(elemental2.dom.Event evt) {
+    if (evt.type.equals(BrowserEvents.MOUSEOVER)) {
+      return Js.uncheckedCast(((MouseEvent) evt).relatedTarget);
     }
-    if (evt.getType().equals(BrowserEvents.MOUSEOUT)) {
-      return evt.getEventTarget().cast();
+    if (evt.type.equals(BrowserEvents.MOUSEOUT)) {
+      return Js.uncheckedCast(evt.target);
     }
     return null;
   }
 
   @Override
-  public Element eventGetToElement(Event evt) {
-    if (evt.getType().equals(BrowserEvents.MOUSEOVER)) {
-      return evt.getEventTarget().cast();
+  public Element eventGetToElement(elemental2.dom.Event evt) {
+    if (evt.type.equals(BrowserEvents.MOUSEOVER)) {
+      return Js.uncheckedCast(evt.target);
     }
 
-    if (evt.getType().equals(BrowserEvents.MOUSEOUT)) {
-      return evt.getRelatedEventTarget().cast();
+    if (evt.type.equals(BrowserEvents.MOUSEOUT)) {
+      return Js.uncheckedCast(((MouseEvent) evt).relatedTarget);
     }
 
     return null;
@@ -301,13 +240,12 @@ public abstract class DOMImplStandard extends DOMImpl {
 
   @Override
   protected void initEventSystem() {
-    EventMap.foreach(
-        captureEventDispatchers,
-        (elm, value) -> DomGlobal.window.addEventListener(elm, Js.uncheckedCast(value), true));
+    captureEventDispatchers.forEach(
+        (key) -> DomGlobal.window.addEventListener(key, captureEventDispatchers.get(key), true));
   }
 
   protected void sinkBitlessEventImpl(Element elem, String eventTypeName) {
-    JsPropertyMap map = Js.asPropertyMap(bitlessEventDispatchers);
+    JsPropertyMap<EventListener> map = bitlessEventDispatchers;
     Object dispatcher;
     if (map.has(eventTypeName)) {
       dispatcher = map.get(eventTypeName);
@@ -320,129 +258,117 @@ public abstract class DOMImplStandard extends DOMImpl {
   }
 
   protected void sinkEventsImpl(Element elem, int bits) {
-    JsPropertyMap map = Js.asPropertyMap(elem);
+    JsPropertyMap<EventListener> map = Js.uncheckedCast(elem);
     int chMask =
-        (map.has("__eventBits") ? Integer.valueOf(map.get("__eventBits").toString()) : 0) ^ bits;
-    map.set("__eventBits", bits);
+        (map.has("__eventBits") ? Integer.parseInt(map.get("__eventBits").toString()) : 0) ^ bits;
+    Js.asPropertyMap(elem).set("__eventBits", bits);
 
     if ((chMask & 0x00001) != 0) {
-      map.set("onclick", ((bits & 0x00001) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("onclick", ((bits & 0x00001) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x00002) != 0) {
-      map.set("ondblclick", ((bits & 0x00002) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("ondblclick", ((bits & 0x00002) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x00004) != 0) {
-      map.set("onmousedown", ((bits & 0x00004) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("onmousedown", ((bits & 0x00004) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x00008) != 0) {
-      map.set("onmouseup", ((bits & 0x00008) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("onmouseup", ((bits & 0x00008) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x00010) != 0) {
-      map.set("onmouseover", ((bits & 0x00010) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("onmouseover", ((bits & 0x00010) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x00020) != 0) {
-      map.set("onmouseout", ((bits & 0x00020) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("onmouseout", ((bits & 0x00020) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x00040) != 0) {
-      map.set("onmousemove", ((bits & 0x00040) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("onmousemove", ((bits & 0x00040) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x00080) != 0) {
-      map.set("onkeydown", ((bits & 0x00080) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("onkeydown", ((bits & 0x00080) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x00100) != 0) {
-      map.set("onkeypress", ((bits & 0x00100) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("onkeypress", ((bits & 0x00100) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x00200) != 0) {
-      map.set("onkeyup", ((bits & 0x00200) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("onkeyup", ((bits & 0x00200) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x00400) != 0) {
-      map.set("onchange", ((bits & 0x00400) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("onchange", ((bits & 0x00400) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x00800) != 0) {
-      map.set("onfocus", ((bits & 0x00400) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("onfocus", ((bits & 0x00400) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x01000) != 0) {
-      map.set("onblur", ((bits & 0x01000) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("onblur", ((bits & 0x01000) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x02000) != 0) {
-      map.set("onlosecapture", ((bits & 0x02000) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("onlosecapture", ((bits & 0x02000) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x04000) != 0) {
-      map.set("onscroll", ((bits & 0x04000) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("onscroll", ((bits & 0x04000) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x08000) != 0) {
-      map.set(
-          "onload", ((bits & 0x08000) != 0) ? (Fn) event -> dispatchUnhandledEvent(event) : null);
+      map.set("onload", ((bits & 0x08000) != 0) ? event -> dispatchUnhandledEvent(event) : null);
     }
 
     if ((chMask & 0x10000) != 0) {
-      map.set("onerror", ((bits & 0x10000) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("onerror", ((bits & 0x10000) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x20000) != 0) {
-      map.set("onmousewheel", ((bits & 0x20000) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("onwheel", ((bits & 0x20000) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x40000) != 0) {
-      map.set("oncontextmenu", ((bits & 0x40000) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("oncontextmenu", ((bits & 0x40000) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x80000) != 0) {
-      map.set("onpaste", ((bits & 0x80000) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("onpaste", ((bits & 0x80000) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x100000) != 0) {
-      map.set("ontouchstart", ((bits & 0x100000) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("ontouchstart", ((bits & 0x100000) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x200000) != 0) {
-      map.set("ontouchmove", ((bits & 0x200000) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("ontouchmove", ((bits & 0x200000) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x400000) != 0) {
-      map.set("ontouchend", ((bits & 0x400000) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("ontouchend", ((bits & 0x400000) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x800000) != 0) {
-      map.set(
-          "ontouchcancel", ((bits & 0x800000) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("ontouchcancel", ((bits & 0x800000) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x1000000) != 0) {
-      map.set(
-          "ongesturestart", ((bits & 0x1000000) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("ongesturestart", ((bits & 0x1000000) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x2000000) != 0) {
-      map.set(
-          "ongesturechange", ((bits & 0x2000000) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("ongesturechange", ((bits & 0x2000000) != 0) ? event -> dispatchEvent(event) : null);
     }
 
     if ((chMask & 0x4000000) != 0) {
-      map.set(
-          "ongestureend", ((bits & 0x4000000) != 0) ? (Fn) event -> dispatchEvent(event) : null);
+      map.set("ongestureend", ((bits & 0x4000000) != 0) ? event -> dispatchEvent(event) : null);
     }
-  }
-
-  @FunctionalInterface
-  @JsFunction
-  public interface Fn {
-
-    void onInvoke(Event evt);
   }
 }

@@ -18,9 +18,9 @@ package org.gwtproject.cell.client;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import jsinterop.base.Js;
 import org.gwtproject.dom.client.BrowserEvents;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.event.dom.client.KeyCodes;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 
@@ -53,7 +53,6 @@ public abstract class AbstractCell<C> implements Cell<C> {
    * Construct a new {@link AbstractCell} with the specified consumed events. The input arguments
    * are passed by copy.
    *
-   * @param consumedEvents the {@link BrowserEvents events} that this cell consumes
    * @see BrowserEvents
    */
   private AbstractCell() {}
@@ -107,10 +106,15 @@ public abstract class AbstractCell<C> implements Cell<C> {
    * the cell expects into the constructor.
    */
   public void onBrowserEvent(
-      Context context, Element parent, C value, NativeEvent event, ValueUpdater<C> valueUpdater) {
-    String eventType = event.getType();
+      Context context,
+      Element parent,
+      C value,
+      elemental2.dom.Event event,
+      ValueUpdater<C> valueUpdater) {
+    String eventType = event.type;
     // Special case the ENTER key for a unified user experience.
-    if (BrowserEvents.KEYDOWN.equals(eventType) && event.getKeyCode() == KeyCodes.KEY_ENTER) {
+    if (BrowserEvents.KEYDOWN.equals(eventType)
+        && Js.asPropertyMap(event).getAsAny("keyCode").asInt() == KeyCodes.KEY_ENTER) {
       onEnterKeyDown(context, parent, value, event, valueUpdater);
     }
   }
@@ -146,7 +150,11 @@ public abstract class AbstractCell<C> implements Cell<C> {
    * @param valueUpdater a {@link ValueUpdater}, or null if not specified
    */
   protected void onEnterKeyDown(
-      Context context, Element parent, C value, NativeEvent event, ValueUpdater<C> valueUpdater) {}
+      Context context,
+      Element parent,
+      C value,
+      elemental2.dom.Event event,
+      ValueUpdater<C> valueUpdater) {}
 
   /**
    * Initialize the cell.

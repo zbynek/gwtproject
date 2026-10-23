@@ -15,6 +15,7 @@
  */
 package org.gwtproject.user.client.ui;
 
+import jsinterop.base.Js;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.event.dom.client.HasAllKeyHandlers;
@@ -143,7 +144,7 @@ public class TabBar extends Composite
     }
 
     @Override
-    public void onBrowserEvent(Event event) {
+    public void onBrowserEvent(elemental2.dom.Event event) {
       if (!enabled) {
         return;
       }
@@ -155,7 +156,7 @@ public class TabBar extends Composite
           break;
 
         case Event.ONKEYDOWN:
-          if (((char) event.getKeyCode()) == KeyCodes.KEY_ENTER) {
+          if (Js.asPropertyMap(event).getAsAny("keyCode").asInt() == KeyCodes.KEY_ENTER) {
             TabBar.this.selectTabByTabWidget(this);
           }
           break;

@@ -25,8 +25,7 @@ public class LoseCaptureEvent extends DomEvent<LoseCaptureHandler> {
       new Type<>(BrowserEvents.LOSECAPTURE, new LoseCaptureEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire lose capture events.
    */
   protected LoseCaptureEvent() {}

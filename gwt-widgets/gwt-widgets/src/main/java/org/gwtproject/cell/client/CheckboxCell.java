@@ -15,10 +15,11 @@
  */
 package org.gwtproject.cell.client;
 
+import elemental2.dom.Event;
+import jsinterop.base.Js;
 import org.gwtproject.dom.client.BrowserEvents;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.InputElement;
-import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.event.dom.client.KeyCodes;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
@@ -91,12 +92,13 @@ public class CheckboxCell extends AbstractEditableCell<Boolean, Boolean> {
       Context context,
       Element parent,
       Boolean value,
-      NativeEvent event,
+      Event event,
       ValueUpdater<Boolean> valueUpdater) {
-    String type = event.getType();
+    String type = event.type;
 
     boolean enterPressed =
-        BrowserEvents.KEYDOWN.equals(type) && event.getKeyCode() == KeyCodes.KEY_ENTER;
+        BrowserEvents.KEYDOWN.equals(type)
+            && Js.asPropertyMap(event).getAsAny("keyCode").asInt() == KeyCodes.KEY_ENTER;
     if (BrowserEvents.CHANGE.equals(type) || enterPressed) {
       InputElement input = parent.getFirstChild().cast();
       Boolean isChecked = input.isChecked();

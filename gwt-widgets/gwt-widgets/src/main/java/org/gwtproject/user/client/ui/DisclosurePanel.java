@@ -112,12 +112,12 @@ public final class DisclosurePanel extends Composite
     }
 
     @Override
-    public void onBrowserEvent(Event event) {
+    public void onBrowserEvent(elemental2.dom.Event event) {
       // no need to call super.
       switch (DOM.eventGetType(event)) {
         case Event.ONCLICK:
           // Prevent link default action.
-          DOM.eventPreventDefault(event);
+          event.preventDefault();
           setOpen(!isOpen);
       }
     }

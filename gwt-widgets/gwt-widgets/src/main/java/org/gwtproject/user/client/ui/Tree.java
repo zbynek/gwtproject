@@ -15,6 +15,8 @@
  */
 package org.gwtproject.user.client.ui;
 
+import elemental2.dom.KeyboardEvent;
+import elemental2.dom.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -478,7 +480,7 @@ public class Tree extends Widget
 
   @Override
   @SuppressWarnings("fallthrough")
-  public void onBrowserEvent(Event event) {
+  public void onBrowserEvent(elemental2.dom.Event event) {
     int eventType = DOM.eventGetType(event);
 
     switch (eventType) {
@@ -498,7 +500,7 @@ public class Tree extends Widget
       case Event.ONKEYPRESS:
       case Event.ONKEYUP:
         // Issue 1890: Do not block history navigation via alt+left/right
-        if (event.getAltKey() || event.getMetaKey()) {
+        if (((KeyboardEvent) event).altKey || ((KeyboardEvent) event).metaKey) {
           super.onBrowserEvent(event);
           return;
         }
@@ -526,7 +528,7 @@ public class Tree extends Widget
           // extra event reaching the Tree, which we will ignore here.
           // Also, ignore middle and right clicks here.
           if ((DOM.eventGetCurrentTarget(event) == getElement())
-              && (event.getButton() == Event.BUTTON_LEFT)) {
+              && (((MouseEvent) event).button == 0)) {
             elementClicked(DOM.eventGetTarget(event));
           }
           break;
@@ -549,7 +551,7 @@ public class Tree extends Widget
 
       case Event.ONKEYUP:
         {
-          if (event.getKeyCode() == KeyCodes.KEY_TAB) {
+          if (Js.asPropertyMap(event).getAsAny("keyCode").asInt() == KeyCodes.KEY_TAB) {
             ArrayList<Element> chain = new ArrayList<Element>();
             collectElementChain(chain, getElement(), DOM.eventGetTarget(event));
             TreeItem item = findItemByChain(chain, 0, root);
@@ -565,7 +567,7 @@ public class Tree extends Widget
     switch (eventType) {
       case Event.ONKEYDOWN:
       case Event.ONKEYUP:
-        if (KeyCodes.isArrowKey(event.getKeyCode())) {
+        if (KeyCodes.isArrowKey(Js.asPropertyMap(event).getAsAny("keyCode").asInt())) {
           event.stopPropagation();
           event.preventDefault();
           return;
@@ -946,10 +948,10 @@ public class Tree extends Widget
     focusable.setAttribute("role", "tree");
   }
 
-  private void keyboardNavigation(Event event) {
+  private void keyboardNavigation(elemental2.dom.Event event) {
     // Handle keyboard events if keyboard navigation is enabled
     if (isKeyboardNavigationEnabled(curSelection)) {
-      int code = event.getKeyCode();
+      int code = Js.asPropertyMap(event).getAsAny("keyCode").asInt();
 
       switch (KeyCodes.maybeSwapArrowKeysForRtl(code, false)) {
         case KeyCodes.KEY_UP:

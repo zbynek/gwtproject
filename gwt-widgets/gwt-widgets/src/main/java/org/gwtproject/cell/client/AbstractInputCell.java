@@ -15,11 +15,12 @@
  */
 package org.gwtproject.cell.client;
 
+import elemental2.dom.Event;
 import java.util.HashSet;
 import java.util.Set;
+import jsinterop.base.Js;
 import org.gwtproject.dom.client.BrowserEvents;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.NativeEvent;
 
 /**
  * An {@link AbstractCell} used to render input elements that can receive focus.
@@ -49,7 +50,7 @@ public abstract class AbstractInputCell<C, V> extends AbstractEditableCell<C, V>
   /**
    * Get the events consumed by the input cell.
    *
-   * @param userEvents the events consumed by the subclass
+   * @param consumedEvents the events consumed by the subclass
    * @return the events
    */
   private static Set<String> getConsumedEventsImpl(String... consumedEvents) {
@@ -90,20 +91,16 @@ public abstract class AbstractInputCell<C, V> extends AbstractEditableCell<C, V>
 
   @Override
   public void onBrowserEvent(
-      Cell.Context context,
-      Element parent,
-      C value,
-      NativeEvent event,
-      ValueUpdater<C> valueUpdater) {
+      Cell.Context context, Element parent, C value, Event event, ValueUpdater<C> valueUpdater) {
     super.onBrowserEvent(context, parent, value, event, valueUpdater);
 
     // Ignore events that don't target the input.
-    Element target = event.getEventTarget().cast();
+    Element target = Js.uncheckedCast(event.target);
     if (!getInputElement(parent).isOrHasChild(target)) {
       return;
     }
 
-    String eventType = event.getType();
+    String eventType = event.type;
     if (BrowserEvents.FOCUS.equals(eventType)) {
       focusedKey = context.getKey();
     } else if (BrowserEvents.BLUR.equals(eventType)) {
@@ -145,13 +142,9 @@ public abstract class AbstractInputCell<C, V> extends AbstractEditableCell<C, V>
 
   @Override
   protected void onEnterKeyDown(
-      Cell.Context context,
-      Element parent,
-      C value,
-      NativeEvent event,
-      ValueUpdater<C> valueUpdater) {
+      Cell.Context context, Element parent, C value, Event event, ValueUpdater<C> valueUpdater) {
     Element input = getInputElement(parent);
-    Element target = event.getEventTarget().cast();
+    Element target = Js.uncheckedCast(event.target);
     Object key = context.getKey();
     if (getInputElement(parent).isOrHasChild(target)) {
       finishEditing(parent, value, key, valueUpdater);

@@ -16,10 +16,9 @@
 
 package org.gwtproject.user.client.ui;
 
-import org.gwtproject.dom.client.Document;
+import elemental2.dom.MouseEvent;
+import jsinterop.base.Js;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.NativeEvent;
-import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.resources.client.ImageResource;
 import org.gwtproject.safehtml.client.HasSafeHtml;
@@ -506,7 +505,7 @@ public abstract class CustomButton extends ButtonBase {
   }
 
   @Override
-  public void onBrowserEvent(Event event) {
+  public void onBrowserEvent(elemental2.dom.Event event) {
     // Should not act on button if disabled.
     if (isEnabled() == false) {
       // This can happen when events are bubbled up from non-disabled children
@@ -524,7 +523,7 @@ public abstract class CustomButton extends ButtonBase {
         }
         break;
       case Event.ONMOUSEDOWN:
-        if (event.getButton() == Event.BUTTON_LEFT) {
+        if (((MouseEvent) event).button == 0) {
           setFocus(true);
           onClickStart();
           DOM.setCapture(getElement());
@@ -537,7 +536,7 @@ public abstract class CustomButton extends ButtonBase {
         if (isCapturing) {
           isCapturing = false;
           DOM.releaseCapture(getElement());
-          if (isHovering() && event.getButton() == Event.BUTTON_LEFT) {
+          if (isHovering() && ((MouseEvent) event).button == 0) {
             onClick();
           }
         }
@@ -583,7 +582,7 @@ public abstract class CustomButton extends ButtonBase {
     super.onBrowserEvent(event);
     // Synthesize clicks based on keyboard events AFTER the normal key handling.
     if ((DOM.eventGetType(event) & Event.KEYEVENTS) != 0) {
-      char keyCode = (char) event.getKeyCode();
+      char keyCode = Js.asPropertyMap(event).getAsAny("keyCode").asChar();
       switch (type) {
         case Event.ONKEYDOWN:
           if (keyCode == ' ') {
@@ -702,8 +701,8 @@ public abstract class CustomButton extends ButtonBase {
 
     // Mouse coordinates are not always available (e.g., when the click is
     // caused by a keyboard event).
-    NativeEvent evt = Document.get().createClickEvent(1, 0, 0, 0, 0, false, false, false, false);
-    getElement().dispatchEvent(evt);
+    MouseEvent evt = new MouseEvent("click");
+    Js.<elemental2.dom.Element>uncheckedCast(getElement()).dispatchEvent(evt);
 
     allowClick = false;
   }
@@ -747,11 +746,6 @@ public abstract class CustomButton extends ButtonBase {
     if (curFace == null) {
       setCurrentFace(getUpFace());
     }
-  }
-
-  void fireClickListeners(@SuppressWarnings("unused") Event nativeEvent) {
-    // TODO(ecc) Once event triggering is committed, should fire a native click event instead.
-    fireEvent(new ClickEvent() {});
   }
 
   /**

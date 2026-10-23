@@ -22,9 +22,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import jsinterop.base.Js;
-import org.gwtproject.core.client.JavaScriptObject;
-import org.gwtproject.core.client.JsArrayInteger;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.core.client.Scheduler.ScheduledCommand;
 import org.gwtproject.dom.client.Element;
@@ -339,7 +336,7 @@ class HasDataPresenter<T> implements HasData<T>, HasKeyProvider<T>, HasKeyboardP
   static final int PAGE_INCREMENT = 30;
 
   /**
-   * The maximum number of times we can try to {@link #resolvePendingState(JsArrayInteger)} before
+   * The maximum number of times we can try to {@link #resolvePendingState(JsArray<Integer>)} before
    * we assume there is an infinite loop.
    */
   private static final int LOOP_MAXIMUM = 10;
@@ -360,9 +357,9 @@ class HasDataPresenter<T> implements HasData<T>, HasKeyProvider<T>, HasKeyboardP
    *
    * @param array the array to sort
    */
-  private static void sortJsArrayInteger(JsArray array) {
+  private static void sortJsArrayInteger(JsArray<Integer> array) {
     // sort() sorts lexicographically by default.
-    array.sort((JsArray.SortCompareFn<Double>) (x, y) -> x - y);
+    array.sort((x, y) -> x - y);
   }
 
   private final HasData<T> display;
@@ -382,7 +379,7 @@ class HasDataPresenter<T> implements HasData<T>, HasKeyProvider<T>, HasKeyboardP
   private ScheduledCommand pendingStateCommand;
 
   /**
-   * A counter used to detect infinite loops in {@link #resolvePendingState(JsArrayInteger)}. An
+   * A counter used to detect infinite loops in {@link #resolvePendingState(JsArray<Integer>)}. An
    * infinite loop can occur if user code, such as reading the {@link SelectionModel}, causes the
    * table to have a pending state.
    */
@@ -830,16 +827,16 @@ class HasDataPresenter<T> implements HasData<T>, HasKeyProvider<T>, HasKeyboardP
    * @param modifiedRows the unordered indexes of modified rows
    * @return up to two ranges that encompass the modified rows
    */
-  List<Range> calculateModifiedRanges(JsArrayInteger modifiedRows, int pageStart, int pageEnd) {
-    sortJsArrayInteger(Js.cast(modifiedRows));
+  List<Range> calculateModifiedRanges(JsArray<Integer> modifiedRows, int pageStart, int pageEnd) {
+    sortJsArrayInteger(modifiedRows);
 
     int rangeStart0 = -1;
     int rangeEnd0 = -1;
     int rangeStart1 = -1;
     int rangeEnd1 = -1;
     int maxDiff = 0;
-    for (int i = 0; i < modifiedRows.length(); i++) {
-      int index = modifiedRows.get(i);
+    for (int i = 0; i < modifiedRows.length; i++) {
+      int index = modifiedRows.getAt(i);
       if (index < pageStart || index >= pageEnd) {
         // The index is out of range of the current page.
         continue;
@@ -990,7 +987,7 @@ class HasDataPresenter<T> implements HasData<T>, HasKeyProvider<T>, HasKeyboardP
    *     rows may be mutated.
    * @return true if the state changed, false if not
    */
-  private boolean resolvePendingState(JsArrayInteger modifiedRows) {
+  private boolean resolvePendingState(JsArray<Integer> modifiedRows) {
     pendingStateCommand = null;
 
     /*
@@ -1040,7 +1037,7 @@ class HasDataPresenter<T> implements HasData<T>, HasKeyProvider<T>, HasKeyboardP
      * Collections.
      */
     if (modifiedRows == null) {
-      modifiedRows = JavaScriptObject.createArray().cast();
+      modifiedRows = JsArray.of();
     }
 
     // Get the values used for calculations.
@@ -1187,7 +1184,7 @@ class HasDataPresenter<T> implements HasData<T>, HasKeyProvider<T>, HasKeyboardP
     }
 
     // Add keyboard rows to modified rows if we are going to render anyway.
-    if (modifiedRows.length() > 0 && keyboardRowChanged) {
+    if (modifiedRows.length > 0 && keyboardRowChanged) {
       modifiedRows.push(oldState.getKeyboardSelectedRow());
       modifiedRows.push(newState.keyboardSelectedRow);
     }

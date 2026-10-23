@@ -20,7 +20,6 @@ import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsFunction;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.gwtproject.core.client.JavaScriptObject;
 import org.gwtproject.dom.builder.shared.HtmlBuilderFactory;
 import org.gwtproject.dom.builder.shared.HtmlElementBuilder;
 import org.gwtproject.dom.client.Element;
@@ -69,7 +68,7 @@ public class PotentialElement extends Element {
     GwtPotentialElementShim shim = new GwtPotentialElementShim();
     shim.tagName = tagName;
     shim.__gwt_resolve = () -> buildResolveCallback(o);
-    return Js.uncheckedCast(Element.as(shim));
+    return Js.uncheckedCast(shim);
   }
 
   /**
@@ -87,12 +86,12 @@ public class PotentialElement extends Element {
   }
 
   /**
-   * Tests whether a given {@link JavaScriptObject} represents a PotentialElement.
+   * Tests whether a given {@link Object} represents a PotentialElement.
    *
-   * @param o the {@link JavaScriptObject} to be tested
+   * @param o the {@link Object} to be tested
    * @return true if the given object is a PotentialElement instance
    */
-  public static boolean isPotential(JavaScriptObject o) {
+  public static boolean isPotential(Object o) {
     return DOM.isPotential(o);
   }
 
@@ -109,7 +108,7 @@ public class PotentialElement extends Element {
 
   // TODO MISSED         this.__gwt_resolve =
   // @com.google.gwt.user.client.ui.PotentialElement::cannotResolveTwice();
-  private static JavaScriptObject buildResolveCallback(UIObject resolver) {
+  private static Object buildResolveCallback(UIObject resolver) {
     Fn func =
         () -> {
           // this.__gwt_resolve =

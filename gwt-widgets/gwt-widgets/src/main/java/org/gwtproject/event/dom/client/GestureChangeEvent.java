@@ -15,6 +15,7 @@
  */
 package org.gwtproject.event.dom.client;
 
+import jsinterop.base.Js;
 import org.gwtproject.dom.client.BrowserEvents;
 
 /** Represents a native gesture change event. */
@@ -25,8 +26,7 @@ public class GestureChangeEvent extends DomEvent<GestureChangeHandler> {
       new Type<>(BrowserEvents.GESTURECHANGE, new GestureChangeEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire gesture change events.
    */
   protected GestureChangeEvent() {}
@@ -46,11 +46,11 @@ public class GestureChangeEvent extends DomEvent<GestureChangeHandler> {
   }
 
   public double getRotation() {
-    return getNativeEvent().getRotation();
+    return Js.asPropertyMap(getNativeEvent()).getAsAny("rotation").asDouble();
   }
 
   public double getScale() {
-    return getNativeEvent().getScale();
+    return Js.asPropertyMap(getNativeEvent()).getAsAny("scale").asDouble();
   }
 
   @Override

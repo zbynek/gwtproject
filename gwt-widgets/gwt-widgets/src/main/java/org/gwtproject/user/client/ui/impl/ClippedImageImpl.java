@@ -17,7 +17,6 @@ package org.gwtproject.user.client.ui.impl;
 
 import jsinterop.annotations.JsFunction;
 import jsinterop.base.Js;
-import org.gwtproject.core.client.JavaScriptObject;
 import org.gwtproject.dom.client.Document;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.style.shared.Unit;
@@ -65,11 +64,11 @@ public class ClippedImageImpl {
     tmp.setInnerSafeHtml(getSafeHtml(url, left, top, width, height));
 
     Element elem = tmp.getFirstChildElement();
-    elem.setPropertyJSO("onload", createOnLoadHandlerFunction());
+    elem.setPropertyObject("onload", createOnLoadHandlerFunction());
     return elem;
   }
 
-  public static JavaScriptObject createOnLoadHandlerFunction() {
+  public static Object createOnLoadHandlerFunction() {
     return Js.uncheckedCast(
         new Fn() {
           @Override
