@@ -25,8 +25,7 @@ public class ContextMenuEvent extends DomEvent<ContextMenuHandler> {
       new Type<>(BrowserEvents.CONTEXTMENU, new ContextMenuEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire context menu events.
    */
   protected ContextMenuEvent() {}

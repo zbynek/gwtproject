@@ -22,7 +22,6 @@ import elemental2.dom.HTMLInputElement;
 import jsinterop.annotations.JsFunction;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.gwtproject.core.client.JavaScriptObject;
 import org.gwtproject.dom.client.DivElement;
 import org.gwtproject.dom.client.Document;
 import org.gwtproject.dom.client.Element;
@@ -34,9 +33,9 @@ import org.gwtproject.dom.client.Element;
 public class FocusImplStandard extends FocusImpl {
 
   /** Single focusHandler shared by all focusable. */
-  static JavaScriptObject focusHandler;
+  static elemental2.dom.EventListener focusHandler;
 
-  private static Element createFocusable0(JavaScriptObject focusHandler) {
+  private static Element createFocusable0(elemental2.dom.EventListener focusHandler) {
     // Divs are focusable in all browsers, but only IE supports the accessKey
     // property on divs. We use the infamous 'hidden input' trick to add an
     // accessKey to the focusable div. Note that the input is only used to
@@ -62,7 +61,7 @@ public class FocusImplStandard extends FocusImpl {
     // to avoid creating a memory leaks. (Lambdas here would create cycles
     // involving the div and input).  This also allows us to share a single
     // set of handlers among every focusable item.
-    input.addEventListener("focus", Js.uncheckedCast(focusHandler), false);
+    input.addEventListener("focus", focusHandler, false);
     div.appendChild(Js.uncheckedCast(input));
     return div;
   }
@@ -81,23 +80,21 @@ public class FocusImplStandard extends FocusImpl {
    * Use an isolated method call to create the handler to avoid creating memory leaks via
    * handler-closures-element.
    */
-  private JavaScriptObject createFocusHandler() {
+  private elemental2.dom.EventListener createFocusHandler() {
     // This function is called directly as an event handler, so 'this' is
     // set up by the browser to be the input on which the event is fired. We
     // call focus() in a timeout or the element may be blurred when this event
     // ends.
-    FnVarArgs func =
-        (event) -> {
-          Element _this = Js.uncheckedCast(this);
-          HTMLDivElement div = Js.uncheckedCast(_this.getParentNode());
-          if (div.onfocus != null) {
-            DomGlobal.setTimeout(p0 -> div.focus(), 0);
-          }
-        };
-    return (JavaScriptObject) func;
+    return (event) -> {
+      Element _this = Js.uncheckedCast(this);
+      HTMLDivElement div = Js.uncheckedCast(_this.getParentNode());
+      if (div.onfocus != null) {
+        DomGlobal.setTimeout(p0 -> div.focus(), 0);
+      }
+    };
   }
 
-  private JavaScriptObject ensureFocusHandler() {
+  private elemental2.dom.EventListener ensureFocusHandler() {
     return focusHandler != null ? focusHandler : (focusHandler = createFocusHandler());
   }
 

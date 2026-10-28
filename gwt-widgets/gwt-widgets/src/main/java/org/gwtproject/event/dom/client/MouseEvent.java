@@ -16,7 +16,6 @@
 package org.gwtproject.event.dom.client;
 
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.NativeEvent;
 
 /**
  * Abstract class representing mouse events.
@@ -26,8 +25,8 @@ import org.gwtproject.dom.client.NativeEvent;
 public abstract class MouseEvent<H> extends HumanInputEvent<H> {
 
   /**
-   * Gets the button value. Compare it to {@link NativeEvent#BUTTON_LEFT}, {@link
-   * NativeEvent#BUTTON_RIGHT}, {@link NativeEvent#BUTTON_MIDDLE}
+   * Gets the button value. NOT based on DOM MouseEvent.button, but on MouseEvent.buttons mask (Left
+   * = 1, Right = 2, Middle = 4).
    *
    * <p>Note: this is unreliable for events not caused by the depression or release of a mouse
    * button.
@@ -35,7 +34,13 @@ public abstract class MouseEvent<H> extends HumanInputEvent<H> {
    * @return the button value
    */
   public int getNativeButton() {
-    return getNativeEvent().getButton();
+    int button = getNativeEvent().button;
+    if (button == 1) {
+      return 4;
+    } else if (button == 2) {
+      return 2;
+    }
+    return 1;
   }
 
   /**
@@ -44,7 +49,7 @@ public abstract class MouseEvent<H> extends HumanInputEvent<H> {
    * @return the mouse x-position
    */
   public int getScreenX() {
-    return getNativeEvent().getScreenX();
+    return (int) getNativeEvent().screenX;
   }
 
   /**
@@ -53,7 +58,11 @@ public abstract class MouseEvent<H> extends HumanInputEvent<H> {
    * @return the mouse y-position
    */
   public int getScreenY() {
-    return getNativeEvent().getScreenY();
+    return (int) getNativeEvent().screenY;
+  }
+
+  public elemental2.dom.MouseEvent getNativeEvent() {
+    return (elemental2.dom.MouseEvent) super.getNativeEvent();
   }
 
   /**
@@ -76,8 +85,8 @@ public abstract class MouseEvent<H> extends HumanInputEvent<H> {
    * @return the relative x-position
    */
   public int getRelativeX(Element target) {
-    NativeEvent e = getNativeEvent();
-    return e.getClientX()
+    elemental2.dom.MouseEvent e = getNativeEvent();
+    return (int) e.clientX
         - target.getAbsoluteLeft()
         + target.getScrollLeft()
         + target.getOwnerDocument().getScrollLeft();
@@ -89,7 +98,7 @@ public abstract class MouseEvent<H> extends HumanInputEvent<H> {
    * @return the mouse x-position
    */
   public int getClientX() {
-    return getNativeEvent().getClientX();
+    return (int) getNativeEvent().clientX;
   }
 
   /**
@@ -112,8 +121,8 @@ public abstract class MouseEvent<H> extends HumanInputEvent<H> {
    * @return the relative y-position
    */
   public int getRelativeY(Element target) {
-    NativeEvent e = getNativeEvent();
-    return e.getClientY()
+    elemental2.dom.MouseEvent e = getNativeEvent();
+    return (int) e.clientY
         - target.getAbsoluteTop()
         + target.getScrollTop()
         + target.getOwnerDocument().getScrollTop();
@@ -125,6 +134,25 @@ public abstract class MouseEvent<H> extends HumanInputEvent<H> {
    * @return the mouse y-position
    */
   public int getClientY() {
-    return getNativeEvent().getClientY();
+    return (int) getNativeEvent().clientY;
+  }
+
+  public boolean isAltKeyDown() {
+    return getNativeEvent().altKey;
+  }
+
+  @Override
+  public boolean isControlKeyDown() {
+    return getNativeEvent().ctrlKey;
+  }
+
+  @Override
+  public boolean isMetaKeyDown() {
+    return getNativeEvent().metaKey;
+  }
+
+  @Override
+  public boolean isShiftKeyDown() {
+    return getNativeEvent().shiftKey;
   }
 }

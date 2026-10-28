@@ -15,13 +15,14 @@
  */
 package org.gwtproject.user.client.ui;
 
+import elemental2.dom.EventTarget;
 import jsinterop.annotations.JsFunction;
+import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.core.client.Scheduler.ScheduledCommand;
 import org.gwtproject.dom.client.Document;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.EventTarget;
 import org.gwtproject.dom.style.shared.Overflow;
 import org.gwtproject.dom.style.shared.Position;
 import org.gwtproject.dom.style.shared.Unit;
@@ -173,13 +174,14 @@ public class ResizeLayoutPanel extends SimplePanel implements ProvidesResize, Ha
               });
     }
 
-    public void onBrowserEvent(Event event) {
+    @Override
+    public void onBrowserEvent(elemental2.dom.Event event) {
       if (!resettingScrollables && Event.ONSCROLL == DOM.eventGetType(event)) {
-        EventTarget eventTarget = event.getEventTarget();
-        if (!Element.is(eventTarget)) {
+        EventTarget eventTarget = event.target;
+        if (!DOM.isElement(eventTarget)) {
           return;
         }
-        Element target = eventTarget.cast();
+        Element target = Js.uncheckedCast(eventTarget);
         if (target == collapsible || target == expandable) {
           handleResize();
         }

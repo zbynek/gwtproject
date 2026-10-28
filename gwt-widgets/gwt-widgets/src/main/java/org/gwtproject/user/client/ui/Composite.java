@@ -22,7 +22,6 @@ import org.gwtproject.event.logical.shared.AttachEvent;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 import org.gwtproject.user.client.DOM;
-import org.gwtproject.user.client.Event;
 
 /**
  * A type of widget that can wrap another widget, hiding the wrapped widget's methods. When added to
@@ -73,7 +72,7 @@ public abstract class Composite extends Widget implements IsRenderable {
   }
 
   @Override
-  public void onBrowserEvent(Event event) {
+  public void onBrowserEvent(elemental2.dom.Event event) {
     // Fire any handler added to the composite itself.
     super.onBrowserEvent(event);
 

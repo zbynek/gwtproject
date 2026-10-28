@@ -25,8 +25,7 @@ public class ScrollEvent extends DomEvent<ScrollHandler> {
       new Type<>(BrowserEvents.SCROLL, new ScrollEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire scroll events.
    */
   protected ScrollEvent() {}

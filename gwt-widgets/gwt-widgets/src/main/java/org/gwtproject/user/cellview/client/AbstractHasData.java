@@ -15,17 +15,18 @@
  */
 package org.gwtproject.user.cellview.client;
 
+import elemental2.dom.Event;
+import elemental2.dom.EventTarget;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import jsinterop.base.Js;
 import org.gwtproject.cell.client.Cell;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.dom.client.BrowserEvents;
 import org.gwtproject.dom.client.Document;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.EventTarget;
-import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.dom.style.shared.Display;
 import org.gwtproject.event.dom.client.KeyCodes;
 import org.gwtproject.event.logical.shared.ValueChangeEvent;
@@ -35,7 +36,6 @@ import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 import org.gwtproject.user.cellview.client.LoadingStateChangeEvent.LoadingState;
 import org.gwtproject.user.client.DOM;
-import org.gwtproject.user.client.Event;
 import org.gwtproject.user.client.ui.Composite;
 import org.gwtproject.user.client.ui.Focusable;
 import org.gwtproject.user.client.ui.Widget;
@@ -489,13 +489,13 @@ public abstract class AbstractHasData<T> extends Composite
   }
 
   /**
-   * Handle browser events. Subclasses should override {@link #onBrowserEvent2(Event)} if they want
-   * to extend browser event handling.
+   * Handle browser events. Subclasses should override {@link
+   * #onBrowserEvent2(elemental2.dom.Event)} if they want to extend browser event handling.
    *
-   * @see #onBrowserEvent2(Event)
+   * @see #onBrowserEvent2(elemental2.dom.Event)
    */
   @Override
-  public final void onBrowserEvent(Event event) {
+  public final void onBrowserEvent(elemental2.dom.Event event) {
     CellBasedWidgetImpl.get().onBrowserEvent(this, event);
 
     // Ignore spurious events (such as onblur) while we refresh the table.
@@ -505,17 +505,17 @@ public abstract class AbstractHasData<T> extends Composite
 
     // Verify that the target is still a child of this widget. IE fires focus
     // events even after the element has been removed from the DOM.
-    EventTarget eventTarget = event.getEventTarget();
-    if (!Element.is(eventTarget)) {
+    EventTarget eventTarget = event.target;
+    if (!DOM.isElement(eventTarget)) {
       return;
     }
-    Element target = Element.as(eventTarget);
-    if (!getElement().isOrHasChild(Element.as(eventTarget))) {
+    Element target = Js.uncheckedCast(eventTarget);
+    if (!getElement().isOrHasChild(target)) {
       return;
     }
     super.onBrowserEvent(event);
 
-    String eventType = event.getType();
+    String eventType = event.type;
     if (BrowserEvents.FOCUS.equals(eventType)) {
       // Remember the focus state.
       isFocused = true;
@@ -738,11 +738,11 @@ public abstract class AbstractHasData<T> extends Composite
   protected void onBlur() {}
 
   /**
-   * Called after {@link #onBrowserEvent(Event)} completes.
+   * Called after {@link #onBrowserEvent(elemental2.dom.Event)} completes.
    *
    * @param event the event that was fired
    */
-  protected void onBrowserEvent2(Event event) {}
+  protected void onBrowserEvent2(elemental2.dom.Event event) {}
 
   /** Called when the widget is focused. */
   protected void onFocus() {}
@@ -911,8 +911,8 @@ public abstract class AbstractHasData<T> extends Composite
 
     @Override
     public void onCellPreview(CellPreviewEvent<T> event) {
-      NativeEvent nativeEvent = event.getNativeEvent();
-      String eventType = event.getNativeEvent().getType();
+      Event nativeEvent = event.getNativeEvent();
+      String eventType = event.getNativeEvent().type;
       if (BrowserEvents.KEYDOWN.equals(eventType) && !event.isCellEditing()) {
         /*
          * Handle keyboard navigation, unless the cell is being edited. If the
@@ -921,7 +921,7 @@ public abstract class AbstractHasData<T> extends Composite
          * Prevent default on navigation events to prevent default scrollbar
          * behavior.
          */
-        switch (nativeEvent.getKeyCode()) {
+        switch (DOM.getKeyCode(nativeEvent)) {
           case KeyCodes.KEY_DOWN:
             nextRow();
             handledEvent(event);
@@ -962,7 +962,7 @@ public abstract class AbstractHasData<T> extends Composite
         // If a natively focusable element was just clicked, then do not steal
         // focus.
         boolean isFocusable = false;
-        Element target = Element.as(event.getNativeEvent().getEventTarget());
+        Element target = Js.uncheckedCast(event.getNativeEvent().target);
         isFocusable = CellBasedWidgetImpl.get().isFocusable(target);
         display.setKeyboardSelectedRow(relRow, !isFocusable);
 

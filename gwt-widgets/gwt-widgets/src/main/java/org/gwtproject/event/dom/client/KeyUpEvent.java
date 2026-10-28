@@ -24,8 +24,7 @@ public class KeyUpEvent extends KeyCodeEvent<KeyUpHandler> {
   private static final Type<KeyUpHandler> TYPE = new Type<>(BrowserEvents.KEYUP, new KeyUpEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire key up events.
    */
   protected KeyUpEvent() {}

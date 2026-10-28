@@ -25,8 +25,7 @@ public class MouseDownEvent extends MouseEvent<MouseDownHandler> {
       new Type<>(BrowserEvents.MOUSEDOWN, new MouseDownEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire mouse down events.
    */
   protected MouseDownEvent() {}

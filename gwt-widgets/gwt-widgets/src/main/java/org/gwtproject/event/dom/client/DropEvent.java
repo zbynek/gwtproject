@@ -24,12 +24,10 @@ public class DropEvent extends DragDropEventBase<DropHandler> {
   private static final Type<DropHandler> TYPE = new Type<>(BrowserEvents.DROP, new DropEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} or {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
-   * org.gwtproject.event.shared.HasHandlers, org.gwtproject.dom.client.Element)} to fire drop
-   * events.
+   * DomEvent#fireNativeEvent(elemental2.dom.Event, org.gwtproject.event.shared.HasHandlers,
+   * org.gwtproject.dom.client.Element)} to fire drop events.
    */
   protected DropEvent() {}
 

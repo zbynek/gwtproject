@@ -20,11 +20,10 @@ import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
-import org.gwtproject.core.client.JavaScriptObject;
 
 /** @author Dmitrii Tikhomirov Created by treblereel 6/9/19 */
 @JsType
-class GwtPotentialElementShim extends JavaScriptObject {
+class GwtPotentialElementShim {
 
   public String className = "";
   public int clientHeight = 0;

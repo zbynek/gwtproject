@@ -24,8 +24,7 @@ public class ClickEvent extends MouseEvent<ClickHandler> {
   private static final Type<ClickHandler> TYPE = new Type<>(BrowserEvents.CLICK, new ClickEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire click events.
    */
   protected ClickEvent() {}

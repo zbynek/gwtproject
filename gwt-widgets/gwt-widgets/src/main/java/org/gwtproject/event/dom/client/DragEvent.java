@@ -24,12 +24,10 @@ public class DragEvent extends DragDropEventBase<DragHandler> {
   private static final Type<DragHandler> TYPE = new Type<>(BrowserEvents.DRAG, new DragEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} or {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
-   * org.gwtproject.event.shared.HasHandlers, org.gwtproject.dom.client.Element)} to fire drag
-   * events.
+   * DomEvent#fireNativeEvent(elemental2.dom.Event, org.gwtproject.event.shared.HasHandlers,
+   * org.gwtproject.dom.client.Element)} to fire drag events.
    */
   protected DragEvent() {}
 

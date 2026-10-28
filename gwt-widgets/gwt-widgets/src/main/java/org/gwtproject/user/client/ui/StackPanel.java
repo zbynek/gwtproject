@@ -15,6 +15,7 @@
  */
 package org.gwtproject.user.client.ui;
 
+import jsinterop.base.Js;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
@@ -172,9 +173,9 @@ public class StackPanel extends ComplexPanel implements InsertPanel.ForIsWidget 
   }
 
   @Override
-  public void onBrowserEvent(Event event) {
+  public void onBrowserEvent(elemental2.dom.Event event) {
     if (DOM.eventGetType(event) == Event.ONCLICK) {
-      Element target = DOM.eventGetTarget(event);
+      Element target = Js.uncheckedCast(event.target);
       int index = findDividerIndex(target);
       if (index != -1) {
         showStack(index);

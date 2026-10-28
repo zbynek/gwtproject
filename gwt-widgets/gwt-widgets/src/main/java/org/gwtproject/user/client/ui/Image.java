@@ -23,7 +23,6 @@ import org.gwtproject.dom.client.BrowserEvents;
 import org.gwtproject.dom.client.Document;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.ImageElement;
-import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.event.dom.client.DoubleClickEvent;
@@ -462,7 +461,7 @@ public class Image extends Widget
   }
 
   @Override
-  public void onBrowserEvent(Event event) {
+  public void onBrowserEvent(elemental2.dom.Event event) {
     // We have to clear the unhandled event before firing handlers because the
     // handlers could trigger onLoad, which would refire the event.
     if (Js.asPropertyMap(event).has("getTypeInt") && DOM.eventGetType(event) == Event.ONLOAD) {
@@ -786,8 +785,8 @@ public class Image extends Widget
                 return;
               }
 
-              NativeEvent evt = Document.get().createLoadEvent();
-              getImageElement(image).dispatchEvent(evt);
+              elemental2.dom.Event evt = new elemental2.dom.Event("load");
+              Js.<elemental2.dom.Element>uncheckedCast(getImageElement(image)).dispatchEvent(evt);
             }
           };
       Scheduler.get().scheduleDeferred(syntheticEventCommand);

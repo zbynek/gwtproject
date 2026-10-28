@@ -24,8 +24,7 @@ public class BlurEvent extends DomEvent<BlurHandler> {
   private static final Type<BlurHandler> TYPE = new Type<>(BrowserEvents.BLUR, new BlurEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire blur events.
    */
   protected BlurEvent() {}

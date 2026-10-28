@@ -16,20 +16,18 @@
 package org.gwtproject.user.client;
 
 import elemental2.dom.DomGlobal;
+import elemental2.dom.Node;
 import jsinterop.base.Js;
-import org.gwtproject.core.client.JavaScriptObject;
 import org.gwtproject.dom.client.Document;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.ImageElement;
 import org.gwtproject.dom.client.OptionElement;
 import org.gwtproject.dom.client.SelectElement;
-import org.gwtproject.dom.client.Style;
 import org.gwtproject.event.logical.shared.ResizeEvent;
 import org.gwtproject.event.logical.shared.ResizeHandler;
 import org.gwtproject.event.shared.HandlerRegistration;
-import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
 import org.gwtproject.user.client.impl.DOMImpl;
-import org.gwtproject.user.client.impl.DOMImplStandardBase;
+import org.gwtproject.user.client.impl.DOMImplStandard;
 import org.gwtproject.user.client.ui.PotentialElement;
 
 /**
@@ -39,9 +37,7 @@ import org.gwtproject.user.client.ui.PotentialElement;
  */
 public class DOM {
 
-  // The current event being fired
-  private static Event currentEvent = null;
-  static final DOMImpl impl = new DOMImplStandardBase();
+  static final DOMImpl impl = new DOMImplStandard();
   private static Element sCaptureElem;
 
   /**
@@ -72,36 +68,12 @@ public class DOM {
   }
 
   /**
-   * Compares two elements for equality. Note that this method is now deprecated because reference
-   * identity accurately reports equality.
-   *
-   * @param elem1 the first element to be compared
-   * @param elem2 the second element to be compared
-   * @return <code>true</code> if they are in fact the same element
-   * @deprecated Use identity comparison.
-   */
-  @Deprecated
-  public static boolean compare(Element elem1, Element elem2) {
-    return elem1 == elem2;
-  }
-
-  /**
    * Creates an HTML A element.
    *
    * @return the newly-created element
    */
   public static Element createAnchor() {
     return Document.get().createAnchorElement().cast();
-  }
-
-  /**
-   * Creates an HTML BUTTON element.
-   *
-   * @return the newly-created element
-   */
-  @SuppressWarnings("deprecation")
-  public static Element createButton() {
-    return Document.get().createPushButtonElement();
   }
 
   /**
@@ -251,17 +223,6 @@ public class DOM {
   }
 
   /**
-   * Creates an HTML OPTIONS element.
-   *
-   * @return the newly-created element
-   * @deprecated there is no "options" element; use {@link #createOption()} instead
-   */
-  @Deprecated
-  public static Element createOptions() {
-    return Document.get().createElement("options").cast();
-  }
-
-  /**
    * Creates a single-selection HTML SELECT element. Equivalent to
    *
    * <pre>
@@ -377,98 +338,15 @@ public class DOM {
   }
 
   /**
-   * Cancels bubbling for the given event. This will stop the event from being propagated to parent
-   * elements.
-   *
-   * @param evt the event on which to cancel bubbling
-   * @param cancel <code>true</code> to cancel bubbling
-   */
-  public static void eventCancelBubble(Event evt, boolean cancel) {
-    impl.eventCancelBubble(evt, cancel);
-  }
-
-  /**
-   * Gets whether the ALT key was depressed when the given event occurred.
-   *
-   * @param evt the event to be tested
-   * @return <code>true</code> if ALT was depressed when the event occurred
-   * @deprecated Use {@link Event#getAltKey()} instead.
-   */
-  @Deprecated
-  public static boolean eventGetAltKey(Event evt) {
-    return evt.getAltKey();
-  }
-
-  /**
-   * Gets the mouse buttons that were depressed when the given event occurred.
-   *
-   * @param evt the event to be tested
-   * @return a bit-field, defined by {@link Event#BUTTON_LEFT}, {@link Event#BUTTON_MIDDLE}, and
-   *     {@link Event#BUTTON_RIGHT}
-   * @deprecated Use {@link Event#getButton()} instead.
-   */
-  @Deprecated
-  public static int eventGetButton(Event evt) {
-    return evt.getButton();
-  }
-
-  /**
-   * Gets the mouse x-position within the browser window's client area.
-   *
-   * @param evt the event to be tested
-   * @return the mouse x-position
-   * @deprecated Use {@link Event#getClientX()} instead.
-   */
-  @Deprecated
-  public static int eventGetClientX(Event evt) {
-    return evt.getClientX();
-  }
-
-  /**
-   * Gets the mouse y-position within the browser window's client area.
-   *
-   * @param evt the event to be tested
-   * @return the mouse y-position
-   * @deprecated Use {@link Event#getClientY()} instead.
-   */
-  @Deprecated
-  public static int eventGetClientY(Event evt) {
-    return evt.getClientY();
-  }
-
-  /**
-   * Gets whether the CTRL key was depressed when the given event occurred.
-   *
-   * @param evt the event to be tested
-   * @return <code>true</code> if CTRL was depressed when the event occurred
-   * @deprecated Use {@link Event#getCtrlKey()} instead.
-   */
-  @Deprecated
-  public static boolean eventGetCtrlKey(Event evt) {
-    return evt.getCtrlKey();
-  }
-
-  /**
-   * Gets the current event that is being fired. The current event is only available within the
-   * lifetime of the onBrowserEvent function. Once the onBrowserEvent method returns, the current
-   * event is reset to null.
-   *
-   * @return the current event
-   */
-  public static Event eventGetCurrentEvent() {
-    return currentEvent;
-  }
-
-  /**
    * Gets the current target element of the given event. This is the element whose listener fired
    * last, not the element which fired the event initially.
    *
    * @param evt the event
    * @return the event's current target element
-   * @see DOM#eventGetTarget(Event)
+   * @see DOM#eventGetTarget(elemental2.dom.Event)
    */
-  public static Element eventGetCurrentTarget(Event evt) {
-    return evt.getCurrentEventTarget().cast();
+  public static Element eventGetCurrentTarget(elemental2.dom.Event evt) {
+    return Js.uncheckedCast(evt.currentTarget);
   }
 
   /**
@@ -478,102 +356,8 @@ public class DOM {
    * @param evt the event to be tested
    * @return the element from which the mouse pointer was moved
    */
-  public static Element eventGetFromElement(Event evt) {
+  public static Element eventGetFromElement(elemental2.dom.Event evt) {
     return impl.eventGetFromElement(evt);
-  }
-
-  /**
-   * Gets the key code associated with this event.
-   *
-   * <p>For {@link Event#ONKEYPRESS}, this method returns the Unicode value of the character
-   * generated. For {@link Event#ONKEYDOWN} and {@link Event#ONKEYUP}, it returns the code
-   * associated with the physical key.
-   *
-   * @param evt the event to be tested
-   * @return the Unicode character or key code.
-   * @deprecated Use {@link Event#getKeyCode()} instead.
-   */
-  @Deprecated
-  public static int eventGetKeyCode(Event evt) {
-    return evt.getKeyCode();
-  }
-
-  /**
-   * Gets whether the META key was depressed when the given event occurred.
-   *
-   * @param evt the event to be tested
-   * @return <code>true</code> if META was depressed when the event occurred
-   * @deprecated Use {@link Event#getMetaKey()} instead.
-   */
-  @Deprecated
-  public static boolean eventGetMetaKey(Event evt) {
-    return evt.getMetaKey();
-  }
-
-  /**
-   * Gets the velocity of the mouse wheel associated with the event along the Y axis.
-   *
-   * <p>The velocity of the event is an artificial measurement for relative comparisons of wheel
-   * activity. It is affected by some non-browser factors, including choice of input hardware and
-   * mouse acceleration settings. The sign of the velocity measurement agrees with the screen
-   * coordinate system; negative values are towards the origin and positive values are away from the
-   * origin. Standard scrolling speed is approximately ten units per event.
-   *
-   * @param evt the event to be examined.
-   * @return The velocity of the mouse wheel.
-   * @deprecated Use {@link Event#getMouseWheelVelocityY()} instead.
-   */
-  @Deprecated
-  public static int eventGetMouseWheelVelocityY(Event evt) {
-    return evt.getMouseWheelVelocityY();
-  }
-
-  /**
-   * Gets the key-repeat state of this event. Only IE supports this attribute.
-   *
-   * @param evt the event to be tested
-   * @return <code>true</code> if this key event was an auto-repeat
-   * @deprecated not supported in any browser but IE
-   */
-  @Deprecated
-  public static boolean eventGetRepeat(Event evt) {
-    return impl.eventGetRepeat(evt);
-  }
-
-  /**
-   * Gets the mouse x-position on the user's display.
-   *
-   * @param evt the event to be tested
-   * @return the mouse x-position
-   * @deprecated Use {@link Event#getScreenX()} instead.
-   */
-  @Deprecated
-  public static int eventGetScreenX(Event evt) {
-    return evt.getScreenX();
-  }
-
-  /**
-   * Gets the mouse y-position on the user's display.
-   *
-   * @param evt the event to be tested
-   * @return the mouse y-position
-   * @deprecated Use {@link Event#getScreenY()} instead.
-   */
-  @Deprecated
-  public static int eventGetScreenY(Event evt) {
-    return evt.getScreenY();
-  }
-
-  /**
-   * Gets whether the shift key was depressed when the given event occurred.
-   *
-   * @param evt the event to be tested
-   * @return <code>true</code> if shift was depressed when the event occurred
-   * @deprecated Use {@link Event#getShiftKey()} instead.
-   */
-  @Deprecated
-  public static boolean eventGetShiftKey(Event evt) {
-    return evt.getShiftKey();
   }
 
   /**
@@ -582,8 +366,8 @@ public class DOM {
    * @param evt the event to be tested
    * @return the target element
    */
-  public static Element eventGetTarget(Event evt) {
-    return evt.getEventTarget().cast();
+  public static Element eventGetTarget(elemental2.dom.Event evt) {
+    return Js.uncheckedCast(evt.target);
   }
 
   /**
@@ -593,7 +377,7 @@ public class DOM {
    * @param evt the event to be tested
    * @return the element to which the mouse pointer was moved
    */
-  public static Element eventGetToElement(Event evt) {
+  public static Element eventGetToElement(elemental2.dom.Event evt) {
     return impl.eventGetToElement(evt);
   }
 
@@ -603,107 +387,8 @@ public class DOM {
    * @param evt the event to be tested
    * @return the event's enumerated type, or -1 if not defined
    */
-  public static int eventGetType(Event evt) {
+  public static int eventGetType(elemental2.dom.Event evt) {
     return impl.eventGetTypeInt(evt);
-  }
-
-  /**
-   * Gets the type of the given event as a string.
-   *
-   * @param evt the event to be tested
-   * @return the event's type name
-   * @deprecated Use {@link Event#getType()} instead.
-   */
-  @Deprecated
-  public static String eventGetTypeString(Event evt) {
-    return evt.getType();
-  }
-
-  /**
-   * Prevents the browser from taking its default action for the given event.
-   *
-   * @param evt the event whose default action is to be prevented
-   * @deprecated Use {@link Event#preventDefault()} instead.
-   */
-  @Deprecated
-  public static void eventPreventDefault(Event evt) {
-    evt.preventDefault();
-  }
-
-  /**
-   * Sets the key code associated with the given keyboard event.
-   *
-   * @param evt the event whose key code is to be set
-   * @param key the new key code
-   * @deprecated this method only works in IE and should not have been added to the API
-   */
-  @Deprecated
-  public static void eventSetKeyCode(Event evt, char key) {
-    impl.eventSetKeyCode(evt, key);
-  }
-
-  /**
-   * Returns a stringized version of the event. This string is for debugging purposes and will NOT
-   * be consistent on different browsers.
-   *
-   * @param evt the event to stringize
-   * @return a string form of the event
-   * @deprecated Use {@link Event#getString()} instead.
-   */
-  @Deprecated
-  public static String eventToString(Event evt) {
-    return evt.getString();
-  }
-
-  /**
-   * Gets an element's absolute left coordinate in the document's coordinate system.
-   *
-   * @param elem the element to be measured
-   * @return the element's absolute left coordinate
-   * @deprecated Use {@link Element#getAbsoluteLeft()} instead.
-   */
-  @Deprecated
-  public static int getAbsoluteLeft(Element elem) {
-    return elem.getAbsoluteLeft();
-  }
-
-  /**
-   * Gets an element's absolute top coordinate in the document's coordinate system.
-   *
-   * @param elem the element to be measured
-   * @return the element's absolute top coordinate
-   * @deprecated Use {@link Element#getAbsoluteTop()} instead.
-   */
-  @Deprecated
-  public static int getAbsoluteTop(Element elem) {
-    return elem.getAbsoluteTop();
-  }
-
-  /**
-   * Gets any named property from an element, as a string.
-   *
-   * @param elem the element whose property is to be retrieved
-   * @param attr the name of the property
-   * @return the property's value
-   * @deprecated Use the more appropriately named {@link Element#getPropertyString(String)} instead.
-   */
-  @Deprecated
-  public static String getAttribute(Element elem, String attr) {
-    return elem.getPropertyString(attr);
-  }
-
-  /**
-   * Gets a boolean property on the given element.
-   *
-   * @param elem the element whose property is to be set
-   * @param attr the name of the property to be set
-   * @return the property's value as a boolean
-   * @deprecated Use the more appropriately named {@link Element#getPropertyBoolean(String)}
-   *     instead.
-   */
-  @Deprecated
-  public static boolean getBooleanAttribute(Element elem, String attr) {
-    return elem.getPropertyBoolean(attr);
   }
 
   /**
@@ -749,19 +434,6 @@ public class DOM {
   }
 
   /**
-   * Gets the named attribute from the element.
-   *
-   * @param elem the element whose property is to be retrieved
-   * @param attr the name of the attribute
-   * @return the value of the attribute
-   * @deprecated Use {@link Element#getAttribute(String)} instead.
-   */
-  @Deprecated
-  public static String getElementAttribute(Element elem, String attr) {
-    return elem.getAttribute(attr);
-  }
-
-  /**
    * Gets the element associated with the given unique id within the entire document.
    *
    * @param id the id whose associated element is to be retrieved
@@ -769,32 +441,6 @@ public class DOM {
    */
   public static Element getElementById(String id) {
     return Document.get().getElementById(id);
-  }
-
-  /**
-   * Gets any named property from an element, as a boolean.
-   *
-   * @param elem the element whose property is to be retrieved
-   * @param prop the name of the property
-   * @return the property's value as a boolean
-   * @deprecated Use {@link Element#getPropertyBoolean(String)} instead.
-   */
-  @Deprecated
-  public static boolean getElementPropertyBoolean(Element elem, String prop) {
-    return elem.getPropertyBoolean(prop);
-  }
-
-  /**
-   * Gets any named property from an element, as an int.
-   *
-   * @param elem the element whose property is to be retrieved
-   * @param prop the name of the property
-   * @return the property's value as an int
-   * @deprecated Use {@link Element#getPropertyInt(String)} instead.
-   */
-  @Deprecated
-  public static int getElementPropertyInt(Element elem, String prop) {
-    return elem.getPropertyInt(prop);
   }
 
   /**
@@ -841,44 +487,6 @@ public class DOM {
   }
 
   /**
-   * Gets an HTML representation of an element's children.
-   *
-   * @param elem the element whose HTML is to be retrieved
-   * @return the HTML representation of the element's children
-   * @deprecated Use {@link Element#getInnerHTML()} instead.
-   */
-  @Deprecated
-  public static String getInnerHTML(Element elem) {
-    return elem.getInnerHTML();
-  }
-
-  /**
-   * Gets the text contained within an element. If the element has child elements, only the text
-   * between them will be retrieved.
-   *
-   * @param elem the element whose inner text is to be retrieved
-   * @return the text inside this element
-   * @deprecated Use {@link Element#getInnerText()} instead.
-   */
-  @Deprecated
-  public static String getInnerText(Element elem) {
-    return elem.getInnerText();
-  }
-
-  /**
-   * Gets an integer property on a given element.
-   *
-   * @param elem the element whose property is to be retrieved
-   * @param attr the name of the property to be retrieved
-   * @return the property's value as an integer
-   * @deprecated Use the more appropriately named {@link Element#getPropertyInt(String)} instead.
-   */
-  @Deprecated
-  public static int getIntAttribute(Element elem, String attr) {
-    return elem.getPropertyInt(attr);
-  }
-
-  /**
    * Gets an integer attribute on a given element's style.
    *
    * @param elem the element whose style attribute is to be retrieved
@@ -887,7 +495,7 @@ public class DOM {
    */
   public static int getIntStyleAttribute(Element elem, String attr) {
     String val = elem.getStyle().getProperty(attr);
-    return val != null ? Integer.valueOf(val) : 0;
+    return val != null ? Integer.parseInt(val) : 0;
   }
 
   /**
@@ -908,19 +516,6 @@ public class DOM {
    */
   public static Element getParent(Element elem) {
     return elem.getParentElement();
-  }
-
-  /**
-   * Gets an attribute of the given element's style.
-   *
-   * @param elem the element whose style attribute is to be retrieved
-   * @param attr the name of the style attribute to be retrieved
-   * @return the style attribute's value
-   * @deprecated Use {@link Element#getStyle()} and {@link Style#getProperty(String)} instead.
-   */
-  @Deprecated
-  public static String getStyleAttribute(Element elem, String attr) {
-    return elem.getStyle().getProperty(attr);
   }
 
   /**
@@ -988,7 +583,7 @@ public class DOM {
     }
   }
 
-  public static boolean isPotential(JavaScriptObject o) {
+  public static boolean isPotential(Object o) {
     try {
       return (o != null) && Js.asPropertyMap(o).has("__gwt_resolve");
     } catch (Exception e) {
@@ -1020,61 +615,6 @@ public class DOM {
   }
 
   /**
-   * Removes the named attribute from the given element.
-   *
-   * @param elem the element whose attribute is to be removed
-   * @param attr the name of the element to remove
-   * @deprecated Use {@link Element#removeAttribute(String)} instead.
-   */
-  @Deprecated
-  public static void removeElementAttribute(Element elem, String attr) {
-    elem.removeAttribute(attr);
-  }
-
-  /**
-   * Scrolls the given element into view.
-   *
-   * <p>This method crawls up the DOM hierarchy, adjusting the scrollLeft and scrollTop properties
-   * of each scrollable element to ensure that the specified element is completely in view. It
-   * adjusts each scroll position by the minimum amount necessary.
-   *
-   * @param elem the element to be made visible
-   * @deprecated Use {@link Element#scrollIntoView()} instead.
-   */
-  @Deprecated
-  public static void scrollIntoView(Element elem) {
-    elem.scrollIntoView();
-  }
-
-  /**
-   * Sets a property on the given element.
-   *
-   * @param elem the element whose property is to be set
-   * @param attr the name of the property to be set
-   * @param value the new property value
-   * @deprecated Use the more appropriately named {@link Element#setPropertyString(String, String)}
-   *     instead.
-   */
-  @Deprecated
-  public static void setAttribute(Element elem, String attr, String value) {
-    elem.setPropertyString(attr, value);
-  }
-
-  /**
-   * Sets a boolean property on the given element.
-   *
-   * @param elem the element whose property is to be set
-   * @param attr the name of the property to be set
-   * @param value the property's new boolean value
-   * @deprecated Use the more appropriately named {@link Element#setPropertyBoolean(String,
-   *     boolean)} instead.
-   */
-  @Deprecated
-  public static void setBooleanAttribute(Element elem, String attr, boolean value) {
-    elem.setPropertyBoolean(attr, value);
-  }
-
-  /**
    * Sets mouse/touch/gesture capture on the given element. This element will directly receive all
    * mouse events until {@link #releaseCapture(Element)} is called on it.
    *
@@ -1083,58 +623,6 @@ public class DOM {
   public static void setCapture(Element elem) {
     sCaptureElem = elem;
     impl.setCapture(elem);
-  }
-
-  /**
-   * Sets an attribute on a given element.
-   *
-   * @param elem element whose attribute is to be set
-   * @param attr the name of the attribute
-   * @param value the value to which the attribute should be set
-   * @deprecated Use {@link Element#setAttribute(String, String)} instead.
-   */
-  @Deprecated
-  public static void setElementAttribute(Element elem, String attr, String value) {
-    elem.setAttribute(attr, value);
-  }
-
-  /**
-   * Sets a property on the given element.
-   *
-   * @param elem the element whose property is to be set
-   * @param prop the name of the property to be set
-   * @param value the new property value
-   * @deprecated Use {@link Element#setPropertyString(String, String)} instead.
-   */
-  @Deprecated
-  public static void setElementProperty(Element elem, String prop, String value) {
-    elem.setPropertyString(prop, value);
-  }
-
-  /**
-   * Sets a boolean property on the given element.
-   *
-   * @param elem the element whose property is to be set
-   * @param prop the name of the property to be set
-   * @param value the new property value as a boolean
-   * @deprecated Use {@link Element#setPropertyBoolean(String, boolean)} instead.
-   */
-  @Deprecated
-  public static void setElementPropertyBoolean(Element elem, String prop, boolean value) {
-    elem.setPropertyBoolean(prop, value);
-  }
-
-  /**
-   * Sets an int property on the given element.
-   *
-   * @param elem the element whose property is to be set
-   * @param prop the name of the property to be set
-   * @param value the new property value as an int
-   * @deprecated Use {@link Element#setPropertyInt(String, int)} instead.
-   */
-  @Deprecated
-  public static void setElementPropertyInt(Element elem, String prop, int value) {
-    elem.setPropertyInt(prop, value);
   }
 
   /**
@@ -1160,45 +648,6 @@ public class DOM {
   }
 
   /**
-   * Sets the HTML contained within an element.
-   *
-   * @param elem the element whose inner HTML is to be set
-   * @param html the new html
-   * @deprecated Use {@link Element#setInnerHTML(String)} instead.
-   */
-  @Deprecated
-  public static void setInnerHTML(Element elem, @IsSafeHtml String html) {
-    elem.setInnerHTML(html);
-  }
-
-  /**
-   * Sets the text contained within an element. If the element already has children, they will be
-   * destroyed.
-   *
-   * @param elem the element whose inner text is to be set
-   * @param text the new text
-   * @deprecated Use {@link Element#setInnerText(String)} instead.
-   */
-  @Deprecated
-  public static void setInnerText(Element elem, String text) {
-    elem.setInnerText(text);
-  }
-
-  /**
-   * Sets an integer property on the given element.
-   *
-   * @param elem the element whose property is to be set
-   * @param attr the name of the property to be set
-   * @param value the property's new integer value
-   * @deprecated Use the more appropriately named {@link Element#setPropertyInt(String, int)}
-   *     instead.
-   */
-  @Deprecated
-  public static void setIntAttribute(Element elem, String attr, int value) {
-    elem.setPropertyInt(attr, value);
-  }
-
-  /**
    * Sets an integer attribute on the given element's style.
    *
    * @param elem the element whose style attribute is to be set
@@ -1218,20 +667,6 @@ public class DOM {
    */
   public static void setOptionText(Element select, String text, int index) {
     select.<SelectElement>cast().getOptions().getItem(index).setText(text);
-  }
-
-  /**
-   * Sets an attribute on the given element's style.
-   *
-   * @param elem the element whose style attribute is to be set
-   * @param attr the name of the style attribute to be set
-   * @param value the style attribute's new value
-   * @deprecated Use {@link Element#getStyle()} and {@link Style#setProperty(String, String)}
-   *     instead.
-   */
-  @Deprecated
-  public static void setStyleAttribute(Element elem, String attr, String value) {
-    elem.getStyle().setProperty(attr, value);
   }
 
   /**
@@ -1257,17 +692,8 @@ public class DOM {
     impl.sinkEvents(elem, eventBits);
   }
 
-  /**
-   * Returns a stringized version of the element. This string is for debugging purposes and will NOT
-   * be consistent on different browsers.
-   *
-   * @param elem the element to stringize
-   * @return a string form of the element
-   * @deprecated Use {@link Element#getString()} instead.
-   */
-  @Deprecated
-  public static String toString(Element elem) {
-    return elem.getString();
+  public static boolean isElement(Object o) {
+    return o != null && Js.<Node>uncheckedCast(o).nodeType == Node.ELEMENT_NODE;
   }
 
   /**
@@ -1277,25 +703,20 @@ public class DOM {
    * @param elem the handle to the element that received the event.
    * @param listener the listener associated with the element that received the event.
    */
-  public static void dispatchEvent(Event evt, Element elem, EventListener listener) {
+  public static void dispatchEvent(elemental2.dom.Event evt, Element elem, EventListener listener) {
     // Preserve the current event in case we are in a reentrant event dispatch.
-    Event prevCurrentEvent = currentEvent;
-    currentEvent = evt;
-
     dispatchEventImpl(evt, elem, listener);
-
-    currentEvent = prevCurrentEvent;
   }
 
   /**
-   * This method is a similar to {@link #dispatchEvent(Event, Element, EventListener)} but only
-   * dispatches if an event listener is set to element.
+   * This method is a similar to {@link #dispatchEvent(elemental2.dom.Event, Element,
+   * EventListener)} but only dispatches if an event listener is set to element.
    *
    * @param evt the handle to the event being fired.
    * @param elem the handle to the element that received the event.
    * @return {@code true} if the event was dispatched
    */
-  public static boolean dispatchEvent(Event evt, Element elem) {
+  public static boolean dispatchEvent(elemental2.dom.Event evt, Element elem) {
     EventListener eventListener = getEventListener(elem);
     if (eventListener == null) {
       return false;
@@ -1315,7 +736,7 @@ public class DOM {
    * @param evt a handle to the event being previewed
    * @return <code>false</code> to cancel the event
    */
-  public static boolean previewEvent(Event evt) {
+  public static boolean previewEvent(elemental2.dom.Event evt) {
     // Fire a NativePreviewEvent to NativePreviewHandlers
     boolean ret = Event.fireNativePreviewEvent(evt);
     // If the preview cancels the event, stop it from bubbling and performing
@@ -1328,7 +749,8 @@ public class DOM {
     return ret;
   }
 
-  private static void dispatchEventImpl(Event evt, Element elem, EventListener listener) {
+  private static void dispatchEventImpl(
+      elemental2.dom.Event evt, Element elem, EventListener listener) {
     // If this element has capture...
     if (elem == sCaptureElem) {
       // ... and it's losing capture, clear sCaptureElem.
@@ -1345,6 +767,10 @@ public class DOM {
     elemental2.dom.EventListener listener = (evt) -> handler.onResize(new WindowResizeEvent());
     DomGlobal.window.addEventListener("resize", listener);
     return () -> DomGlobal.window.removeEventListener("resize", listener);
+  }
+
+  public static int getKeyCode(elemental2.dom.Event event) {
+    return Js.asPropertyMap(event).getAsAny("keyCode").asInt();
   }
 
   private static class WindowResizeEvent extends ResizeEvent {
