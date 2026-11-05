@@ -40,8 +40,7 @@ public class TouchEndEvent extends TouchEvent<TouchEndHandler> {
       new Type<>(BrowserEvents.TOUCHEND, new TouchEndEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire touch end events.
    */
   protected TouchEndEvent() {}

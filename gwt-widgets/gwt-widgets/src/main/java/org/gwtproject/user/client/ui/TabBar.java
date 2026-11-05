@@ -19,7 +19,6 @@ import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.event.dom.client.HasAllKeyHandlers;
 import org.gwtproject.event.dom.client.HasClickHandlers;
-import org.gwtproject.event.dom.client.KeyCodes;
 import org.gwtproject.event.dom.client.KeyDownEvent;
 import org.gwtproject.event.dom.client.KeyDownHandler;
 import org.gwtproject.event.dom.client.KeyPressEvent;
@@ -143,7 +142,7 @@ public class TabBar extends Composite
     }
 
     @Override
-    public void onBrowserEvent(Event event) {
+    public void onBrowserEvent(elemental2.dom.Event event) {
       if (!enabled) {
         return;
       }
@@ -155,7 +154,7 @@ public class TabBar extends Composite
           break;
 
         case Event.ONKEYDOWN:
-          if (((char) event.getKeyCode()) == KeyCodes.KEY_ENTER) {
+          if (DOM.isEnterKey(event)) {
             TabBar.this.selectTabByTabWidget(this);
           }
           break;

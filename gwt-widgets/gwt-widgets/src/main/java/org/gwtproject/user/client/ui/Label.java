@@ -35,14 +35,7 @@ import org.gwtproject.event.dom.client.DragStartEvent;
 import org.gwtproject.event.dom.client.DragStartHandler;
 import org.gwtproject.event.dom.client.DropEvent;
 import org.gwtproject.event.dom.client.DropHandler;
-import org.gwtproject.event.dom.client.GestureChangeEvent;
-import org.gwtproject.event.dom.client.GestureChangeHandler;
-import org.gwtproject.event.dom.client.GestureEndEvent;
-import org.gwtproject.event.dom.client.GestureEndHandler;
-import org.gwtproject.event.dom.client.GestureStartEvent;
-import org.gwtproject.event.dom.client.GestureStartHandler;
 import org.gwtproject.event.dom.client.HasAllDragAndDropHandlers;
-import org.gwtproject.event.dom.client.HasAllGestureHandlers;
 import org.gwtproject.event.dom.client.HasAllMouseHandlers;
 import org.gwtproject.event.dom.client.HasAllTouchHandlers;
 import org.gwtproject.event.dom.client.HasClickHandlers;
@@ -91,7 +84,6 @@ public class Label extends LabelBase<String>
         HasClickHandlers,
         HasDoubleClickHandlers,
         HasAllDragAndDropHandlers,
-        HasAllGestureHandlers,
         HasAllMouseHandlers,
         HasAllTouchHandlers {
 
@@ -187,18 +179,6 @@ public class Label extends LabelBase<String>
 
   public HandlerRegistration addDropHandler(DropHandler handler) {
     return addBitlessDomHandler(handler, DropEvent.getType());
-  }
-
-  public HandlerRegistration addGestureChangeHandler(GestureChangeHandler handler) {
-    return addDomHandler(handler, GestureChangeEvent.getType());
-  }
-
-  public HandlerRegistration addGestureEndHandler(GestureEndHandler handler) {
-    return addDomHandler(handler, GestureEndEvent.getType());
-  }
-
-  public HandlerRegistration addGestureStartHandler(GestureStartHandler handler) {
-    return addDomHandler(handler, GestureStartEvent.getType());
   }
 
   public HandlerRegistration addMouseDownHandler(MouseDownHandler handler) {

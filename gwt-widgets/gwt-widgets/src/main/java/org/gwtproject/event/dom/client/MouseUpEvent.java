@@ -25,8 +25,7 @@ public class MouseUpEvent extends MouseEvent<MouseUpHandler> {
       new Type<>(BrowserEvents.MOUSEUP, new MouseUpEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire mouse up events.
    */
   protected MouseUpEvent() {}

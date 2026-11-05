@@ -19,7 +19,6 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.user.client.DOM;
-import org.gwtproject.user.client.Event;
 import org.gwtproject.user.client.EventListener;
 
 /** Native implementation associated with {@link DOM}. */
@@ -59,22 +58,12 @@ public abstract class DOMImpl {
     return (object instanceof org.gwtproject.user.client.EventListener);
   }
 
-  public void eventCancelBubble(Event event, boolean cancel) {
-    if (cancel == false) {
-      event.stopPropagation();
-    }
-  }
+  public abstract Element eventGetFromElement(elemental2.dom.Event evt);
 
-  public abstract Element eventGetFromElement(Event evt);
+  public abstract Element eventGetToElement(elemental2.dom.Event evt);
 
-  public boolean eventGetRepeat(Event evt) {
-    return Js.asPropertyMap(evt).has("repeat");
-  }
-
-  public abstract Element eventGetToElement(Event evt);
-
-  public final int eventGetTypeInt(Event evt) {
-    return eventGetTypeInt(evt.getType());
+  public final int eventGetTypeInt(elemental2.dom.Event evt) {
+    return eventGetTypeInt(evt.type);
   }
 
   public int eventGetTypeInt(String eventType) {
@@ -97,8 +86,6 @@ public abstract class DOMImpl {
         return 0x00200;
       case "load":
         return 0x08000;
-      case "losecapture":
-        return 0x02000;
       case "mousedown":
         return 0x00004;
       case "mousemove":
@@ -115,7 +102,7 @@ public abstract class DOMImpl {
         return 0x10000;
       case "mousewheel":
         return 0x20000;
-      case "DOMMouseScroll":
+      case "wheel":
         return 0x20000;
       case "contextmenu":
         return 0x40000;
@@ -129,19 +116,9 @@ public abstract class DOMImpl {
         return 0x400000;
       case "touchcancel":
         return 0x800000;
-      case "gesturestart":
-        return 0x1000000;
-      case "gesturechange":
-        return 0x2000000;
-      case "gestureend":
-        return 0x4000000;
       default:
         return -1;
     }
-  }
-
-  public void eventSetKeyCode(Event evt, char key) {
-    Js.asPropertyMap(evt).set("keyCode", key);
   }
 
   public abstract Element getChild(Element elem, int index);
@@ -151,8 +128,9 @@ public abstract class DOMImpl {
   public abstract int getChildIndex(Element parent, Element child);
 
   public int getEventsSunk(Element elem) {
-    if (((JsPropertyMap) elem).has("__eventBits")) {
-      return Integer.valueOf(((JsPropertyMap) elem).get("__eventBits").toString());
+    elemental2.dom.HTMLElement bitsHolder = Js.uncheckedCast(elem);
+    if (bitsHolder.dataset.has("__eventBits")) {
+      return Integer.parseInt(bitsHolder.dataset.get("__eventBits"));
     }
     return 0;
   }

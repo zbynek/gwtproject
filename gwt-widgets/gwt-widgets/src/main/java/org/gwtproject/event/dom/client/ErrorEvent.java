@@ -24,8 +24,7 @@ public class ErrorEvent extends DomEvent<ErrorHandler> {
   private static final Type<ErrorHandler> TYPE = new Type<>(BrowserEvents.ERROR, new ErrorEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire error events.
    */
   protected ErrorEvent() {}

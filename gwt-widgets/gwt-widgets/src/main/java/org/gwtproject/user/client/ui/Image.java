@@ -23,7 +23,6 @@ import org.gwtproject.dom.client.BrowserEvents;
 import org.gwtproject.dom.client.Document;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.dom.client.ImageElement;
-import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
 import org.gwtproject.event.dom.client.DoubleClickEvent;
@@ -44,14 +43,7 @@ import org.gwtproject.event.dom.client.DropEvent;
 import org.gwtproject.event.dom.client.DropHandler;
 import org.gwtproject.event.dom.client.ErrorEvent;
 import org.gwtproject.event.dom.client.ErrorHandler;
-import org.gwtproject.event.dom.client.GestureChangeEvent;
-import org.gwtproject.event.dom.client.GestureChangeHandler;
-import org.gwtproject.event.dom.client.GestureEndEvent;
-import org.gwtproject.event.dom.client.GestureEndHandler;
-import org.gwtproject.event.dom.client.GestureStartEvent;
-import org.gwtproject.event.dom.client.GestureStartHandler;
 import org.gwtproject.event.dom.client.HasAllDragAndDropHandlers;
-import org.gwtproject.event.dom.client.HasAllGestureHandlers;
 import org.gwtproject.event.dom.client.HasAllMouseHandlers;
 import org.gwtproject.event.dom.client.HasAllTouchHandlers;
 import org.gwtproject.event.dom.client.HasClickHandlers;
@@ -127,7 +119,6 @@ public class Image extends Widget
         HasClickHandlers,
         HasDoubleClickHandlers,
         HasAllDragAndDropHandlers,
-        HasAllGestureHandlers,
         HasAllMouseHandlers,
         HasAllTouchHandlers {
 
@@ -324,18 +315,6 @@ public class Image extends Widget
     return addHandler(handler, ErrorEvent.getType());
   }
 
-  public HandlerRegistration addGestureChangeHandler(GestureChangeHandler handler) {
-    return addDomHandler(handler, GestureChangeEvent.getType());
-  }
-
-  public HandlerRegistration addGestureEndHandler(GestureEndHandler handler) {
-    return addDomHandler(handler, GestureEndEvent.getType());
-  }
-
-  public HandlerRegistration addGestureStartHandler(GestureStartHandler handler) {
-    return addDomHandler(handler, GestureStartEvent.getType());
-  }
-
   public HandlerRegistration addLoadHandler(LoadHandler handler) {
     return addHandler(handler, LoadEvent.getType());
   }
@@ -462,7 +441,7 @@ public class Image extends Widget
   }
 
   @Override
-  public void onBrowserEvent(Event event) {
+  public void onBrowserEvent(elemental2.dom.Event event) {
     // We have to clear the unhandled event before firing handlers because the
     // handlers could trigger onLoad, which would refire the event.
     if (Js.asPropertyMap(event).has("getTypeInt") && DOM.eventGetType(event) == Event.ONLOAD) {
@@ -603,8 +582,7 @@ public class Image extends Widget
               | Event.MOUSEEVENTS
               | Event.ONMOUSEWHEEL
               | Event.ONLOAD
-              | Event.TOUCHEVENTS
-              | Event.GESTUREEVENTS);
+              | Event.TOUCHEVENTS);
     }
 
     @Override
@@ -786,8 +764,8 @@ public class Image extends Widget
                 return;
               }
 
-              NativeEvent evt = Document.get().createLoadEvent();
-              getImageElement(image).dispatchEvent(evt);
+              elemental2.dom.Event evt = new elemental2.dom.Event("load");
+              Js.<elemental2.dom.Element>uncheckedCast(getImageElement(image)).dispatchEvent(evt);
             }
           };
       Scheduler.get().scheduleDeferred(syntheticEventCommand);
@@ -811,8 +789,7 @@ public class Image extends Widget
               | Event.ONLOAD
               | Event.ONERROR
               | Event.ONMOUSEWHEEL
-              | Event.TOUCHEVENTS
-              | Event.GESTUREEVENTS);
+              | Event.TOUCHEVENTS);
     }
 
     UnclippedState(Image image) {
@@ -830,8 +807,7 @@ public class Image extends Widget
               | Event.ONLOAD
               | Event.ONERROR
               | Event.ONMOUSEWHEEL
-              | Event.TOUCHEVENTS
-              | Event.GESTUREEVENTS);
+              | Event.TOUCHEVENTS);
     }
 
     UnclippedState(Image image, SafeUri url) {

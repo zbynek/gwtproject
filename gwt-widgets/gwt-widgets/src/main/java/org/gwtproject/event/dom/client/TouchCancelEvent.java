@@ -40,8 +40,7 @@ public class TouchCancelEvent extends TouchEvent<TouchCancelHandler> {
       new Type<>(BrowserEvents.TOUCHCANCEL, new TouchCancelEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire touch start events.
    */
   protected TouchCancelEvent() {}

@@ -29,8 +29,7 @@ public class EndedEvent extends DomEvent<EndedHandler> {
   private static final Type<EndedHandler> TYPE = new Type<>(BrowserEvents.ENDED, new EndedEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire media ended events.
    */
   protected EndedEvent() {}

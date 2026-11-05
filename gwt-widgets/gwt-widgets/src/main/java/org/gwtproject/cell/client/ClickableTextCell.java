@@ -18,8 +18,8 @@ package org.gwtproject.cell.client;
 import static org.gwtproject.dom.client.BrowserEvents.CLICK;
 import static org.gwtproject.dom.client.BrowserEvents.KEYDOWN;
 
+import elemental2.dom.Event;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 import org.gwtproject.text.shared.SafeHtmlRenderer;
@@ -50,10 +50,10 @@ public class ClickableTextCell extends AbstractSafeHtmlCell<String> {
       Cell.Context context,
       Element parent,
       String value,
-      NativeEvent event,
+      Event event,
       org.gwtproject.cell.client.ValueUpdater<String> valueUpdater) {
     super.onBrowserEvent(context, parent, value, event, valueUpdater);
-    if (CLICK.equals(event.getType())) {
+    if (CLICK.equals(event.type)) {
       onEnterKeyDown(context, parent, value, event, valueUpdater);
     }
   }
@@ -63,7 +63,7 @@ public class ClickableTextCell extends AbstractSafeHtmlCell<String> {
       Cell.Context context,
       Element parent,
       String value,
-      NativeEvent event,
+      Event event,
       org.gwtproject.cell.client.ValueUpdater<String> valueUpdater) {
     if (valueUpdater != null) {
       valueUpdater.update(value);

@@ -41,8 +41,7 @@ public class TouchStartEvent extends TouchEvent<TouchStartHandler> {
       new Type<>(BrowserEvents.TOUCHSTART, new TouchStartEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire touch start events.
    */
   protected TouchStartEvent() {}

@@ -50,7 +50,6 @@ import org.gwtproject.event.shared.HandlerRegistration;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.annotations.IsSafeHtml;
 import org.gwtproject.user.client.DOM;
-import org.gwtproject.user.client.Event;
 import org.gwtproject.user.client.impl.ElementMapperImpl;
 import org.gwtproject.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 import org.gwtproject.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
@@ -792,7 +791,7 @@ public abstract class HTMLTable extends Panel
    * @return The appropriate cell, or null
    */
   public Cell getCellForEvent(ClickEvent event) {
-    Element td = getEventTargetCell(Event.as(event.getNativeEvent()));
+    Element td = getEventTargetCell(event.getNativeEvent());
     if (td == null) {
       return null;
     }
@@ -1193,7 +1192,7 @@ public abstract class HTMLTable extends Panel
    * @param event the event to be queried
    * @return the TD associated with the event, or <code>null</code> if none is found.
    */
-  protected Element getEventTargetCell(Event event) {
+  protected Element getEventTargetCell(elemental2.dom.Event event) {
     Element td = DOM.eventGetTarget(event);
     for (; td != null; td = DOM.getParent(td)) {
       // If it's a TD, it might be the one we're looking for.

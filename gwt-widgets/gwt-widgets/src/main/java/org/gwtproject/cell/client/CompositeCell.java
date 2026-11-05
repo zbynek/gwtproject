@@ -15,11 +15,13 @@
  */
 package org.gwtproject.cell.client;
 
+import elemental2.dom.Event;
+import elemental2.dom.EventTarget;
 import java.util.*;
+import jsinterop.base.Js;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.EventTarget;
-import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
+import org.gwtproject.user.client.DOM;
 
 /**
  * A {@link Cell} that is composed of other {@link Cell}s.
@@ -120,12 +122,12 @@ public class CompositeCell<C> extends AbstractCell<C> {
       org.gwtproject.cell.client.Cell.Context context,
       Element parent,
       C value,
-      NativeEvent event,
+      Event event,
       org.gwtproject.cell.client.ValueUpdater<C> valueUpdater) {
     int index = 0;
-    EventTarget eventTarget = event.getEventTarget();
-    if (Element.is(eventTarget)) {
-      Element target = eventTarget.cast();
+    EventTarget eventTarget = Js.uncheckedCast(event.target);
+    if (DOM.isElement(eventTarget)) {
+      Element target = Js.uncheckedCast(eventTarget);
       Element container = getContainerElement(parent);
       Element wrapper = container.getFirstChildElement();
       while (wrapper != null) {
@@ -223,11 +225,11 @@ public class CompositeCell<C> extends AbstractCell<C> {
       final org.gwtproject.cell.client.Cell.Context context,
       Element parent,
       final C object,
-      NativeEvent event,
+      Event event,
       final org.gwtproject.cell.client.ValueUpdater<C> valueUpdater,
       final HasCell<C, X> hasCell) {
     org.gwtproject.cell.client.Cell<X> cell = hasCell.getCell();
-    String eventType = event.getType();
+    String eventType = event.type;
     Set<String> cellConsumedEvents = cell.getConsumedEvents();
     if (cellConsumedEvents == null || !cellConsumedEvents.contains(eventType)) {
       // If this sub-cell doesn't consume this event.

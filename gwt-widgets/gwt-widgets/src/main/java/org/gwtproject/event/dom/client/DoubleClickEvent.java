@@ -25,8 +25,7 @@ public class DoubleClickEvent extends MouseEvent<DoubleClickHandler> {
       new Type<>(BrowserEvents.DBLCLICK, new DoubleClickEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire double click events.
    */
   protected DoubleClickEvent() {}

@@ -37,15 +37,8 @@ import org.gwtproject.event.dom.client.DropEvent;
 import org.gwtproject.event.dom.client.DropHandler;
 import org.gwtproject.event.dom.client.FocusEvent;
 import org.gwtproject.event.dom.client.FocusHandler;
-import org.gwtproject.event.dom.client.GestureChangeEvent;
-import org.gwtproject.event.dom.client.GestureChangeHandler;
-import org.gwtproject.event.dom.client.GestureEndEvent;
-import org.gwtproject.event.dom.client.GestureEndHandler;
-import org.gwtproject.event.dom.client.GestureStartEvent;
-import org.gwtproject.event.dom.client.GestureStartHandler;
 import org.gwtproject.event.dom.client.HasAllDragAndDropHandlers;
 import org.gwtproject.event.dom.client.HasAllFocusHandlers;
-import org.gwtproject.event.dom.client.HasAllGestureHandlers;
 import org.gwtproject.event.dom.client.HasAllKeyHandlers;
 import org.gwtproject.event.dom.client.HasAllMouseHandlers;
 import org.gwtproject.event.dom.client.HasAllTouchHandlers;
@@ -92,7 +85,6 @@ public class FocusPanel extends SimplePanel
         HasDoubleClickHandlers,
         HasAllKeyHandlers,
         HasAllFocusHandlers,
-        HasAllGestureHandlers,
         HasAllTouchHandlers {
 
   static final FocusImpl impl = FocusImpl.getFocusImplForPanel();
@@ -148,18 +140,6 @@ public class FocusPanel extends SimplePanel
 
   public HandlerRegistration addFocusHandler(FocusHandler handler) {
     return addDomHandler(handler, FocusEvent.getType());
-  }
-
-  public HandlerRegistration addGestureChangeHandler(GestureChangeHandler handler) {
-    return addDomHandler(handler, GestureChangeEvent.getType());
-  }
-
-  public HandlerRegistration addGestureEndHandler(GestureEndHandler handler) {
-    return addDomHandler(handler, GestureEndEvent.getType());
-  }
-
-  public HandlerRegistration addGestureStartHandler(GestureStartHandler handler) {
-    return addDomHandler(handler, GestureStartEvent.getType());
   }
 
   public HandlerRegistration addKeyDownHandler(KeyDownHandler handler) {

@@ -15,6 +15,7 @@
  */
 package org.gwtproject.user.client.ui;
 
+import elemental2.dom.MouseEvent;
 import jsinterop.base.Js;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.event.dom.client.DomEvent;
@@ -197,15 +198,15 @@ public class Widget extends UIObject implements EventListener, HasAttachHandlers
     return attached;
   }
 
-  public void onBrowserEvent(Event event) {
-    switch (DOM.eventGetType(event)) {
-      case Event.ONMOUSEOVER:
+  public void onBrowserEvent(elemental2.dom.Event event) {
+    switch (event.type) {
+      case "mouseover":
         // Only fire the mouse over event if it's coming from outside this
         // widget.
-      case Event.ONMOUSEOUT:
+      case "mouseout":
         // Only fire the mouse out event if it's leaving this
         // widget.
-        Element related = Js.uncheckedCast(event.getRelatedEventTarget());
+        Element related = Js.uncheckedCast(Js.<MouseEvent>uncheckedCast(event).relatedTarget);
         if (related != null && getElement().isOrHasChild(related)) {
           return;
         }
@@ -234,8 +235,6 @@ public class Widget extends UIObject implements EventListener, HasAttachHandlers
       }
     } else if (parent instanceof HasWidgets) {
       ((HasWidgets) parent).remove(this);
-    } else if (parent != null) {
-      throw new IllegalStateException("This widget's parent does not implement HasWidgets");
     }
   }
 

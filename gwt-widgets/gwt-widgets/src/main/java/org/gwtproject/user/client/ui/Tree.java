@@ -15,6 +15,8 @@
  */
 package org.gwtproject.user.client.ui;
 
+import elemental2.dom.KeyboardEvent;
+import elemental2.dom.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,7 +31,6 @@ import org.gwtproject.event.dom.client.FocusHandler;
 import org.gwtproject.event.dom.client.HasAllFocusHandlers;
 import org.gwtproject.event.dom.client.HasAllKeyHandlers;
 import org.gwtproject.event.dom.client.HasAllMouseHandlers;
-import org.gwtproject.event.dom.client.KeyCodes;
 import org.gwtproject.event.dom.client.KeyDownEvent;
 import org.gwtproject.event.dom.client.KeyDownHandler;
 import org.gwtproject.event.dom.client.KeyPressEvent;
@@ -169,8 +170,6 @@ public class Tree extends Widget
   private ImageAdapter images;
 
   private boolean isAnimationEnabled = false;
-
-  private boolean lastWasKeyDown;
 
   private TreeItem root;
 
@@ -478,7 +477,7 @@ public class Tree extends Widget
 
   @Override
   @SuppressWarnings("fallthrough")
-  public void onBrowserEvent(Event event) {
+  public void onBrowserEvent(elemental2.dom.Event event) {
     int eventType = DOM.eventGetType(event);
 
     switch (eventType) {
@@ -498,7 +497,7 @@ public class Tree extends Widget
       case Event.ONKEYPRESS:
       case Event.ONKEYUP:
         // Issue 1890: Do not block history navigation via alt+left/right
-        if (event.getAltKey() || event.getMetaKey()) {
+        if (((KeyboardEvent) event).altKey || ((KeyboardEvent) event).metaKey) {
           super.onBrowserEvent(event);
           return;
         }
@@ -526,30 +525,22 @@ public class Tree extends Widget
           // extra event reaching the Tree, which we will ignore here.
           // Also, ignore middle and right clicks here.
           if ((DOM.eventGetCurrentTarget(event) == getElement())
-              && (event.getButton() == Event.BUTTON_LEFT)) {
+              && (((MouseEvent) event).button == 0)) {
             elementClicked(DOM.eventGetTarget(event));
           }
           break;
         }
       case Event.ONKEYDOWN:
         {
-          keyboardNavigation(event);
-          lastWasKeyDown = true;
-          break;
-        }
-
-      case Event.ONKEYPRESS:
-        {
-          if (!lastWasKeyDown) {
-            keyboardNavigation(event);
-          }
-          lastWasKeyDown = false;
+          // originally keyboardNavigation happened on "keypress" too, but that's never fired for
+          // arrows
+          keyboardNavigation((KeyboardEvent) event);
           break;
         }
 
       case Event.ONKEYUP:
         {
-          if (event.getKeyCode() == KeyCodes.KEY_TAB) {
+          if (DOM.isTabKey(event)) {
             ArrayList<Element> chain = new ArrayList<Element>();
             collectElementChain(chain, getElement(), DOM.eventGetTarget(event));
             TreeItem item = findItemByChain(chain, 0, root);
@@ -557,7 +548,6 @@ public class Tree extends Widget
               setSelectedItem(item, true);
             }
           }
-          lastWasKeyDown = false;
           break;
         }
     }
@@ -565,7 +555,7 @@ public class Tree extends Widget
     switch (eventType) {
       case Event.ONKEYDOWN:
       case Event.ONKEYUP:
-        if (KeyCodes.isArrowKey(event.getKeyCode())) {
+        if (((KeyboardEvent) event).code.startsWith("Arrow")) {
           event.stopPropagation();
           event.preventDefault();
           return;
@@ -946,28 +936,28 @@ public class Tree extends Widget
     focusable.setAttribute("role", "tree");
   }
 
-  private void keyboardNavigation(Event event) {
+  private void keyboardNavigation(KeyboardEvent event) {
     // Handle keyboard events if keyboard navigation is enabled
     if (isKeyboardNavigationEnabled(curSelection)) {
-      int code = event.getKeyCode();
+      String code = event.code;
 
-      switch (KeyCodes.maybeSwapArrowKeysForRtl(code, false)) {
-        case KeyCodes.KEY_UP:
+      switch (code) {
+        case "ArrowUp":
           {
             moveSelectionUp(curSelection);
             break;
           }
-        case KeyCodes.KEY_DOWN:
+        case "ArrowDown":
           {
             moveSelectionDown(curSelection, true);
             break;
           }
-        case KeyCodes.KEY_LEFT:
+        case "ArrowLeft":
           {
             maybeCollapseTreeItem();
             break;
           }
-        case KeyCodes.KEY_RIGHT:
+        case "ArrowRight":
           {
             maybeExpandTreeItem();
             break;

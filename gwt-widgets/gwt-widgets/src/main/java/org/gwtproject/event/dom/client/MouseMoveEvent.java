@@ -25,8 +25,7 @@ public class MouseMoveEvent extends MouseEvent<MouseMoveHandler> {
       new Type<>(BrowserEvents.MOUSEMOVE, new MouseMoveEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire mouse move events.
    */
   protected MouseMoveEvent() {}

@@ -22,7 +22,6 @@ import org.gwtproject.dom.client.Document;
 import org.gwtproject.dom.client.Element;
 import org.gwtproject.event.dom.client.ClickEvent;
 import org.gwtproject.event.dom.client.ClickHandler;
-import org.gwtproject.event.dom.client.KeyCodes;
 import org.gwtproject.event.dom.client.KeyDownEvent;
 import org.gwtproject.event.dom.client.KeyDownHandler;
 import org.gwtproject.user.client.DOM;
@@ -61,8 +60,8 @@ abstract class CellGridImpl<V> extends Grid {
           new KeyDownHandler() {
             @Override
             public void onKeyDown(KeyDownEvent event) {
-              if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER
-                  || event.getNativeKeyCode() == ' ') {
+              if (DOM.isEnterKey(event.getNativeEvent())
+                  || DOM.isSpaceKey(event.getNativeEvent())) {
                 if (isActive(Cell.this)) {
                   setSelected(Cell.this);
                 }
@@ -102,23 +101,6 @@ abstract class CellGridImpl<V> extends Grid {
     public final void setEnabled(boolean enabled) {
       this.enabled = enabled;
       onEnabled(enabled);
-    }
-
-    public void verticalNavigation(int keyCode) {
-      switch (keyCode) {
-        case KeyCodes.KEY_UP:
-          setHighlighted(previousItem());
-          break;
-        case KeyCodes.KEY_DOWN:
-          setHighlighted(nextItem());
-          break;
-        case KeyCodes.KEY_ESCAPE:
-          // Figure out new event for this.
-          break;
-        case KeyCodes.KEY_ENTER:
-          setSelected(this);
-          break;
-      }
     }
 
     protected Cell nextItem() {
@@ -176,7 +158,7 @@ abstract class CellGridImpl<V> extends Grid {
     return elementToCell.get(element);
   }
 
-  public Cell getCell(Event e) {
+  public Cell getCell(elemental2.dom.Event e) {
     // Find out which cell was actually clicked.
     Element td = getEventTargetCell(e);
     return td != null ? elementToCell.get(td) : null;
@@ -211,7 +193,7 @@ abstract class CellGridImpl<V> extends Grid {
   }
 
   @Override
-  public void onBrowserEvent(Event event) {
+  public void onBrowserEvent(elemental2.dom.Event event) {
     switch (DOM.eventGetType(event)) {
       case Event.ONCLICK:
         {

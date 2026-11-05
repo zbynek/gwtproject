@@ -25,8 +25,7 @@ public class ChangeEvent extends DomEvent<ChangeHandler> {
       new Type<>(BrowserEvents.CHANGE, new ChangeEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire change events.
    */
   protected ChangeEvent() {}

@@ -27,34 +27,26 @@ public abstract class HumanInputEvent<H> extends DomEvent<H> {
    *
    * @return whether the alt key is down
    */
-  public boolean isAltKeyDown() {
-    return getNativeEvent().getAltKey();
-  }
+  public abstract boolean isAltKeyDown();
 
   /**
    * Is <code>control</code> key down.
    *
    * @return whether the control key is down
    */
-  public boolean isControlKeyDown() {
-    return getNativeEvent().getCtrlKey();
-  }
+  public abstract boolean isControlKeyDown();
 
   /**
    * Is <code>meta</code> key down.
    *
    * @return whether the meta key is down
    */
-  public boolean isMetaKeyDown() {
-    return getNativeEvent().getMetaKey();
-  }
+  public abstract boolean isMetaKeyDown();
 
   /**
    * Is <code>shift</code> key down.
    *
    * @return whether the shift key is down
    */
-  public boolean isShiftKeyDown() {
-    return getNativeEvent().getShiftKey();
-  }
+  public abstract boolean isShiftKeyDown();
 }

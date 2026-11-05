@@ -24,8 +24,7 @@ public class FocusEvent extends DomEvent<FocusHandler> {
   private static final Type<FocusHandler> TYPE = new Type<>(BrowserEvents.FOCUS, new FocusEvent());
 
   /**
-   * Protected constructor, use {@link
-   * DomEvent#fireNativeEvent(org.gwtproject.dom.client.NativeEvent,
+   * Protected constructor, use {@link DomEvent#fireNativeEvent(elemental2.dom.Event,
    * org.gwtproject.event.shared.HasHandlers)} to fire focus events.
    */
   protected FocusEvent() {}

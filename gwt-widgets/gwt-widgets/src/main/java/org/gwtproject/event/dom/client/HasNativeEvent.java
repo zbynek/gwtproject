@@ -15,7 +15,7 @@
  */
 package org.gwtproject.event.dom.client;
 
-import org.gwtproject.dom.client.NativeEvent;
+import elemental2.dom.Event;
 
 /** An object that implements this interface has a native event associated with it. */
 public interface HasNativeEvent {
@@ -25,5 +25,5 @@ public interface HasNativeEvent {
    *
    * @return the native event
    */
-  NativeEvent getNativeEvent();
+  Event getNativeEvent();
 }

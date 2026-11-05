@@ -17,9 +17,9 @@ package org.gwtproject.event.dom.client;
 
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
+import elemental2.dom.TouchList;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
-import org.gwtproject.core.client.JsArray;
 import org.gwtproject.dom.client.Touch;
 
 /**
@@ -57,8 +57,8 @@ public abstract class TouchEvent<H> extends HumanInputEvent<H> {
    *
    * @return an array of touches
    */
-  public JsArray<Touch> getChangedTouches() {
-    return getNativeEvent().getChangedTouches();
+  public TouchList getChangedTouches() {
+    return getNativeEvent().changedTouches;
   }
 
   /**
@@ -69,8 +69,8 @@ public abstract class TouchEvent<H> extends HumanInputEvent<H> {
    *
    * @return an array of touches
    */
-  public JsArray<Touch> getTargetTouches() {
-    return getNativeEvent().getTargetTouches();
+  public elemental2.dom.TouchList getTargetTouches() {
+    return getNativeEvent().targetTouches;
   }
 
   /**
@@ -80,8 +80,8 @@ public abstract class TouchEvent<H> extends HumanInputEvent<H> {
    *
    * @return an array of touches
    */
-  public JsArray<Touch> getTouches() {
-    return getNativeEvent().getTouches();
+  public elemental2.dom.TouchList getTouches() {
+    return getNativeEvent().touches;
   }
 
   //
@@ -124,5 +124,28 @@ public abstract class TouchEvent<H> extends HumanInputEvent<H> {
       divElement.setAttribute("ontouchstart", "return;");
       return "function".equals(Js.typeof(divElement.ontouchstart));
     }
+  }
+
+  public elemental2.dom.TouchEvent getNativeEvent() {
+    return (elemental2.dom.TouchEvent) super.getNativeEvent();
+  }
+
+  public boolean isAltKeyDown() {
+    return getNativeEvent().altKey;
+  }
+
+  @Override
+  public boolean isControlKeyDown() {
+    return getNativeEvent().ctrlKey;
+  }
+
+  @Override
+  public boolean isMetaKeyDown() {
+    return getNativeEvent().metaKey;
+  }
+
+  @Override
+  public boolean isShiftKeyDown() {
+    return getNativeEvent().shiftKey;
   }
 }

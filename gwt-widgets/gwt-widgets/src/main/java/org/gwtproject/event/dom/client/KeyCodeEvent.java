@@ -15,6 +15,8 @@
  */
 package org.gwtproject.event.dom.client;
 
+import org.gwtproject.user.client.DOM;
+
 /**
  * Key up and key down are both events based upon a given key code.
  *
@@ -23,39 +25,24 @@ package org.gwtproject.event.dom.client;
 public abstract class KeyCodeEvent<H> extends KeyEvent<H> {
 
   /**
-   * Does the key code represent an arrow key?
-   *
-   * @param keyCode the key code
-   * @return if it is an arrow key code
-   */
-  public static boolean isArrow(int keyCode) {
-    switch (keyCode) {
-      case KeyCodes.KEY_DOWN:
-      case KeyCodes.KEY_RIGHT:
-      case KeyCodes.KEY_UP:
-      case KeyCodes.KEY_LEFT:
-        return true;
-      default:
-        return false;
-    }
-  }
-
-  /**
    * Is this a key down arrow?
    *
    * @return whether this is a down arrow key event
    */
   public boolean isDownArrow() {
-    return getNativeKeyCode() == KeyCodes.KEY_DOWN;
+    return "ArrowDown".equals(getNativeEvent().code);
   }
 
   /**
-   * Gets the native key code. These key codes are enumerated in the {@link KeyCodes} class.
+   * Gets the native key code.
    *
    * @return the key code
+   * @deprecated use {@link #getNativeEvent} together with {@link elemental2.dom.KeyboardEvent#code}
+   *     instead
    */
+  @Deprecated
   public int getNativeKeyCode() {
-    return getNativeEvent().getKeyCode();
+    return DOM.getKeyCode(getNativeEvent());
   }
 
   /**
@@ -64,7 +51,7 @@ public abstract class KeyCodeEvent<H> extends KeyEvent<H> {
    * @return whether this is a left arrow key event
    */
   public boolean isLeftArrow() {
-    return getNativeKeyCode() == KeyCodes.KEY_LEFT;
+    return "ArrowLeft".equals(getNativeEvent().code);
   }
 
   /**
@@ -73,7 +60,7 @@ public abstract class KeyCodeEvent<H> extends KeyEvent<H> {
    * @return whether this is a right arrow key event
    */
   public boolean isRightArrow() {
-    return getNativeKeyCode() == KeyCodes.KEY_RIGHT;
+    return "ArrowRight".equals(getNativeEvent().code);
   }
 
   /**
@@ -82,11 +69,11 @@ public abstract class KeyCodeEvent<H> extends KeyEvent<H> {
    * @return whether this is a right arrow key event
    */
   public boolean isUpArrow() {
-    return getNativeKeyCode() == KeyCodes.KEY_UP;
+    return "ArrowUp".equals(getNativeEvent().code);
   }
 
   @Override
   public String toDebugString() {
-    return super.toDebugString() + "[" + getNativeKeyCode() + "]";
+    return super.toDebugString() + "[" + getNativeEvent().code + "]";
   }
 }

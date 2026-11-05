@@ -15,6 +15,8 @@
  */
 package org.gwtproject.user.client;
 
+import org.gwtproject.dom.client.Element;
+
 /**
  * Receives low-level browser events. The implementer registers for DOM events using {@link
  * DOM#setEventListener(Element, EventListener)}.
@@ -29,5 +31,5 @@ public interface EventListener {
    *
    * @param event the event received
    */
-  void onBrowserEvent(Event event);
+  void onBrowserEvent(elemental2.dom.Event event);
 }

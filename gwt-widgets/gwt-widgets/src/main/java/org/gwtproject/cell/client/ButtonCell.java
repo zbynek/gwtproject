@@ -18,13 +18,15 @@ package org.gwtproject.cell.client;
 import static org.gwtproject.dom.client.BrowserEvents.CLICK;
 import static org.gwtproject.dom.client.BrowserEvents.KEYDOWN;
 
+import elemental2.dom.Event;
+import elemental2.dom.EventTarget;
+import jsinterop.base.Js;
 import org.gwtproject.dom.client.Element;
-import org.gwtproject.dom.client.EventTarget;
-import org.gwtproject.dom.client.NativeEvent;
 import org.gwtproject.safehtml.shared.SafeHtml;
 import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 import org.gwtproject.text.shared.SafeHtmlRenderer;
 import org.gwtproject.text.shared.SimpleSafeHtmlRenderer;
+import org.gwtproject.user.client.DOM;
 
 /** A {@link Cell} used to render a button. */
 public class ButtonCell extends AbstractSafeHtmlCell<String> {
@@ -48,15 +50,15 @@ public class ButtonCell extends AbstractSafeHtmlCell<String> {
       Cell.Context context,
       Element parent,
       String value,
-      NativeEvent event,
+      Event event,
       ValueUpdater<String> valueUpdater) {
     super.onBrowserEvent(context, parent, value, event, valueUpdater);
-    if (CLICK.equals(event.getType())) {
-      EventTarget eventTarget = event.getEventTarget();
-      if (!Element.is(eventTarget)) {
+    if (CLICK.equals(event.type)) {
+      EventTarget eventTarget = Js.uncheckedCast(event.target);
+      if (!DOM.isElement(eventTarget)) {
         return;
       }
-      if (parent.getFirstChildElement().isOrHasChild(Element.as(eventTarget))) {
+      if (parent.getFirstChildElement().isOrHasChild(Js.uncheckedCast(eventTarget))) {
         // Ignore clicks that occur outside of the main element.
         onEnterKeyDown(context, parent, value, event, valueUpdater);
       }
@@ -77,7 +79,7 @@ public class ButtonCell extends AbstractSafeHtmlCell<String> {
       Cell.Context context,
       Element parent,
       String value,
-      NativeEvent event,
+      Event event,
       ValueUpdater<String> valueUpdater) {
     if (valueUpdater != null) {
       valueUpdater.update(value);
